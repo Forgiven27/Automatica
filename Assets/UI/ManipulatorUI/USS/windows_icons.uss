@@ -1,0 +1,17 @@
+:root {
+}
+
+.icon_window-up {
+    width: 25px;
+    height: 25px;
+    background-color: red;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.unity-tab-view__content-container {
+    flex-grow:1;
+}
+.unity-tab__content-container {
+    flex-grow:1;
+}
