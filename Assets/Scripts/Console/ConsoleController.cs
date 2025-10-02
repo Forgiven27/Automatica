@@ -24,6 +24,7 @@ public class ConsoleController : MonoBehaviour
         {
             interactionButton.SetEnabled(true);
             IsInteractionEnable=true;
+            print("Player Enter");
         }
     }
 
@@ -31,8 +32,9 @@ public class ConsoleController : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            interactionButton.SetEnabled(true);
-            IsInteractionEnable = true;
+            interactionButton.SetEnabled(false);
+            IsInteractionEnable = false;
+            print("Player Exit");
         }
     }
 
