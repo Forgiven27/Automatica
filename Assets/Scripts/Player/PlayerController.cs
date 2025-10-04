@@ -1,16 +1,20 @@
 using UnityEngine;
 
+[RequireComponent(typeof(InputController), typeof(MovementController))]
 public class PlayerController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    InputController inputController;
+    MovementController movementController;
     void Start()
     {
-        
+        inputController = GetComponent<InputController>();
+        movementController = GetComponent<MovementController>();
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
-        
+        movementController.DoMove(inputController.GetMovement());
+        movementController.DoJump(inputController.IsJump());
     }
 }
