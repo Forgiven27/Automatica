@@ -4345,6 +4345,8 @@ GameObject:
   - component: {fileID: 1420964540}
   - component: {fileID: 1420964539}
   - component: {fileID: 1420964542}
+  - component: {fileID: 1420964545}
+  - component: {fileID: 1420964544}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -4540,6 +4542,86 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: FirstSlotTap
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 34fece2b-3798-4965-a5d5-1baf3104e921
+    m_ActionName: 'Player/FirstSlot[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: SecondSlotTap
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 567ce2f8-740d-4a01-9ed6-d65da1cf3dbf
+    m_ActionName: 'Player/SecondSlot[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: ThirdSlotTap
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 3cd408ee-2444-47a9-8c59-9ee9cce26c6b
+    m_ActionName: 'Player/ThirdSlot[/Keyboard/3]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: ForthSlotTap
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 21e27846-0c2e-49de-9542-5c5bea385c28
+    m_ActionName: 'Player/ForthSlot[/Keyboard/4]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: FifthSlotTap
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b448da7b-59b9-4fda-933a-ae523bba85db
+    m_ActionName: 'Player/FifthSlot[/Keyboard/5]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -4607,6 +4689,30 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   radius: 0.38
+--- !u!114 &1420964544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420964534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd8812f67ecf488ad07b91fc73355, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIInventoryController
+--- !u!114 &1420964545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420964534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fca61918a01ea914987c473c4997d424, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIPlayerController
 --- !u!1001 &1427455582
 PrefabInstance:
   m_ObjectHideFlags: 0
