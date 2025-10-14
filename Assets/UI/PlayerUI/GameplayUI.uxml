@@ -1,0 +1,12 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; flex-wrap: nowrap; flex-direction: row; justify-content: space-between;">
+        <ui:VisualElement style="flex-grow: 1; align-items: flex-start; justify-content: space-between;">
+            <ui:VisualElement name="pause" style="flex-grow: 0; flex-shrink: 0; width: 50px; height: 50px; position: relative; background-color: rgb(255, 0, 0); border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; top: 30px; right: auto; left: 30px;" />
+            <ui:VisualElement name="inventory" style="flex-grow: 0; flex-shrink: 0; width: 297px; height: 59px; background-color: rgb(0, 32, 255); position: relative; left: 30px; bottom: 30px;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; align-items: flex-end; justify-content: space-between;">
+            <ui:VisualElement name="cameras" style="flex-grow: 0; flex-shrink: 0; width: 200px; height: 200px; background-color: rgb(0, 0, 0); position: relative; top: 30px; right: 30px;" />
+            <ui:VisualElement name="mission" style="flex-grow: 0; position: relative; height: 62px; width: 240px; background-color: rgb(11, 255, 0); flex-shrink: 0; right: 30px; bottom: 30px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

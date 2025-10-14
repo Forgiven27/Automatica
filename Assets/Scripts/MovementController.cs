@@ -1,24 +1,43 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class MovementController : MonoBehaviour
 {
-    public Camera m_Camera;
-    public float rotationSpeed = 1;
-    public float movementSpeed;
-    public float jumpForce;
-    
+    [Header("Camera")]
+    [SerializeField] private Camera m_Camera;
+    [SerializeField] private Vector2 rotateCoeff = new Vector3(1, 1);
+    [SerializeField] private float minVert = -80f;
+    [SerializeField] private float maxVert = 80f;
+
+    [Header("Movement")]
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float cooldownJump = 5;
+
+
     private Vector2 m_MoveVector;
-    
+    bool m_IsGrounded;
     private bool m_IsJump;
     private float m_TimerJump = 0;
-    public float cooldownJump = 5;
+    
     private Rigidbody m_Rigidbody;
 
+    private float xRot;
+    private float yRot;
     void Start()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
+
+        Vector3 angles = transform.localEulerAngles;
+        xRot = angles.x;
+        yRot = angles.y;
+        if (xRot > 180f) xRot -= 360f; // приводим к виду (-180;180)
     }
 
     void Update()
@@ -31,35 +50,18 @@ public class MovementController : MonoBehaviour
 
     void MouseTrackingProcess()
     {
-        Vector2 iRezolution = new Vector2(Screen.width, Screen.height);
-        Vector2 uv = Input.mousePosition / iRezolution;
-        Vector2 rotateSpeed = new Vector2();
-        if (uv.x < 0.25)
-        {
-            rotateSpeed.x = -1 * rotationSpeed;
-        }
-        else if (uv.x > 0.75)
-        {
-            rotateSpeed.x = 1 * rotationSpeed;
-        }
-        else
-        {
-            if (uv.y < 0.25)
-            {
-                rotateSpeed.y = 1;
-            }
-            else if (uv.y > 0.75)
-            {
-                rotateSpeed.y = -1;
-            }
-        }
-        if (transform.rotation.eulerAngles.x != rotateSpeed.y * 30)
-        {
 
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(rotateSpeed.y * 30, transform.rotation.eulerAngles.y, 0), 0.2f);
-        }
-        //transform.Rotate(new Vector3(0, rotateSpeed.x, 0));
-        //m_Rigidbody.AddTorque
+        Vector2 deltaMouseVector = Mouse.current.delta.ReadValue();
+
+        // вычисляем новые углы вручную
+        xRot -= deltaMouseVector.y * rotateCoeff.x;
+        yRot += deltaMouseVector.x * rotateCoeff.y;
+
+        // ограничиваем вертикальное вращение
+        xRot = Mathf.Clamp(xRot, minVert, maxVert);
+
+        // применяем к трансформу
+        transform.rotation = Quaternion.Euler(xRot, yRot, 0f);
     }
 
     void MovementProcess()
@@ -73,9 +75,8 @@ public class MovementController : MonoBehaviour
     void JumpProcess()
     {
         if (m_TimerJump > 0) m_TimerJump -= Time.deltaTime;
-        if (m_IsJump && m_TimerJump <= 0)
+        if (m_IsJump && m_TimerJump <= 0 && m_IsGrounded)
         {
-            print("JUMP");
             Vector3 jumpVector = Vector3.up * jumpForce;
             m_Rigidbody.AddForce(jumpVector, ForceMode.Impulse);
             m_TimerJump = cooldownJump;
@@ -88,8 +89,9 @@ public class MovementController : MonoBehaviour
     {
         m_MoveVector = inputMove;
     }
-    public void DoJump(bool inputJump)
+    public void DoJump(bool inputJump, bool isGrounded)
     {
         m_IsJump = inputJump;
+        m_IsGrounded = isGrounded;
     }
 }
