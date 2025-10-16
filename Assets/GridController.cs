@@ -11,7 +11,12 @@ public class GridController : MonoBehaviour
     private Building currentBuilding;
     Camera cam;
     bool isVisibleGrid = false;
-    
+
+    private bool m_IsRotateLeftClick;
+    private bool m_IsRotateRightClick;
+    private bool m_IsPlaceBuilding;
+
+
     void Start()
     {
         step = worldGrid.cell_step;
@@ -52,6 +57,13 @@ public class GridController : MonoBehaviour
         currentBuilding = Instantiate(building);
     }
 
+    public void SetControlState(bool isPlaceBuildeing, bool isRotateLeftClick, bool isRotateRightClick)
+    {
+        m_IsPlaceBuilding = isPlaceBuildeing;
+        m_IsRotateLeftClick = isRotateLeftClick;
+        m_IsRotateRightClick = isRotateRightClick;
+    }
+
     
     void SetVisibleCamera(bool flag)
     {
@@ -64,7 +76,6 @@ public class GridController : MonoBehaviour
             cameraGrid.gameObject.SetActive(true);
             isVisibleGrid = true;
         }
-        
     }
 
 
@@ -108,16 +119,16 @@ public class GridController : MonoBehaviour
 
                 
                 
-                if (Input.GetMouseButtonDown(0))
+                if (m_IsPlaceBuilding)
                 {
                     currentBuilding = null;
                     
                 }
-                if (Input.mouseScrollDelta.y > 0)
+                if (m_IsRotateLeftClick)
                 {
                     currentBuilding.gameObject.transform.Rotate(Vector3.up, 90);
                 }
-                else if (Input.mouseScrollDelta.y < 0)
+                else if (m_IsRotateRightClick)
                 {
                     currentBuilding.gameObject.transform.Rotate(Vector3.up, -90);
                 }

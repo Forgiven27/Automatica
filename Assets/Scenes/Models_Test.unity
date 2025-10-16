@@ -1720,7 +1720,7 @@ Transform:
   m_GameObject: {fileID: 371617421}
   serializedVersion: 2
   m_LocalRotation: {x: 1.110223e-17, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.068338, y: 2.1283143, z: 15.962246}
+  m_LocalPosition: {x: -18.55, y: 2.1283143, z: 15.962246}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3999,7 +3999,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1246702469}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
@@ -4622,6 +4622,54 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: b448da7b-59b9-4fda-933a-ae523bba85db
     m_ActionName: 'Player/FifthSlot[/Keyboard/5]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: RotateLeft
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ad14056e-8b67-4649-a205-998f79af49c4
+    m_ActionName: 'Player/LeftRotate[/Keyboard/q]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: RotateRight
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: dab283a0-6213-427a-ba3e-2134b9c03eba
+    m_ActionName: 'Player/RightRotate[/Keyboard/e]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: PlaceBuilding
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: afb77d18-4c62-4b45-be2e-bd9ab74396fc
+    m_ActionName: 'Player/PlaceBuilding[/Mouse/leftButton]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -4701,6 +4749,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf0bd8812f67ecf488ad07b91fc73355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIInventoryController
+  gridController: {fileID: 636881051}
+  manipulator: {fileID: 2973846625198947625, guid: f140b745938b0aa49955fde281a92bbb, type: 3}
 --- !u!114 &1420964545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4713,6 +4763,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fca61918a01ea914987c473c4997d424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIPlayerController
+  GridController: {fileID: 636881051}
 --- !u!1001 &1427455582
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6192,7 +6243,7 @@ Transform:
   m_GameObject: {fileID: 2051552104}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.12095, y: 6.65356, z: -2.36284}
+  m_LocalPosition: {x: -16.23, y: 6.65356, z: -1.77}
   m_LocalScale: {x: 4.5, y: 4.5, z: 4.5}
   m_ConstrainProportionsScale: 1
   m_Children: []

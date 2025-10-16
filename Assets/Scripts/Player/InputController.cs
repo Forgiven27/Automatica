@@ -10,6 +10,9 @@ public class InputController : MonoBehaviour
     private bool m_IsThirdSClick;
     private bool m_IsForthSClick;
     private bool m_IsFifthSClick;
+    private bool m_IsRotateLeftClick;
+    private bool m_IsRotateRightClick;
+    private bool m_IsPlaceBuilding;
 
     public Vector2 GetMovement() => m_Movement;
     public bool IsJump() => m_IsJump;
@@ -18,8 +21,9 @@ public class InputController : MonoBehaviour
     public bool IsThirdSClick() => m_IsThirdSClick;
     public bool IsForthSClick() => m_IsForthSClick;
     public bool IsFifthSClick() => m_IsFifthSClick;
-
-
+    public bool IsRotateLeftClick()=> m_IsRotateLeftClick;
+    public bool IsRotateRightClick() => m_IsRotateRightClick;
+    public bool IsPlaceBuilding() => m_IsPlaceBuilding;
 
     public void Move(InputAction.CallbackContext callbackContext)
     {
@@ -28,14 +32,8 @@ public class InputController : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed)
-        {
-            m_IsJump = true;
-        }
-        else if(callbackContext.canceled)
-        {
-            m_IsJump = false;
-        }
+        if (callbackContext.performed) m_IsJump = true;
+        else if(callbackContext.canceled) m_IsJump = false;
     }
     public void FirstSlotTap(InputAction.CallbackContext callbackContext)
     {
@@ -62,8 +60,22 @@ public class InputController : MonoBehaviour
         if (callbackContext.performed) m_IsFifthSClick = true;
         else if (callbackContext.canceled) m_IsFifthSClick = false;
     }
+    public void RotateLeft(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.performed) m_IsRotateLeftClick = true;
+        else if (callbackContext.canceled) m_IsRotateLeftClick = false;
+    }
+    public void RotateRight(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.performed) m_IsRotateRightClick = true;
+        else if (callbackContext.canceled) m_IsRotateRightClick = false;
+    }
 
-
+    public void PlaceBuilding(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.performed) m_IsPlaceBuilding = true;
+        else if (callbackContext.canceled) m_IsPlaceBuilding = false;
+    }
 
 
 

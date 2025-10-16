@@ -7,8 +7,11 @@ public class UIInventoryController : MonoBehaviour
     private bool m_IsSecondSClick;
     private bool m_IsThirdSClick;
     private bool m_IsForthSClick;
+    
     private bool m_IsFifthSClick;
 
+    public GridController gridController;
+    public Building manipulator;
 
     void Start()
     {
@@ -20,7 +23,7 @@ public class UIInventoryController : MonoBehaviour
     {
         if (m_IsFirstSClick)
         {
-            print("b1");
+            gridController.CreateBuilding(manipulator);
         }
         if (m_IsSecondSClick)
         {
