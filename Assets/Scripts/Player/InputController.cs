@@ -1,5 +1,11 @@
+using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
+using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
+using System;
 public class InputController : MonoBehaviour
 {
     
@@ -13,72 +19,64 @@ public class InputController : MonoBehaviour
     private bool m_IsRotateLeftClick;
     private bool m_IsRotateRightClick;
     private bool m_IsPlaceBuilding;
+    
+    public delegate void MoveDelegate(Vector2 position);
+    public delegate void TapDelegate();
+    public delegate void PressDelegate();
+    
+    public event MoveDelegate OnMove;
+    public event TapDelegate OnJump_Tap;
+    public event TapDelegate OnFirstS_Tap;
+    public event TapDelegate OnSecondS_Tap;
+    public event TapDelegate OnThirdS_Tap;
+    public event TapDelegate OnForthS_Tap;
+    public event TapDelegate OnFifthS_Tap;
+    public event TapDelegate OnRotateR_Tap;
+    public event TapDelegate OnRotateL_Tap;
+    public event TapDelegate OnPlaceBuilding_Tap;
 
-    public Vector2 GetMovement() => m_Movement;
-    public bool IsJump() => m_IsJump;
-    public bool IsFirstSClick() => m_IsFirstSClick;
-    public bool IsSecondSClick() => m_IsSecondSClick;
-    public bool IsThirdSClick() => m_IsThirdSClick;
-    public bool IsForthSClick() => m_IsForthSClick;
-    public bool IsFifthSClick() => m_IsFifthSClick;
-    public bool IsRotateLeftClick()=> m_IsRotateLeftClick;
-    public bool IsRotateRightClick() => m_IsRotateRightClick;
-    public bool IsPlaceBuilding() => m_IsPlaceBuilding;
+    
 
     public void Move(InputAction.CallbackContext callbackContext)
-    {
-        m_Movement = callbackContext.ReadValue<Vector2>();
+    {   
+        OnMove?.Invoke(callbackContext.ReadValue<Vector2>());
     }
 
     public void Jump(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed) m_IsJump = true;
-        else if(callbackContext.canceled) m_IsJump = false;
+        if (callbackContext.interaction is TapInteraction) OnJump_Tap?.Invoke();
     }
     public void FirstSlotTap(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed) m_IsFirstSClick = true;
-        else if (callbackContext.canceled) m_IsFirstSClick = false;
+        if (callbackContext.interaction is TapInteraction) OnFirstS_Tap?.Invoke();
     }
     public void SecondSlotTap(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed) m_IsSecondSClick = true;
-        else if (callbackContext.canceled) m_IsSecondSClick = false;
+        if (callbackContext.interaction is TapInteraction) OnSecondS_Tap?.Invoke();
     }
     public void ThirdSlotTap(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed) m_IsThirdSClick = true;
-        else if (callbackContext.canceled) m_IsThirdSClick = false;
+        if (callbackContext.interaction is TapInteraction) OnThirdS_Tap?.Invoke();
     }
     public void ForthSlotTap(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed) m_IsForthSClick = true;
-        else if (callbackContext.canceled) m_IsForthSClick = false;
+        if (callbackContext.interaction is TapInteraction) OnForthS_Tap?.Invoke();
     }
     public void FifthSlotTap(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed) m_IsFifthSClick = true;
-        else if (callbackContext.canceled) m_IsFifthSClick = false;
+        if (callbackContext.interaction is TapInteraction) OnFifthS_Tap?.Invoke();
     }
     public void RotateLeft(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed) m_IsRotateLeftClick = true;
-        else if (callbackContext.canceled) m_IsRotateLeftClick = false;
+        if (callbackContext.interaction is TapInteraction) OnRotateL_Tap?.Invoke();
     }
     public void RotateRight(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed) m_IsRotateRightClick = true;
-        else if (callbackContext.canceled) m_IsRotateRightClick = false;
+        if (callbackContext.interaction is TapInteraction) OnRotateR_Tap?.Invoke();
     }
-
+     
     public void PlaceBuilding(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.performed) m_IsPlaceBuilding = true;
-        else if (callbackContext.canceled) m_IsPlaceBuilding = false;
+        if (callbackContext.interaction is TapInteraction) OnPlaceBuilding_Tap?.Invoke();
     }
-
-
-
-
-
 }

@@ -3,20 +3,27 @@ using UnityEngine;
 [RequireComponent(typeof(InputController), typeof(MovementController),typeof(GroundChecker))]
 public class PlayerController : MonoBehaviour
 {
-    InputController inputController;
-    MovementController movementController;
-    GroundChecker groundChecker;
-    void Start()
+    InputController m_InputController;
+    MovementController m_MovementController;
+    GroundChecker m_GroundChecker;
+    void Awake()
     {
-        inputController = GetComponent<InputController>();
-        movementController = GetComponent<MovementController>();
-        groundChecker = GetComponent<GroundChecker>();
+        m_InputController = GetComponent<InputController>();
+        m_MovementController = GetComponent<MovementController>();
+        m_GroundChecker = GetComponent<GroundChecker>();
+    }
+    private void OnEnable()
+    {
+        m_GroundChecker.OnGround += m_MovementController.Grounded;
+        m_InputController.OnJump_Tap += m_MovementController.Jump;
+        m_InputController.OnMove += m_MovementController.Move;
     }
 
-    
-    void Update()
+    private void OnDisable()
     {
-        movementController.DoMove(inputController.GetMovement());
-        movementController.DoJump(inputController.IsJump(), groundChecker.IsGrounded());
+        m_GroundChecker.OnGround -= m_MovementController.Grounded;
+        m_InputController.OnJump_Tap -= m_MovementController.Jump;
+        m_InputController.OnMove -= m_MovementController.Move;
     }
+
 }

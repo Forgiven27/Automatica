@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,10 +20,19 @@ public class MovementController : MonoBehaviour
     [SerializeField] private float cooldownJump = 5;
 
 
-    private Vector2 m_MoveVector;
+    enum Button
+    {
+        Jump,
+    }
+
+    private readonly float m_buttonJumpCooldown = 2f;
+    private Dictionary<Button, bool> buttonsActiveState;
+
+
     bool m_IsGrounded;
     private bool m_IsJump;
-    private float m_TimerJump = 0;
+    private Vector2 m_MoveVector;
+
     
     private Rigidbody m_Rigidbody;
 
@@ -29,6 +40,10 @@ public class MovementController : MonoBehaviour
     private float yRot;
     void Start()
     {
+        buttonsActiveState = new Dictionary<Button, bool>() {
+            {Button.Jump, true},
+        };
+
         m_Rigidbody = GetComponent<Rigidbody>();
         transform.rotation = Quaternion.Euler(0, 0, 0);
         Cursor.lockState = CursorLockMode.Locked;
@@ -42,9 +57,10 @@ public class MovementController : MonoBehaviour
 
     void Update()
     {
-        MovementProcess();
-        JumpProcess();
-        MouseTrackingProcess();        
+        MouseTrackingProcess();
+
+        Movement();
+
     }
 
 
@@ -63,8 +79,7 @@ public class MovementController : MonoBehaviour
         // применяем к трансформу
         transform.rotation = Quaternion.Euler(xRot, yRot, 0f);
     }
-
-    void MovementProcess()
+    void Movement()
     {
         if (m_MoveVector == Vector2.zero) return;
         float x_move = m_MoveVector.x * movementSpeed * Time.deltaTime;
@@ -72,26 +87,34 @@ public class MovementController : MonoBehaviour
         transform.Translate(new Vector3(x_move, 0, z_move));
     }
 
-    void JumpProcess()
+
+    public void Move(Vector2 moveVector)
     {
-        if (m_TimerJump > 0) m_TimerJump -= Time.deltaTime;
-        if (m_IsJump && m_TimerJump <= 0 && m_IsGrounded)
+        m_MoveVector = moveVector;
+    }
+
+    public async void Jump()
+    {
+
+        if (buttonsActiveState[Button.Jump] && m_IsGrounded)
         {
             Vector3 jumpVector = Vector3.up * jumpForce;
             m_Rigidbody.AddForce(jumpVector, ForceMode.Impulse);
-            m_TimerJump = cooldownJump;
-
+            buttonsActiveState[Button.Jump] = false;
+            await TimerJump(Button.Jump);
         }
     }
 
-
-    public void DoMove(Vector2 inputMove)
+    public void Grounded(bool isGrounded)
     {
-        m_MoveVector = inputMove;
-    }
-    public void DoJump(bool inputJump, bool isGrounded)
-    {
-        m_IsJump = inputJump;
         m_IsGrounded = isGrounded;
+        
     }
+
+    private async UniTask TimerJump(Button button)
+    {
+        await UniTask.WaitForSeconds(m_buttonJumpCooldown);
+        buttonsActiveState[button] = true;
+    }
+
 }

@@ -1,7 +1,18 @@
+using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GridController : MonoBehaviour
 {
+
+    enum Button
+    {
+        RightRotate,
+        LeftRotate,
+        PlaceBuilding
+    }
+
     public WorldGrid worldGrid;
     public Camera cameraGrid;
     public float height;
@@ -9,12 +20,11 @@ public class GridController : MonoBehaviour
     
     float step;
     private Building currentBuilding;
+    private float m_buttonCooldown = 0.1f;
     Camera cam;
     bool isVisibleGrid = false;
 
-    private bool m_IsRotateLeftClick;
-    private bool m_IsRotateRightClick;
-    private bool m_IsPlaceBuilding;
+    private Dictionary<Button, bool> buttonsActiveState;
 
 
     void Start()
@@ -24,7 +34,11 @@ public class GridController : MonoBehaviour
         cameraGrid.gameObject.SetActive(false);
         isVisibleGrid = false;
 
-
+        buttonsActiveState = new Dictionary<Button, bool>() {
+            {Button.RightRotate, true},
+            {Button.LeftRotate, true},
+            {Button.PlaceBuilding, true},
+        };
     }
     
     private void OnDrawGizmosSelected()
@@ -57,12 +71,7 @@ public class GridController : MonoBehaviour
         currentBuilding = Instantiate(building);
     }
 
-    public void SetControlState(bool isPlaceBuildeing, bool isRotateLeftClick, bool isRotateRightClick)
-    {
-        m_IsPlaceBuilding = isPlaceBuildeing;
-        m_IsRotateLeftClick = isRotateLeftClick;
-        m_IsRotateRightClick = isRotateRightClick;
-    }
+    
 
     
     void SetVisibleCamera(bool flag)
@@ -116,24 +125,8 @@ public class GridController : MonoBehaviour
                 {
                     currentBuilding.transform.position = newPosition;
                 }
-
-                
-                
-                if (m_IsPlaceBuilding)
-                {
-                    currentBuilding = null;
-                    
-                }
-                if (m_IsRotateLeftClick)
-                {
-                    currentBuilding.gameObject.transform.Rotate(Vector3.up, 90);
-                }
-                else if (m_IsRotateRightClick)
-                {
-                    currentBuilding.gameObject.transform.Rotate(Vector3.up, -90);
-                }
                 isPlaceOccupied = false;
-
+                
             }
         }
         else
@@ -142,4 +135,47 @@ public class GridController : MonoBehaviour
         }
         
     }
+
+    public async void RotateRightClick()
+    {
+        if (currentBuilding == null) return;
+        Button currentButton = Button.RightRotate;
+        if (buttonsActiveState[currentButton])
+        {
+            currentBuilding.gameObject.transform.Rotate(Vector3.up, -90);
+            buttonsActiveState[currentButton] = false;
+            await TimerStandard(currentButton);
+        }
+    }
+    public async void RotateLeftClick()
+    {
+        if (currentBuilding == null) return;
+        Button currentButton = Button.LeftRotate;
+        if (buttonsActiveState[currentButton])
+        {
+            currentBuilding.gameObject.transform.Rotate(Vector3.up, 90);
+            buttonsActiveState[currentButton] = false;
+            await TimerStandard(currentButton);
+        }
+    }
+
+    public async void PlaceBuildingClick()
+    {
+        if (currentBuilding == null) return;
+        Button currentButton = Button.PlaceBuilding;
+        if (buttonsActiveState[currentButton])
+        {
+            currentBuilding = null;
+            buttonsActiveState[currentButton] = false;
+            await TimerStandard(currentButton);
+        }
+    }
+
+    private async UniTask TimerStandard(Button button)
+    {
+        await UniTask.WaitForSeconds(m_buttonCooldown);
+        buttonsActiveState[button] = true;
+    }
+
+
 }

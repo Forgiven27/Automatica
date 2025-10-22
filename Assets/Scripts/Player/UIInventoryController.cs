@@ -1,55 +1,102 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 public class UIInventoryController : MonoBehaviour
 {
-
-    private bool m_IsFirstSClick;
-    private bool m_IsSecondSClick;
-    private bool m_IsThirdSClick;
-    private bool m_IsForthSClick;
+    enum Button
+    {
+        FirstS,
+        SecondS,
+        ThirdS,
+        ForthS,
+        FifthS,
+    }
     
-    private bool m_IsFifthSClick;
+    private readonly float m_buttonCooldown = 0.1f;
+    private Dictionary<Button, bool> buttonsActiveState;
 
     public GridController gridController;
     public Building manipulator;
 
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+
+    private void Start()
     {
-        if (m_IsFirstSClick)
+        buttonsActiveState = new Dictionary<Button, bool>() {
+            {Button.FirstS, true},
+            {Button.SecondS, true},
+            {Button.ThirdS, true},
+            {Button.ForthS, true},
+            {Button.FifthS, true},
+        };
+    }
+    
+    public async void FirstSClick()
+    {
+        Button currentButton = Button.FirstS;
+        if (buttonsActiveState[currentButton])
         {
             gridController.CreateBuilding(manipulator);
+            buttonsActiveState[currentButton] = false;
+            await TimerStandard(currentButton);
         }
-        if (m_IsSecondSClick)
+    }
+    public async void SecondSClick()
+    {
+        Button currentButton = Button.SecondS;
+        if (buttonsActiveState[currentButton])
         {
-            print("b2");
-        }
-        if (m_IsThirdSClick)
-        {
-            print("b3");
-        }
-        if (m_IsForthSClick)
-        {
-            print("b4");
-        }
-        if (m_IsFifthSClick)
-        {
-            print("b5");
+            
+            buttonsActiveState[currentButton] = false;
+            await TimerStandard(currentButton);
         }
     }
 
-    public void SetInventoryButtonState(bool b1, bool b2, bool b3, bool b4, bool b5)
+
+    public async void ThirdSClick()
     {
-        m_IsFirstSClick = b1;
-        m_IsSecondSClick = b2;
-        m_IsThirdSClick = b3;
-        m_IsForthSClick = b4;
-        m_IsFifthSClick = b5;
+        Button currentButton = Button.ThirdS;
+        if (buttonsActiveState[currentButton])
+        {
+            
+            buttonsActiveState[currentButton] = false;
+            await TimerStandard(currentButton);
+        }
     }
+    public async void ForthSClick()
+    {
+        Button currentButton = Button.ForthS;
+        if (buttonsActiveState[currentButton])
+        {
+            
+            buttonsActiveState[currentButton] = false;
+            await TimerStandard(currentButton);
+        }
+    }
+    public async void FifthSClick()
+    {
+        Button currentButton = Button.FifthS;
+        if (buttonsActiveState[currentButton])
+        {
+            
+            buttonsActiveState[currentButton] = false;
+            await TimerStandard(currentButton);
+        }
+    }
+    private async UniTask TimerStandard(Button button)
+    {
+        await UniTask.WaitForSeconds(m_buttonCooldown);
+        buttonsActiveState[button] = true;
+    }
+
+
+    
+
+
+
+
+    
 
 }

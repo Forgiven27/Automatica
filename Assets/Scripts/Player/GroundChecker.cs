@@ -8,19 +8,31 @@ public class GroundChecker : MonoBehaviour
     private LayerMask groundMask;
     [SerializeField]
     private float radius;
+    bool prevIsGrounded;
+    bool currIsGrounded;
+    public delegate void GroundDelegate(bool isGrounded);
+    public event GroundDelegate OnGround;
 
-    bool isGrounded;
-    
-    public bool IsGrounded()=> isGrounded;
+    private void Awake()
+    {
 
+        currIsGrounded = Physics.CheckSphere(transform.position + relativePositionSphere, radius, groundMask);
+        prevIsGrounded = currIsGrounded;
+        OnGround?.Invoke(currIsGrounded);
+    }
     void Update()
     {
-        isGrounded = Physics.CheckSphere(transform.position + relativePositionSphere, radius,groundMask);
+        currIsGrounded = Physics.CheckSphere(transform.position + relativePositionSphere, radius, groundMask);
+        if (currIsGrounded != prevIsGrounded)
+        {
+            prevIsGrounded = currIsGrounded;
+            OnGround?.Invoke(currIsGrounded);
+        }
     }
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = isGrounded? Color.green : Color.red;
+        Gizmos.color = currIsGrounded? Color.green : Color.red;
         Gizmos.DrawSphere(transform.position + relativePositionSphere, radius);
     }
 }

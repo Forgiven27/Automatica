@@ -7,26 +7,38 @@ public class UIPlayerController : MonoBehaviour
     public GridController GridController;
 
 
-    void Start()
+    void Awake()
     {
         m_InputController = GetComponent<InputController>();
         m_InventoryController = GetComponent<UIInventoryController>();
     }
-
-    
-    void Update()
+    private void OnEnable()
     {
-        m_InventoryController.SetInventoryButtonState(
-            m_InputController.IsFirstSClick(),
-            m_InputController.IsSecondSClick(),
-            m_InputController.IsThirdSClick(),
-            m_InputController.IsForthSClick(),
-            m_InputController.IsFifthSClick()
-            );
-        GridController.SetControlState(m_InputController.IsPlaceBuilding(),
-            m_InputController.IsRotateLeftClick(),
-            m_InputController.IsRotateRightClick());
+        m_InputController.OnFirstS_Tap += m_InventoryController.FirstSClick;
+        m_InputController.OnSecondS_Tap += m_InventoryController.SecondSClick;
+        m_InputController.OnThirdS_Tap += m_InventoryController.ThirdSClick;
+        m_InputController.OnForthS_Tap += m_InventoryController.ForthSClick;
+        m_InputController.OnFifthS_Tap += m_InventoryController.FifthSClick;
+
+        m_InputController.OnRotateR_Tap += GridController.RotateRightClick;
+        m_InputController.OnRotateL_Tap += GridController.RotateLeftClick;
+        m_InputController.OnPlaceBuilding_Tap += GridController.PlaceBuildingClick;
     }
+    private void OnDisable()
+    {
+        m_InputController.OnFirstS_Tap -= m_InventoryController.FirstSClick;
+        m_InputController.OnSecondS_Tap -= m_InventoryController.SecondSClick;
+        m_InputController.OnThirdS_Tap -= m_InventoryController.ThirdSClick;
+        m_InputController.OnForthS_Tap -= m_InventoryController.ForthSClick;
+        m_InputController.OnFifthS_Tap -= m_InventoryController.FifthSClick;
+
+        m_InputController.OnRotateR_Tap -= GridController.RotateRightClick;
+        m_InputController.OnRotateL_Tap -= GridController.RotateLeftClick;
+        m_InputController.OnPlaceBuilding_Tap -= GridController.PlaceBuildingClick;
+    }
+
+
+
 
 
 

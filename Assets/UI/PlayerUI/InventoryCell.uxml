@@ -1,0 +1,10 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; flex-shrink: 1; width: auto; height: auto;">
+        <ui:VisualElement style="flex-grow: 1; background-color: rgb(53, 53, 152); border-top-left-radius: 20%; border-top-right-radius: 20%; border-bottom-right-radius: 20%; border-bottom-left-radius: 20%; width: auto; height: auto; flex-shrink: 1; align-self: auto; padding-left: 15%; padding-top: 15%; padding-right: 15%; padding-bottom: 15%;">
+            <ui:VisualElement style="flex-grow: 1; background-color: rgb(0, 89, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="hint" style="flex-grow: 0; position: absolute; top: -10%; right: -10%; flex-shrink: 0; width: 40%; height: 40%; background-color: rgb(183, 22, 22); border-top-left-radius: 100%; border-top-right-radius: 100%; border-bottom-right-radius: 100%; border-bottom-left-radius: 100%;">
+            <ui:Label text="E" name="hint_label" class="hint-label" style="-unity-text-align: middle-center; position: relative; top: auto; left: auto; flex-grow: 1; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; right: auto; flex-shrink: 1;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

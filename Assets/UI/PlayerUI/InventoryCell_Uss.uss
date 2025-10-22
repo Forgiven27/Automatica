@@ -1,0 +1,26 @@
+:root {
+    --cell-size: 60px;
+    --cell-font: 20px;
+}
+
+.inventory-cell {
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: var(--cell-size);
+    height: var(--cell-size);
+    transition-property: width,height;
+    transition-duration: 0.5s, 0.5s;
+    transition-timing-function: ease-in, ease-in;
+}
+
+.hint-label {
+    font-size: var(--cell-font);
+}
+
+.inventory-cell__pressed {
+    width: 65;
+    height: 65;
+    transition-property: width,height;
+    transition-duration: 0.25s, 0.25s;
+    transition-timing-function: ease-out, ease-out;
+}
