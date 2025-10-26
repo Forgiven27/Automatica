@@ -1,0 +1,27 @@
+:root {
+}
+
+.rebinder {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    background-color: rgb(115, 222, 224);
+}
+
+.rebinder__text {
+    -unity-text-align: middle-center;
+}
+
+.rebinder__button {
+}
+
+.logic__container {
+}
+
+.logic__header {
+    font-size: 25px;
+    -unity-text-align: upper-center;
+}
+
+.logic__line {
+}
