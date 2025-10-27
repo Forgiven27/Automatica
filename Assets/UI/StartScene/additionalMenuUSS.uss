@@ -1,0 +1,11 @@
+:root {
+}
+
+.window--open {
+    display: flex;
+    flex-grow: 1;
+}
+
+.window--close {
+    display: none;
+}

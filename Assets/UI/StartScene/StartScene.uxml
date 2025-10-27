@@ -1,5 +1,6 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:Template name="SettingsPanel" src="project://database/Assets/UI/StartScene/SettingsPanel.uxml?fileID=9197481963319205126&amp;guid=1f27543860c3e0148a2897241581037a&amp;type=3#SettingsPanel" />
+    <Style src="project://database/Assets/UI/StartScene/additionalMenuUSS.uss?fileID=7433441132597879392&amp;guid=146329ba0533084439350ac071872e96&amp;type=3#additionalMenuUSS" />
     <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
         <ui:VisualElement name="main-menu" style="flex-grow: 1; align-items: stretch; justify-content: center;">
             <ui:VisualElement name="buttons" style="flex-grow: 0; justify-content: center; min-width: 100px; max-width: 450px; align-items: stretch; align-self: center; background-color: rgba(0, 0, 0, 0.98); height: 50%; width: 50%;">
@@ -9,7 +10,7 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="additional-menu">
-            <ui:Instance template="SettingsPanel" style="display: none;" />
+            <ui:Instance template="SettingsPanel" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

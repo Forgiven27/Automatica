@@ -2,10 +2,10 @@
     <Style src="project://database/Assets/UI/StartScene/startSceneUSS.uss?fileID=7433441132597879392&amp;guid=b7c95c3daa4cff54083536f7992c611c&amp;type=3#startSceneUSS" />
     <ui:VisualElement style="flex-grow: 1;">
         <ui:TabView>
-            <ui:Tab label="Управление">
+            <ui:Tab label="Управление" name="control__tab">
                 <ui:ScrollView>
-                    <ui:VisualElement name="control__container" class="logic__container" style="flex-grow: 1;">
-                        <ui:Label text="Инвентарь" name="control__header" class="logic__header" />
+                    <ui:VisualElement name="building__container" class="logic__container" style="flex-grow: 1;">
+                        <ui:Label text="Строительство" name="control__header" class="logic__header" />
                         <ui:VisualElement name="control__line" class="logic__line" style="flex-grow: 1; height: 2px; margin-left: 10%; margin-right: 10%; background-color: rgb(0, 0, 0);" />
                         <ui:VisualElement name="rebinder--first-slot" class="rebinder">
                             <ui:Label text="Первый слот" name="rebinder__text" class="rebinder__text" />
@@ -25,37 +25,53 @@
                         </ui:VisualElement>
                         <ui:VisualElement name="rebinder--fifth-slot" class="rebinder">
                             <ui:Label text="Пятый слот" name="rebinder__text" class="rebinder__text" />
+                            <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="rebinder--place" class="rebinder">
+                            <ui:Label text="Поставить здание" name="rebinder__text" class="rebinder__text" />
+                            <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="rebinder--rotate-left" class="rebinder">
+                            <ui:Label text="Повернуть влево" name="rebinder__text" class="rebinder__text" />
+                            <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="rebinder--rotate-right" class="rebinder">
+                            <ui:Label text="Повернуть вправо" name="rebinder__text" class="rebinder__text" />
                             <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
                         </ui:VisualElement>
                     </ui:VisualElement>
-                    <ui:VisualElement name="control__container" class="logic__container" style="flex-grow: 1;">
-                        <ui:Label text="Инвентарь" name="control__header" class="logic__header" />
+                    <ui:VisualElement name="move__container" class="logic__container" style="flex-grow: 1;">
+                        <ui:Label text="Перемещение" name="control__header" class="logic__header" />
                         <ui:VisualElement name="control__line" class="logic__line" style="flex-grow: 1; height: 2px; margin-left: 10%; margin-right: 10%; background-color: rgb(0, 0, 0);" />
-                        <ui:VisualElement name="rebinder--first-slot" class="rebinder">
-                            <ui:Label text="Первый слот" name="rebinder__text" class="rebinder__text" />
+                        <ui:VisualElement name="rebinder--forward" class="rebinder">
+                            <ui:Label text="Вперёд" name="rebinder__text" class="rebinder__text" />
                             <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="rebinder--second-slot" class="rebinder">
-                            <ui:Label text="Второй слот" name="rebinder__text" class="rebinder__text" />
+                        <ui:VisualElement name="rebinder--backword" class="rebinder">
+                            <ui:Label text="Назад" name="rebinder__text" class="rebinder__text" />
                             <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="rebinder--third-slot" class="rebinder">
-                            <ui:Label text="Третий слот" name="rebinder__text" class="rebinder__text" />
+                        <ui:VisualElement name="rebinder--right" class="rebinder">
+                            <ui:Label text="Вправо" name="rebinder__text" class="rebinder__text" />
                             <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="rebinder--forth-slot" class="rebinder">
-                            <ui:Label text="Четвертый слот" name="rebinder__text" class="rebinder__text" />
+                        <ui:VisualElement name="rebinder--left" class="rebinder">
+                            <ui:Label text="Влево" name="rebinder__text" class="rebinder__text" />
                             <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="rebinder--fifth-slot" class="rebinder">
-                            <ui:Label text="Пятый слот" name="rebinder__text" class="rebinder__text" />
+                        <ui:VisualElement name="rebinder--jump" class="rebinder">
+                            <ui:Label text="Прыжок" name="rebinder__text" class="rebinder__text" />
+                            <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="rebinder--sprint" class="rebinder">
+                            <ui:Label text="Спринт" name="rebinder__text" class="rebinder__text" />
                             <ui:Button text="Button" name="rebinder__button" class="rebinder__button" />
                         </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:ScrollView>
             </ui:Tab>
-            <ui:Tab label="Звук" />
-            <ui:Tab label="Видео" />
+            <ui:Tab label="Звук" name="sound__tab" />
+            <ui:Tab label="Видео" name="video__tab" />
         </ui:TabView>
     </ui:VisualElement>
 </ui:UXML>
