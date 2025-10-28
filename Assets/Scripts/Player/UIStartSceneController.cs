@@ -137,7 +137,7 @@ public class UIStartSceneController : MonoBehaviour
                                                 inputAction.Enable();
                                             });
         rebindingOperation.Start();
-        //m_IsInputListen = true;
+        
 
     }
 
