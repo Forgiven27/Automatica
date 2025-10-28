@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using System;
+using UnityEditor;
 
 public class UIStartSceneController : MonoBehaviour
 {
@@ -116,11 +118,26 @@ public class UIStartSceneController : MonoBehaviour
         if (m_IsInputListen) return;
         Debug.Log("SwitchControl_clicked");
         string actionName = InputControlPath.ToHumanReadableString(inputAction.bindings[0].effectivePath, InputControlPath.HumanReadableStringOptions.OmitDevice);
+        inputAction.Disable();
         var rebindingOperation = inputAction.PerformInteractiveRebinding()
                                             .WithControlsExcluding("<Mouse>/position")
-                                            .WithControlsExcluding("<Mouse>/delta");
-
-        m_IsInputListen = true;
+                                            .WithControlsExcluding("<Mouse>/delta")
+                                            .WithControlsHavingToMatchPath("<Keyboard>")
+                                            .WithCancelingThrough("<Keyboard>/escape")
+                                            .OnComplete(_ =>
+                                            {
+                                                Debug.Log("CompeleteBinding");
+                                                
+                                                inputAction.ApplyBindingOverride(_.action.bindings[0]);
+                                                SetSwitchControlName(button, inputAction);
+                                                //m_InputActions.SaveBindingOverridesAsJson();
+                                                
+                                                
+                                                _.Dispose();
+                                                inputAction.Enable();
+                                            });
+        rebindingOperation.Start();
+        //m_IsInputListen = true;
 
     }
 
@@ -129,10 +146,11 @@ public class UIStartSceneController : MonoBehaviour
     
     void Update()
     {
+        /*
         if (m_IsInputListen)
         {
             Debug.Log(Input.inputString);
-        }
+        }*/
     }
 
     private void ExitButton_clicked()
