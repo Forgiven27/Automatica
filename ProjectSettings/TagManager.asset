@@ -6,17 +6,18 @@ TagManager:
   tags:
   - Surface
   - Building
+  - Belt
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - BuildingSurface
   - Building
   - BuildGrid
-  - 
+  - GhostBuilding
   - 
   - 
   - 

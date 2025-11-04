@@ -4,13 +4,14 @@ public class UIPlayerController : MonoBehaviour
 {
     InputController m_InputController;
     UIInventoryController m_InventoryController;
-    public GridController GridController;
+    CommonPlacer m_CommonPlacer;
 
 
     void Awake()
     {
         m_InputController = GetComponent<InputController>();
         m_InventoryController = GetComponent<UIInventoryController>();
+        m_CommonPlacer = GetComponent<CommonPlacer>();
     }
     private void OnEnable()
     {
@@ -20,9 +21,9 @@ public class UIPlayerController : MonoBehaviour
         m_InputController.OnForthS_Tap += m_InventoryController.ForthSClick;
         m_InputController.OnFifthS_Tap += m_InventoryController.FifthSClick;
 
-        m_InputController.OnRotateR_Tap += GridController.RotateRightClick;
-        m_InputController.OnRotateL_Tap += GridController.RotateLeftClick;
-        m_InputController.OnPlaceBuilding_Tap += GridController.PlaceBuildingClick;
+        m_InputController.OnRotateR_Tap += m_CommonPlacer.RotateRightClick;
+        m_InputController.OnRotateL_Tap += m_CommonPlacer.RotateLeftClick;
+        m_InputController.OnPlaceBuilding_Tap += m_CommonPlacer.PlaceBuildingClick;
     }
     private void OnDisable()
     {
@@ -32,9 +33,9 @@ public class UIPlayerController : MonoBehaviour
         m_InputController.OnForthS_Tap -= m_InventoryController.ForthSClick;
         m_InputController.OnFifthS_Tap -= m_InventoryController.FifthSClick;
 
-        m_InputController.OnRotateR_Tap -= GridController.RotateRightClick;
-        m_InputController.OnRotateL_Tap -= GridController.RotateLeftClick;
-        m_InputController.OnPlaceBuilding_Tap -= GridController.PlaceBuildingClick;
+        m_InputController.OnRotateR_Tap -= m_CommonPlacer.RotateRightClick;
+        m_InputController.OnRotateL_Tap -= m_CommonPlacer.RotateLeftClick;
+        m_InputController.OnPlaceBuilding_Tap -= m_CommonPlacer.PlaceBuildingClick;
     }
 
 

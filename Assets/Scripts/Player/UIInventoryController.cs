@@ -17,7 +17,7 @@ public class UIInventoryController : MonoBehaviour
     private readonly float m_buttonCooldown = 0.1f;
     private Dictionary<Button, bool> buttonsActiveState;
 
-    public GridController gridController;
+    CommonPlacer m_CommonPlacer;
     public Building manipulator;
 
 
@@ -31,6 +31,7 @@ public class UIInventoryController : MonoBehaviour
             {Button.ForthS, true},
             {Button.FifthS, true},
         };
+        m_CommonPlacer = GetComponent<CommonPlacer>();
     }
     
     public async void FirstSClick()
@@ -38,7 +39,7 @@ public class UIInventoryController : MonoBehaviour
         Button currentButton = Button.FirstS;
         if (buttonsActiveState[currentButton])
         {
-            gridController.CreateBuilding(manipulator);
+            m_CommonPlacer.CreateBuilding(manipulator);
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }

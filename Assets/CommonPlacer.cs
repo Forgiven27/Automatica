@@ -1,9 +1,10 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class GridController : MonoBehaviour
+public class CommonPlacer : MonoBehaviour
 {
 
     enum Button
@@ -15,7 +16,7 @@ public class GridController : MonoBehaviour
 
     public WorldGrid worldGrid;
     public Camera cameraGrid;
-    public float height;
+    public float heightGizmo;
     
     
     float step;
@@ -44,7 +45,7 @@ public class GridController : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(transform.position, height);
+        Gizmos.DrawSphere(transform.position, heightGizmo);
         int x_size = (int)(transform.localScale.x / step);
         int y_size = (int)(transform.localScale.y / step);
         for (int i = 0;i < x_size; i++)
@@ -59,7 +60,7 @@ public class GridController : MonoBehaviour
                 {
                     Gizmos.color= Color.green;
                 }
-                Gizmos.DrawCube(transform.position - new Vector3(transform.localScale.x/2, 0, transform.localScale.y/2) + new Vector3(i * step + step/2,0, j * step + step / 2), new Vector3(step, height, step));
+                Gizmos.DrawCube(transform.position - new Vector3(transform.localScale.x/2, 0, transform.localScale.y/2) + new Vector3(i * step + step/2,0, j * step + step / 2), new Vector3(step, heightGizmo, step));
             }
         }
     }
@@ -69,6 +70,11 @@ public class GridController : MonoBehaviour
         if (currentBuilding != null) Destroy(currentBuilding.gameObject);
 
         currentBuilding = Instantiate(building);
+        var list = currentBuilding.GetComponentsInChildren<Transform>();//.Select(p => p.gameObject.layer = LayerMask.NameToLayer("GhostBuilding"));
+        foreach (Transform t in list)
+        {
+            t.gameObject.layer = LayerMask.NameToLayer("GhostBuilding");
+        }
     }
 
     
@@ -165,6 +171,11 @@ public class GridController : MonoBehaviour
         Button currentButton = Button.PlaceBuilding;
         if (buttonsActiveState[currentButton])
         {
+            var list = currentBuilding.GetComponentsInChildren<Transform>();
+            foreach (Transform t in list)
+            {
+                t.gameObject.layer = LayerMask.NameToLayer("Building");
+            }
             currentBuilding = null;
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);

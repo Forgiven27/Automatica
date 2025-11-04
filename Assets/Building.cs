@@ -6,6 +6,7 @@ public class Building : MonoBehaviour
     public int x_size;
     public int y_size;
     public float height = 0.5f;
+    public BuildingType buildingType;
 
     private void OnDrawGizmosSelected()
     {
@@ -28,14 +29,10 @@ public class Building : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
+public enum BuildingType
+{
+    Common,
+    Spline
+}
+
