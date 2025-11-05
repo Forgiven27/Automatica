@@ -1,10 +1,12 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Splines;
 
 public class SplinePlacer : MonoBehaviour
 {
-    /*
+    
     enum Button
     {
         SwitchType,
@@ -14,13 +16,16 @@ public class SplinePlacer : MonoBehaviour
     public WorldGrid worldGrid;
     public Camera cameraGrid;
     public float height;
-
+    public List<Building> buildings;
 
     float step;
     private Building currentBuilding;
+    private int currentIndex;
     private float m_buttonCooldown = 0.1f;
     Camera cam;
     bool isVisibleGrid = false;
+    int currentKnots = 0;
+    SplineContainer splineContainer;
 
     private Dictionary<Button, bool> buttonsActiveState;
 
@@ -43,11 +48,24 @@ public class SplinePlacer : MonoBehaviour
         
     }
 
-    public void CreateBuilding(Building building)
+    public void CreateBuildingByIndex(int index)
     {
-        if (currentBuilding != null) Destroy(currentBuilding.gameObject);
-
-        currentBuilding = Instantiate(building);
+        if (index < 0) return;
+        if (index >= buildings.Count) index = 0;
+        if (buildings[index] == null) return;
+        bool isNew = false;
+        if (currentBuilding != null) { 
+            Destroy(currentBuilding.gameObject);
+            isNew = true;
+        }
+        currentIndex = index;
+        currentBuilding = Instantiate(buildings[index]);
+        if (isNew) 
+        { 
+            splineContainer = currentBuilding.GetComponent<SplineContainer>(); 
+            splineContainer.Spline.Add(new BezierKnot(new Unity.Mathematics.float3(0,0,0)));
+            currentKnots++;
+        }
     }
 
 
@@ -104,7 +122,15 @@ public class SplinePlacer : MonoBehaviour
                 }
                 if (isPlaceOccupied == false)
                 {
-                    currentBuilding.transform.position = newPosition;
+                    if(currentKnots == 1)
+                    {
+                        currentBuilding.transform.position = newPosition;
+                    }
+                    else if(currentKnots == 2)
+                    {
+                        var firstKnot = splineContainer.Spline.Knots.ElementAt(1);
+                        firstKnot.Position = newPosition;
+                    }
                 }
                 isPlaceOccupied = false;
 
@@ -117,28 +143,18 @@ public class SplinePlacer : MonoBehaviour
 
     }
 
-    public async void RotateRightClick()
+    public async void SwirchTypeClick()
     {
         if (currentBuilding == null) return;
-        Button currentButton = Button.RightRotate;
+        Button currentButton = Button.SwitchType;
         if (buttonsActiveState[currentButton])
         {
-            currentBuilding.gameObject.transform.Rotate(Vector3.up, -90);
+            CreateBuildingByIndex(currentIndex++);
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }
     }
-    public async void RotateLeftClick()
-    {
-        if (currentBuilding == null) return;
-        Button currentButton = Button.LeftRotate;
-        if (buttonsActiveState[currentButton])
-        {
-            currentBuilding.gameObject.transform.Rotate(Vector3.up, 90);
-            buttonsActiveState[currentButton] = false;
-            await TimerStandard(currentButton);
-        }
-    }
+    
 
     public async void PlaceBuildingClick()
     {
@@ -146,7 +162,15 @@ public class SplinePlacer : MonoBehaviour
         Button currentButton = Button.PlaceBuilding;
         if (buttonsActiveState[currentButton])
         {
-            currentBuilding = null;
+            if (currentKnots == 1)
+            {
+                splineContainer.Spline.Add(new BezierKnot(new Unity.Mathematics.float3(0, 0, 0)));
+                currentKnots++;
+            }else if (currentKnots == 2)
+            {
+                currentBuilding = null;
+                currentKnots = 0;
+            }
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }
@@ -157,5 +181,5 @@ public class SplinePlacer : MonoBehaviour
         await UniTask.WaitForSeconds(m_buttonCooldown);
         buttonsActiveState[button] = true;
     }
-    */
+    
 }
