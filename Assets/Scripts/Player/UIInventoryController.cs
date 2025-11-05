@@ -14,7 +14,7 @@ public class UIInventoryController : MonoBehaviour
         FifthS,
     }
     
-    private readonly float m_buttonCooldown = 0.1f;
+    private readonly float m_buttonCooldown = 0.3f;
     private Dictionary<Button, bool> buttonsActiveState;
 
     CommonPlacer m_CommonPlacer;

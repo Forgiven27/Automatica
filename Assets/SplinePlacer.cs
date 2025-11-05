@@ -22,12 +22,12 @@ public class SplinePlacer : MonoBehaviour
     float step;
     private Building currentBuilding;
     private int currentIndex;
-    private float m_buttonCooldown = 0.1f;
+    private float m_buttonCooldown = 0.3f;
     Camera cam;
     bool isVisibleGrid = false;
     int currentKnots = 0;
     SplineContainer splineContainer;
-    bool isChangedPositionKnot = false;
+    bool isRaycastCross = false;
 
     private Dictionary<Button, bool> buttonsActiveState;
 
@@ -105,7 +105,7 @@ public class SplinePlacer : MonoBehaviour
 
             if (Physics.Raycast(rayMouse, out RaycastHit hitInfo, 100, 1 << LayerMask.NameToLayer("BuildingSurface")))
             {
-
+                isRaycastCross = true;
                 Vector3 newPosition = new Vector3(hitInfo.point.x + (hitInfo.point.x % step < step / 2 ? -hitInfo.point.x % step : step - hitInfo.point.x % step),
                     hitInfo.point.y,
                     hitInfo.point.z + (hitInfo.point.z % step < step / 2 ? -hitInfo.point.z % step : step - hitInfo.point.z % step))
@@ -130,19 +130,26 @@ public class SplinePlacer : MonoBehaviour
                 }
                 if (isPlaceOccupied == false)
                 {
-                    if(currentKnots == 1)
+                    if (currentKnots == 1)
                     {
                         currentBuilding.transform.position = newPosition;
-                        isChangedPositionKnot = true;
                     }
-                    else if(currentKnots == 2)
+                    else if (currentKnots == 2)
                     {
-                        var firstKnot = splineContainer.Spline.Knots.ElementAt(1);
-                        firstKnot.Position = newPosition;
+                        if (splineContainer != null) { 
+                            var p = splineContainer.Spline.Knots.ToList();
+                            p[1] = new BezierKnot(-(currentBuilding.transform.position - newPosition));
+                            splineContainer.Spline.Knots = p;
+
+                            print(splineContainer.Spline.Knots.ToList()[1].Position.ToString());
+                        }
                     }
                 }
                 isPlaceOccupied = false;
-
+            }
+            else
+            {
+                isRaycastCross = false;
             }
         }
         else
@@ -172,7 +179,7 @@ public class SplinePlacer : MonoBehaviour
         {
             if (currentKnots == 1)
             {
-                if (!isChangedPositionKnot) { 
+                if (isRaycastCross) { 
                     splineContainer.Spline.Add(new BezierKnot(new Unity.Mathematics.float3(0, 0, 0)));
                     currentKnots++;
                 }
@@ -181,6 +188,7 @@ public class SplinePlacer : MonoBehaviour
             else if (currentKnots == 2)
             {
                 currentBuilding = null;
+                splineContainer = null;
                 currentKnots = 0;
             }
             buttonsActiveState[currentButton] = false;

@@ -1,8 +1,10 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Splines;
+using static UnityEditor.PlayerSettings;
 
 [RequireComponent(typeof(SplineContainer))]
 public class ConveyorModule : MonoBehaviour
@@ -38,8 +40,15 @@ public class ConveyorModule : MonoBehaviour
         if(poolGO != null)  foreach (var go in poolGO) Destroy(go);
         var knots = spline.Spline.Knots;
         int countKnots = knots.Count<BezierKnot>();
-        if (countKnots < 2) return;
-        if (countKnots < 3)
+        if (countKnots == 1)
+        {
+            var posFloat3_0 = knots.ElementAt<BezierKnot>(0).Position;
+            var posLocal0 = new Vector3(posFloat3_0.x, posFloat3_0.y, posFloat3_0.z);
+            var go = m_ConveyorDescription.prefab;
+            poolGO.Add(Transform.Instantiate(go, posLocal0 + transform.position, Quaternion.identity, transform));
+        }
+        else
+        if (countKnots == 2)
         {
             var posFloat3_0 = knots.ElementAt<BezierKnot>(0).Position;
             var posFloat3_1 = knots.ElementAt<BezierKnot>(1).Position;
@@ -56,9 +65,10 @@ public class ConveyorModule : MonoBehaviour
             float sin = zCorr / distance;
             float cos = xCorr / distance;
             var rotation = Quaternion.LookRotation(posLocal1, Vector3.up);
-            
-            for (int i = 0; i < countGO - 1; i++) {
-                poolGO.Add(Transform.Instantiate(go, posLocal0 + transform.position - new Vector3(-step/2 * cos + step * i * cos, 0, step / 2 * sin + step * i * sin), rotation, transform));
+
+            for (int i = 0; i < countGO - 1; i++)
+            {
+                poolGO.Add(Transform.Instantiate(go, posLocal0 + transform.position - new Vector3(-step / 2 * cos + step * i * cos, 0, step / 2 * sin + step * i * sin), rotation, transform));
             }
             if (countGO > 0)
             {
