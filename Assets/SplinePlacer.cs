@@ -15,8 +15,9 @@ public class SplinePlacer : MonoBehaviour
 
     public WorldGrid worldGrid;
     public Camera cameraGrid;
+    public Building conveyor;
     public float height;
-    public List<Building> buildings;
+    public List<ConveyorDescription> conveyorsDesc = new List<ConveyorDescription>();
 
     float step;
     private Building currentBuilding;
@@ -26,6 +27,7 @@ public class SplinePlacer : MonoBehaviour
     bool isVisibleGrid = false;
     int currentKnots = 0;
     SplineContainer splineContainer;
+    bool isChangedPositionKnot = false;
 
     private Dictionary<Button, bool> buttonsActiveState;
 
@@ -48,27 +50,33 @@ public class SplinePlacer : MonoBehaviour
         
     }
 
-    public void CreateBuildingByIndex(int index)
+    public void CreateBuildingByIndex(int index, bool isNew)
     {
         if (index < 0) return;
-        if (index >= buildings.Count) index = 0;
-        if (buildings[index] == null) return;
-        bool isNew = false;
-        if (currentBuilding != null) { 
-            Destroy(currentBuilding.gameObject);
-            isNew = true;
-        }
+        if (index >= conveyorsDesc.Count) index = 0;
+        if (conveyorsDesc[index] == null) return;
         currentIndex = index;
-        currentBuilding = Instantiate(buildings[index]);
+        if (!isNew)
+        {
+            currentBuilding.GetComponent<ConveyorModule>().SetConveyorDescription(conveyorsDesc[index]);
+            return;
+        }
+
+        if (currentBuilding != null && isNew) { 
+            Destroy(currentBuilding.gameObject);
+        }
+        
+        currentBuilding = Instantiate(conveyor.gameObject).GetComponent<Building>();
+        currentBuilding.GetComponent<ConveyorModule>().SetConveyorDescription(conveyorsDesc[currentIndex]);
+
         if (isNew) 
         { 
             splineContainer = currentBuilding.GetComponent<SplineContainer>(); 
+            splineContainer.Spline.Clear();
             splineContainer.Spline.Add(new BezierKnot(new Unity.Mathematics.float3(0,0,0)));
             currentKnots++;
         }
     }
-
-
 
 
     void SetVisibleCamera(bool flag)
@@ -125,6 +133,7 @@ public class SplinePlacer : MonoBehaviour
                     if(currentKnots == 1)
                     {
                         currentBuilding.transform.position = newPosition;
+                        isChangedPositionKnot = true;
                     }
                     else if(currentKnots == 2)
                     {
@@ -140,16 +149,15 @@ public class SplinePlacer : MonoBehaviour
         {
             if (isVisibleGrid) SetVisibleCamera(false);
         }
-
     }
 
-    public async void SwirchTypeClick()
+    public async void SwitchTypeClick()
     {
         if (currentBuilding == null) return;
         Button currentButton = Button.SwitchType;
         if (buttonsActiveState[currentButton])
         {
-            CreateBuildingByIndex(currentIndex++);
+            CreateBuildingByIndex(currentIndex++, false);
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }
@@ -164,9 +172,13 @@ public class SplinePlacer : MonoBehaviour
         {
             if (currentKnots == 1)
             {
-                splineContainer.Spline.Add(new BezierKnot(new Unity.Mathematics.float3(0, 0, 0)));
-                currentKnots++;
-            }else if (currentKnots == 2)
+                if (!isChangedPositionKnot) { 
+                    splineContainer.Spline.Add(new BezierKnot(new Unity.Mathematics.float3(0, 0, 0)));
+                    currentKnots++;
+                }
+
+            }
+            else if (currentKnots == 2)
             {
                 currentBuilding = null;
                 currentKnots = 0;

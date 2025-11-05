@@ -3261,6 +3261,7 @@ GameObject:
   - component: {fileID: 703334693}
   - component: {fileID: 703334692}
   - component: {fileID: 703334691}
+  - component: {fileID: 703334694}
   m_Layer: 0
   m_Name: ConvModule
   m_TagString: Untagged
@@ -3275,12 +3276,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 703334690}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fdf288392417b3048baf367e516c9493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConveyorModule
-  conveyorDescription: {fileID: 11400000, guid: c6fb5f19d6996244791b9941071bce02, type: 2}
 --- !u!114 &703334692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3376,6 +3376,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &703334694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703334690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1042c53533aa54a4abfb56f8a7f639e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Building
+  WorldGrid: {fileID: 11400000, guid: 6c79a6995d823264f802a972ea45a8b0, type: 2}
+  x_size: 1
+  y_size: 1
+  height: 0.5
+  buildingType: 1
 --- !u!4 &704969227 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 949889280045196956, guid: 01e8a4faec1ecbb45bc980383100a547, type: 3}
@@ -6761,6 +6778,7 @@ GameObject:
   - component: {fileID: 1420964545}
   - component: {fileID: 1420964544}
   - component: {fileID: 1420964546}
+  - component: {fileID: 1420964547}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -7191,6 +7209,26 @@ MonoBehaviour:
   worldGrid: {fileID: 11400000, guid: 6c79a6995d823264f802a972ea45a8b0, type: 2}
   cameraGrid: {fileID: 550335036}
   heightGizmo: 0
+--- !u!114 &1420964547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420964534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a1bc4e6a9c20c46aa99a3a8371ce30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SplinePlacer
+  worldGrid: {fileID: 11400000, guid: 6c79a6995d823264f802a972ea45a8b0, type: 2}
+  cameraGrid: {fileID: 550335036}
+  conveyor: {fileID: 4041281270786938769, guid: d0e603c6d7599004ebeeab57064a8781, type: 3}
+  height: 0
+  conveyorsDesc:
+  - {fileID: 11400000, guid: c6fb5f19d6996244791b9941071bce02, type: 2}
+  - {fileID: 11400000, guid: 67d895cb2a474da44bf70a8e12fed140, type: 2}
+  - {fileID: 11400000, guid: 643284863363a7a44a3784956095b7e8, type: 2}
 --- !u!1001 &1427455582
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ public class UIPlayerController : MonoBehaviour
     InputController m_InputController;
     UIInventoryController m_InventoryController;
     CommonPlacer m_CommonPlacer;
+    SplinePlacer m_SplinePlacer;
 
 
     void Awake()
@@ -12,6 +13,7 @@ public class UIPlayerController : MonoBehaviour
         m_InputController = GetComponent<InputController>();
         m_InventoryController = GetComponent<UIInventoryController>();
         m_CommonPlacer = GetComponent<CommonPlacer>();
+        m_SplinePlacer = GetComponent<SplinePlacer>();
     }
     private void OnEnable()
     {
@@ -24,6 +26,8 @@ public class UIPlayerController : MonoBehaviour
         m_InputController.OnRotateR_Tap += m_CommonPlacer.RotateRightClick;
         m_InputController.OnRotateL_Tap += m_CommonPlacer.RotateLeftClick;
         m_InputController.OnPlaceBuilding_Tap += m_CommonPlacer.PlaceBuildingClick;
+
+        m_InputController.OnPlaceBuilding_Tap += m_SplinePlacer.PlaceBuildingClick;
     }
     private void OnDisable()
     {
@@ -36,6 +40,8 @@ public class UIPlayerController : MonoBehaviour
         m_InputController.OnRotateR_Tap -= m_CommonPlacer.RotateRightClick;
         m_InputController.OnRotateL_Tap -= m_CommonPlacer.RotateLeftClick;
         m_InputController.OnPlaceBuilding_Tap -= m_CommonPlacer.PlaceBuildingClick;
+
+        m_InputController.OnPlaceBuilding_Tap -= m_SplinePlacer.PlaceBuildingClick;
     }
 
 

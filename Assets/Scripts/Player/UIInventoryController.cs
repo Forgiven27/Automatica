@@ -18,6 +18,7 @@ public class UIInventoryController : MonoBehaviour
     private Dictionary<Button, bool> buttonsActiveState;
 
     CommonPlacer m_CommonPlacer;
+    SplinePlacer m_SplinePlacer;
     public Building manipulator;
 
 
@@ -32,6 +33,7 @@ public class UIInventoryController : MonoBehaviour
             {Button.FifthS, true},
         };
         m_CommonPlacer = GetComponent<CommonPlacer>();
+        m_SplinePlacer = GetComponent<SplinePlacer>();
     }
     
     public async void FirstSClick()
@@ -49,7 +51,7 @@ public class UIInventoryController : MonoBehaviour
         Button currentButton = Button.SecondS;
         if (buttonsActiveState[currentButton])
         {
-            
+            m_SplinePlacer.CreateBuildingByIndex(0, true);
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }
