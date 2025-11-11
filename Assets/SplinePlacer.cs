@@ -114,6 +114,8 @@ public class SplinePlacer : MonoBehaviour
 
                 var colliders = Physics.OverlapBox(newPosition, new Vector3(currentBuilding.x_size / 2 * worldGrid.cell_step, 1 * worldGrid.cell_step, currentBuilding.y_size / 2 * worldGrid.cell_step));
                 bool isPlaceOccupied = false;
+                Collider belt = null;
+
                 foreach (var collider in colliders)
                 {
                     if (collider.CompareTag("Building"))
@@ -127,21 +129,87 @@ public class SplinePlacer : MonoBehaviour
                             print("OOOh NO, there's a building!");
                         }
                     }
+                    if (collider.CompareTag("Belt") && currentBuilding.gameObject != collider.GetComponentInParent<Building>().gameObject)
+                    {
+                        belt = collider;
+                        Debug.LogWarning("Найден Belt");
+                    }
                 }
                 if (isPlaceOccupied == false)
                 {
                     if (currentKnots == 1)
                     {
-                        currentBuilding.transform.position = newPosition;
+                        
+                        if (belt)
+                        {
+                            var anotherConveyour = belt.GetComponentInParent<ConveyorModule>();
+                            Transform start = anotherConveyour.startPoint;
+                            Transform end = anotherConveyour.endPoint;
+                            Vector3 startWC = start.position;//anotherConveyour.transform.TransformPoint(start.position);
+                            Vector3 endWC = end.position;//anotherConveyour.transform.TransformPoint(end.position);
+                            if (start && end)
+                            {
+                                bool isNearToStart = Vector3.Distance(startWC, newPosition) < Vector3.Distance(endWC, newPosition);
+                                Vector3 vector = (endWC - startWC).normalized;
+                                
+                                if (isNearToStart)
+                                {
+                                    Debug.DrawLine(startWC, newPosition, Color.red);
+                                    currentBuilding.transform.position = startWC - vector * 1;
+                                }
+                                else
+                                {
+                                    Debug.DrawLine(endWC, newPosition, Color.green);
+                                    currentBuilding.transform.position = endWC + vector * 1;
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning("Transform End and Start is null");
+                                anotherConveyour.UpdateTransform();
+                            }
+                        }
+                        else
+                        {
+                            currentBuilding.transform.position = newPosition;
+                        }
                     }
                     else if (currentKnots == 2)
                     {
                         if (splineContainer != null) { 
                             var p = splineContainer.Spline.Knots.ToList();
-                            p[1] = new BezierKnot(-(currentBuilding.transform.position - newPosition));
-                            splineContainer.Spline.Knots = p;
 
-                            print(splineContainer.Spline.Knots.ToList()[1].Position.ToString());
+                            if (belt)
+                            {
+                                var anotherConveyour = belt.GetComponentInParent<ConveyorModule>();
+                                Transform start = anotherConveyour.startPoint;
+                                Transform end = anotherConveyour.endPoint;
+                                if (start && end)
+                                {
+                                    bool isNearToStart = Vector3.Distance(start.position, newPosition) < Vector3.Distance(end.position, newPosition);
+                                    Vector3 vector = (end.position - start.position).normalized;
+                                    
+                                    if (isNearToStart)
+                                    {
+                                        Debug.DrawLine(start.position, newPosition, Color.red);
+                                        newPosition = start.position - vector * 1;
+                                    }
+                                    else
+                                    {
+                                        Debug.DrawLine(start.position, newPosition, Color.green);
+                                        newPosition = end.position + vector * 1;
+                                    }
+                                }
+
+                            }
+
+                            p[1] = new BezierKnot(-(currentBuilding.transform.position - newPosition));
+                            try {
+                                splineContainer.Spline.Knots = p;
+                            }
+                            catch {
+                                Debug.LogWarning("Приколы с несуществующим GameObject");
+                            }
                         }
                     }
                 }

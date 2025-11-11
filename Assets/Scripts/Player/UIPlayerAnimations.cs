@@ -44,8 +44,4 @@ public class UIPlayerAnimations : MonoBehaviour
 
 
     
-    void Update()
-    {
-        
-    }
 }

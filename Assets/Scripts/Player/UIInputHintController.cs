@@ -52,8 +52,5 @@ public class UIInputHintController : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-            
-    }
+    
 }

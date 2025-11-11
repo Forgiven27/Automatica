@@ -4,14 +4,26 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Splines;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 using static UnityEditor.PlayerSettings;
 
 [RequireComponent(typeof(SplineContainer))]
 public class ConveyorModule : MonoBehaviour
 {
     SplineContainer spline;
-    [NonSerialized]public Transform startPoint;
-    [NonSerialized]public Transform endPoint;
+    Transform _startPoint;
+    Transform _endPoint;
+    public Transform startPoint{ get { return _startPoint; } private set {
+        _startPoint = value;
+        } }
+    public Transform endPoint
+    {
+        get { return _endPoint; }
+        private set
+        {
+            _endPoint = value;
+        }
+    }
     ConveyorDescription m_ConveyorDescription;
     event Action OnConveyorDescChanged;
     List<GameObject> poolGO;
@@ -25,19 +37,25 @@ public class ConveyorModule : MonoBehaviour
         m_ConveyorDescription = conveyorDescription;
         OnConveyorDescChanged.Invoke();
     }
-    void OnEnable()
+    
+    private void Awake()
     {
         poolGO = new List<GameObject>();
-        spline = GetComponent<SplineContainer>();
+        spline = GetComponent<SplineContainer>();    
+        spline.Spline.Clear();
         Spline_changed();
         spline.Spline.changed += Spline_changed;
         OnConveyorDescChanged += Spline_changed;
+        
     }
 
     private void Spline_changed()
     {
         if (m_ConveyorDescription == null) return;
-        if(poolGO != null)  foreach (var go in poolGO) Destroy(go);
+        if (poolGO != null) { foreach (var go in poolGO) Destroy(go);
+            poolGO.Clear();
+        }
+        if (poolGO == null) poolGO = new List<GameObject>();
         var knots = spline.Spline.Knots;
         int countKnots = knots.Count<BezierKnot>();
         if (countKnots == 1)
@@ -45,7 +63,16 @@ public class ConveyorModule : MonoBehaviour
             var posFloat3_0 = knots.ElementAt<BezierKnot>(0).Position;
             var posLocal0 = new Vector3(posFloat3_0.x, posFloat3_0.y, posFloat3_0.z);
             var go = m_ConveyorDescription.prefab;
-            poolGO.Add(Transform.Instantiate(go, posLocal0 + transform.position, Quaternion.identity, transform));
+            var newConv = Transform.Instantiate(go, posLocal0 + transform.position, Quaternion.identity, transform);
+            newConv.transform.localPosition = Vector3.zero;
+            poolGO.Add(newConv);
+
+            if (poolGO.Count > 0)
+            {
+                startPoint = poolGO[0].transform;
+                endPoint = poolGO[poolGO.Count - 1].transform;
+            }
+
         }
         else
         if (countKnots == 2)
@@ -68,16 +95,34 @@ public class ConveyorModule : MonoBehaviour
 
             for (int i = 0; i < countGO - 1; i++)
             {
-                poolGO.Add(Transform.Instantiate(go, posLocal0 + transform.position - new Vector3(-step / 2 * cos + step * i * cos, 0, step / 2 * sin + step * i * sin), rotation, transform));
+                //var newConv = Transform.Instantiate(go, posLocal0 + transform.position - new Vector3(-step / 2 * cos + step * i * cos, 0, step / 2 * sin + step * i * sin), rotation, transform);
+                var newConv = Transform.Instantiate(go, posLocal0 + transform.position, rotation, transform);
+                newConv.transform.localPosition = Vector3.zero;
+                newConv.transform.localPosition -= new Vector3(step * i * cos, 0, step * i * sin);
+                poolGO.Add(newConv);
             }
             if (countGO > 0)
             {
-                startPoint = poolGO.First().transform;
-                endPoint = poolGO.Last().transform;
+                startPoint = poolGO[0].transform;
+                endPoint = poolGO[poolGO.Count - 1].transform;
             }
         }
     }
-    
 
-    
+    public void UpdateTransform()
+    {
+        if (poolGO != null && poolGO.Count > 0)
+        {
+            startPoint = poolGO[0].transform;
+            endPoint = poolGO[poolGO.Count - 1].transform;
+        }
+    }
+    private void OnDisable()
+    {
+        spline.Spline.changed -= Spline_changed;
+        OnConveyorDescChanged -= Spline_changed;
+    }
+
+
+
 }

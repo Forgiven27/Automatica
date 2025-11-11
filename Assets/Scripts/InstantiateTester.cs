@@ -5,13 +5,8 @@ public class InstantiateTester : MonoBehaviour
 {
     public GameObject go;
     public float cooldown = 5f;
-    public float radius = 0.5f;
+    public Vector3 sizeGizmo = new Vector3(0.5f,0.5f,0.5f);
     float m_Timer = 0;
-    void Start()
-    {
-        
-    }
-
     
     void Update()
     {
@@ -26,6 +21,6 @@ public class InstantiateTester : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position, radius);
+        Gizmos.DrawCube(transform.position, sizeGizmo);
     }
 }
