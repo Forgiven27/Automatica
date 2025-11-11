@@ -158,6 +158,24 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ConveyorStartSwitch",
+                    "type": "Button",
+                    "id": "bf94a35a-aba1-4340-8871-1c21367cdb42",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ConveyorEndSwitch",
+                    "type": "Button",
+                    "id": "05dc0f15-d237-4e56-a3ac-149eae1fa45d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -631,6 +649,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "PlaceBuilding",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8ee558c1-9ef2-406c-8e11-a3179790c6a0",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ConveyorStartSwitch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2e5da571-0a6c-4b25-8fc7-e7f515c67349",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ConveyorEndSwitch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

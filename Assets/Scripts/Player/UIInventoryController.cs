@@ -51,7 +51,7 @@ public class UIInventoryController : MonoBehaviour
         Button currentButton = Button.SecondS;
         if (buttonsActiveState[currentButton])
         {
-            m_SplinePlacer.CreateBuildingByIndex(0, true);
+            m_SplinePlacer.CreateBuilding(true);
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }

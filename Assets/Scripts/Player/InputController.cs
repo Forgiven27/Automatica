@@ -34,8 +34,11 @@ public class InputController : MonoBehaviour
     public event TapDelegate OnRotateR_Tap;
     public event TapDelegate OnRotateL_Tap;
     public event TapDelegate OnPlaceBuilding_Tap;
+    public event TapDelegate OnSwitchTypeStart_Tap;
+    public event TapDelegate OnSwitchTypeEnd_Tap;
 
-    
+
+
 
     public void Move(InputAction.CallbackContext callbackContext)
     {   
@@ -78,5 +81,14 @@ public class InputController : MonoBehaviour
     public void PlaceBuilding(InputAction.CallbackContext callbackContext)
     {
         if (callbackContext.interaction is TapInteraction) OnPlaceBuilding_Tap?.Invoke();
+    }
+
+    public void SwitchTypeStartConveyor(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.interaction is TapInteraction) OnSwitchTypeStart_Tap?.Invoke();
+    }
+    public void SwitchTypeEndConveyor(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.interaction is TapInteraction) OnSwitchTypeEnd_Tap?.Invoke();
     }
 }

@@ -6098,6 +6098,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: afb77d18-4c62-4b45-be2e-bd9ab74396fc
     m_ActionName: 'Player/PlaceBuilding[/Mouse/leftButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: SwitchTypeStartConveyor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: bf94a35a-aba1-4340-8871-1c21367cdb42
+    m_ActionName: 'Player/ConveyorStartSwitch[/Keyboard/r]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1420964540}
+        m_TargetAssemblyTypeName: InputController, Assembly-CSharp
+        m_MethodName: SwitchTypeEndConveyor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 05dc0f15-d237-4e56-a3ac-149eae1fa45d
+    m_ActionName: 'Player/ConveyorEndSwitch[/Keyboard/t]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -6221,10 +6253,6 @@ MonoBehaviour:
   cameraGrid: {fileID: 550335036}
   conveyor: {fileID: 4041281270786938769, guid: d0e603c6d7599004ebeeab57064a8781, type: 3}
   height: 0
-  conveyorsDesc:
-  - {fileID: 11400000, guid: c6fb5f19d6996244791b9941071bce02, type: 2}
-  - {fileID: 11400000, guid: 67d895cb2a474da44bf70a8e12fed140, type: 2}
-  - {fileID: 11400000, guid: 643284863363a7a44a3784956095b7e8, type: 2}
 --- !u!1001 &1427455582
 PrefabInstance:
   m_ObjectHideFlags: 0

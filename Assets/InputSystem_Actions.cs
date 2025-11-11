@@ -244,6 +244,24 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ConveyorStartSwitch"",
+                    ""type"": ""Button"",
+                    ""id"": ""bf94a35a-aba1-4340-8871-1c21367cdb42"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ConveyorEndSwitch"",
+                    ""type"": ""Button"",
+                    ""id"": ""05dc0f15-d237-4e56-a3ac-149eae1fa45d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -717,6 +735,28 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""PlaceBuilding"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8ee558c1-9ef2-406c-8e11-a3179790c6a0"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ConveyorStartSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2e5da571-0a6c-4b25-8fc7-e7f515c67349"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ConveyorEndSwitch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1321,6 +1361,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_LeftRotate = m_Player.FindAction("LeftRotate", throwIfNotFound: true);
         m_Player_RightRotate = m_Player.FindAction("RightRotate", throwIfNotFound: true);
         m_Player_PlaceBuilding = m_Player.FindAction("PlaceBuilding", throwIfNotFound: true);
+        m_Player_ConveyorStartSwitch = m_Player.FindAction("ConveyorStartSwitch", throwIfNotFound: true);
+        m_Player_ConveyorEndSwitch = m_Player.FindAction("ConveyorEndSwitch", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1431,6 +1473,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_LeftRotate;
     private readonly InputAction m_Player_RightRotate;
     private readonly InputAction m_Player_PlaceBuilding;
+    private readonly InputAction m_Player_ConveyorStartSwitch;
+    private readonly InputAction m_Player_ConveyorEndSwitch;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1511,6 +1555,14 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @PlaceBuilding => m_Wrapper.m_Player_PlaceBuilding;
         /// <summary>
+        /// Provides access to the underlying input action "Player/ConveyorStartSwitch".
+        /// </summary>
+        public InputAction @ConveyorStartSwitch => m_Wrapper.m_Player_ConveyorStartSwitch;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ConveyorEndSwitch".
+        /// </summary>
+        public InputAction @ConveyorEndSwitch => m_Wrapper.m_Player_ConveyorEndSwitch;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1587,6 +1639,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @PlaceBuilding.started += instance.OnPlaceBuilding;
             @PlaceBuilding.performed += instance.OnPlaceBuilding;
             @PlaceBuilding.canceled += instance.OnPlaceBuilding;
+            @ConveyorStartSwitch.started += instance.OnConveyorStartSwitch;
+            @ConveyorStartSwitch.performed += instance.OnConveyorStartSwitch;
+            @ConveyorStartSwitch.canceled += instance.OnConveyorStartSwitch;
+            @ConveyorEndSwitch.started += instance.OnConveyorEndSwitch;
+            @ConveyorEndSwitch.performed += instance.OnConveyorEndSwitch;
+            @ConveyorEndSwitch.canceled += instance.OnConveyorEndSwitch;
         }
 
         /// <summary>
@@ -1649,6 +1707,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @PlaceBuilding.started -= instance.OnPlaceBuilding;
             @PlaceBuilding.performed -= instance.OnPlaceBuilding;
             @PlaceBuilding.canceled -= instance.OnPlaceBuilding;
+            @ConveyorStartSwitch.started -= instance.OnConveyorStartSwitch;
+            @ConveyorStartSwitch.performed -= instance.OnConveyorStartSwitch;
+            @ConveyorStartSwitch.canceled -= instance.OnConveyorStartSwitch;
+            @ConveyorEndSwitch.started -= instance.OnConveyorEndSwitch;
+            @ConveyorEndSwitch.performed -= instance.OnConveyorEndSwitch;
+            @ConveyorEndSwitch.canceled -= instance.OnConveyorEndSwitch;
         }
 
         /// <summary>
@@ -2068,6 +2132,20 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPlaceBuilding(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ConveyorStartSwitch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnConveyorStartSwitch(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ConveyorEndSwitch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnConveyorEndSwitch(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

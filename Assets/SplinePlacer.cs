@@ -9,7 +9,8 @@ public class SplinePlacer : MonoBehaviour
     
     enum Button
     {
-        SwitchType,
+        SwitchTypeStart,
+        SwitchTypeEnd,
         PlaceBuilding
     }
 
@@ -17,11 +18,10 @@ public class SplinePlacer : MonoBehaviour
     public Camera cameraGrid;
     public Building conveyor;
     public float height;
-    public List<ConveyorDescription> conveyorsDesc = new List<ConveyorDescription>();
+    
 
     float step;
     private Building currentBuilding;
-    private int currentIndex;
     private float m_buttonCooldown = 0.3f;
     Camera cam;
     bool isVisibleGrid = false;
@@ -40,34 +40,19 @@ public class SplinePlacer : MonoBehaviour
         isVisibleGrid = false;
 
         buttonsActiveState = new Dictionary<Button, bool>() {
-            {Button.SwitchType, true},
+            {Button.SwitchTypeStart, true},
+            {Button.SwitchTypeEnd, true},
             {Button.PlaceBuilding, true},
         };
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        
-    }
 
-    public void CreateBuildingByIndex(int index, bool isNew)
+    public void CreateBuilding(bool isNew)
     {
-        if (index < 0) return;
-        if (index >= conveyorsDesc.Count) index = 0;
-        if (conveyorsDesc[index] == null) return;
-        currentIndex = index;
-        if (!isNew)
-        {
-            currentBuilding.GetComponent<ConveyorModule>().SetConveyorDescription(conveyorsDesc[index]);
-            return;
-        }
-
         if (currentBuilding != null && isNew) { 
             Destroy(currentBuilding.gameObject);
         }
-        
         currentBuilding = Instantiate(conveyor.gameObject).GetComponent<Building>();
-        currentBuilding.GetComponent<ConveyorModule>().SetConveyorDescription(conveyorsDesc[currentIndex]);
 
         if (isNew) 
         { 
@@ -192,23 +177,36 @@ public class SplinePlacer : MonoBehaviour
                                     if (isNearToStart)
                                     {
                                         Debug.DrawLine(start.position, newPosition, Color.red);
-                                        newPosition = start.position - vector * 1;
+                                        newPosition = start.position;// - vector * 0.25f;
                                     }
                                     else
                                     {
                                         Debug.DrawLine(start.position, newPosition, Color.green);
-                                        newPosition = end.position + vector * 1;
+                                        newPosition = end.position; //+ vector * 0.25f;
+                                    }
+                                    p[1] = new BezierKnot(-(currentBuilding.transform.position - newPosition));
+                                    try
+                                    {
+                                        splineContainer.Spline.Knots = p;
+                                    }
+                                    catch
+                                    {
+                                        Debug.LogWarning("Приколы с несуществующим GameObject");
                                     }
                                 }
 
                             }
-
-                            p[1] = new BezierKnot(-(currentBuilding.transform.position - newPosition));
-                            try {
-                                splineContainer.Spline.Knots = p;
-                            }
-                            catch {
-                                Debug.LogWarning("Приколы с несуществующим GameObject");
+                            else
+                            {
+                                p[1] = new BezierKnot(-(currentBuilding.transform.position - newPosition));
+                                try
+                                {
+                                    splineContainer.Spline.Knots = p;
+                                }
+                                catch
+                                {
+                                    Debug.LogWarning("Приколы с несуществующим GameObject");
+                                }
                             }
                         }
                     }
@@ -226,18 +224,29 @@ public class SplinePlacer : MonoBehaviour
         }
     }
 
-    public async void SwitchTypeClick()
+    public async void SwitchTypeStartClick()
     {
         if (currentBuilding == null) return;
-        Button currentButton = Button.SwitchType;
+        Button currentButton = Button.SwitchTypeStart;
         if (buttonsActiveState[currentButton])
         {
-            CreateBuildingByIndex(currentIndex++, false);
+            currentBuilding.GetComponent<ConveyorModule>().NextStartConveyorDesc();
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }
     }
-    
+
+    public async void SwitchTypeEndClick()
+    {
+        if (currentBuilding == null) return;
+        Button currentButton = Button.SwitchTypeEnd;
+        if (buttonsActiveState[currentButton])
+        {
+            currentBuilding.GetComponent<ConveyorModule>().NextEndConveyorDesc();
+            buttonsActiveState[currentButton] = false;
+            await TimerStandard(currentButton);
+        }
+    }
 
     public async void PlaceBuildingClick()
     {

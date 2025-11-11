@@ -4,8 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Splines;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
-using static UnityEditor.PlayerSettings;
 
 [RequireComponent(typeof(SplineContainer))]
 public class ConveyorModule : MonoBehaviour
@@ -13,6 +11,8 @@ public class ConveyorModule : MonoBehaviour
     SplineContainer spline;
     Transform _startPoint;
     Transform _endPoint;
+
+    public List<ConveyorDescription> conveyorsDesc;
     public Transform startPoint{ get { return _startPoint; } private set {
         _startPoint = value;
         } }
@@ -24,20 +24,25 @@ public class ConveyorModule : MonoBehaviour
             _endPoint = value;
         }
     }
-    ConveyorDescription m_ConveyorDescription;
-    event Action OnConveyorDescChanged;
-    List<GameObject> poolGO;
-    public ConveyorDescription GetConveyorDescription()
-    {
-        if (m_ConveyorDescription == null) return null;
-        return m_ConveyorDescription;
-    }
-    public void SetConveyorDescription(ConveyorDescription conveyorDescription)
-    {
-        m_ConveyorDescription = conveyorDescription;
-        OnConveyorDescChanged.Invoke();
-    }
     
+    List<GameObject> poolGO;
+    int currentEndDesc = 0;
+    int currentStartDesc = 0;
+    
+    public void NextStartConveyorDesc()
+    {
+        currentStartDesc++;
+        if (currentStartDesc >= poolGO.Count) currentStartDesc = 0;
+        Spline_changed();
+        print("Произошла смена стартового конвейера");
+    }
+    public void NextEndConveyorDesc()
+    {
+        currentEndDesc++;
+        if (currentEndDesc >= poolGO.Count) currentEndDesc = 0;
+        Spline_changed();
+    }
+
     private void Awake()
     {
         poolGO = new List<GameObject>();
@@ -45,13 +50,11 @@ public class ConveyorModule : MonoBehaviour
         spline.Spline.Clear();
         Spline_changed();
         spline.Spline.changed += Spline_changed;
-        OnConveyorDescChanged += Spline_changed;
-        
     }
 
     private void Spline_changed()
     {
-        if (m_ConveyorDescription == null) return;
+        if (conveyorsDesc[0] == null) return;
         if (poolGO != null) { foreach (var go in poolGO) Destroy(go);
             poolGO.Clear();
         }
@@ -62,11 +65,12 @@ public class ConveyorModule : MonoBehaviour
         {
             var posFloat3_0 = knots.ElementAt<BezierKnot>(0).Position;
             var posLocal0 = new Vector3(posFloat3_0.x, posFloat3_0.y, posFloat3_0.z);
-            var go = m_ConveyorDescription.prefab;
+            var go = conveyorsDesc[currentStartDesc].prefab;
+            
             var newConv = Transform.Instantiate(go, posLocal0 + transform.position, Quaternion.identity, transform);
             newConv.transform.localPosition = Vector3.zero;
             poolGO.Add(newConv);
-
+            print(newConv.name);
             if (poolGO.Count > 0)
             {
                 startPoint = poolGO[0].transform;
@@ -81,7 +85,7 @@ public class ConveyorModule : MonoBehaviour
             var posFloat3_1 = knots.ElementAt<BezierKnot>(1).Position;
             var posLocal0 = new Vector3(posFloat3_0.x, posFloat3_0.y, posFloat3_0.z);
             var posLocal1 = new Vector3(posFloat3_1.x, posFloat3_1.y, posFloat3_1.z);
-            var go = m_ConveyorDescription.prefab;
+            var go = conveyorsDesc[0].prefab;
             float size = 1;
             float distance = Vector3.Distance(posLocal0, posLocal1);
             float countGO = distance / size;
@@ -96,7 +100,10 @@ public class ConveyorModule : MonoBehaviour
             for (int i = 0; i < countGO - 1; i++)
             {
                 //var newConv = Transform.Instantiate(go, posLocal0 + transform.position - new Vector3(-step / 2 * cos + step * i * cos, 0, step / 2 * sin + step * i * sin), rotation, transform);
-                var newConv = Transform.Instantiate(go, posLocal0 + transform.position, rotation, transform);
+                var newConv = new GameObject();
+                if (i == 0) newConv = Transform.Instantiate(conveyorsDesc[currentStartDesc].prefab, posLocal0 + transform.position, rotation, transform);
+                else if(i == countGO - 2) newConv = Transform.Instantiate(conveyorsDesc[currentEndDesc].prefab, posLocal0 + transform.position, rotation, transform);
+                else newConv = Transform.Instantiate(go, posLocal0 + transform.position, rotation, transform);
                 newConv.transform.localPosition = Vector3.zero;
                 newConv.transform.localPosition -= new Vector3(step * i * cos, 0, step * i * sin);
                 poolGO.Add(newConv);
@@ -120,7 +127,6 @@ public class ConveyorModule : MonoBehaviour
     private void OnDisable()
     {
         spline.Spline.changed -= Spline_changed;
-        OnConveyorDescChanged -= Spline_changed;
     }
 
 
