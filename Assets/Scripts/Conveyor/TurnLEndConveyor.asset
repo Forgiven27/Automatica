@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6e0ae5a763cf444186aba33749b7a11, type: 3}
+  m_Name: TurnLEndConveyor
+  m_EditorClassIdentifier: Assembly-CSharp::ConveyorElement
+  Type: 4
+  prefab: {fileID: 4481007742362673884, guid: c5df27e31f86a2241a49dfac4b99c69b, type: 3}

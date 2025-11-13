@@ -10,6 +10,8 @@ public class ConveyorDescription : ScriptableObject
 public enum ConveyorType
 {
     Straight,
-    TurnR,
-    TurnL
+    TurnRStart,
+    TurnREnd,
+    TurnLStart,
+    TurnLEnd
 }

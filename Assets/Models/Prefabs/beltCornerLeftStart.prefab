@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4409178851076852176}
   m_Layer: 7
-  m_Name: beltCornerLeft
+  m_Name: beltCornerLeftStart
   m_TagString: Belt
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -141,8 +141,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.745151, y: 0.025153637, z: 0.18377268}
-  m_Center: {x: -0.08385739, y: 1.26, z: -0.30989677}
+  m_Size: {x: 0.7808092, y: 0.025153637, z: 0.18377268}
+  m_Center: {x: -0.06602827, y: 1.26, z: -0.30989677}
 --- !u!114 &6835167953027160738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,8 +212,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.44466963, y: 0.025153637, z: 0.62522244}
-  m_Center: {x: 0.06884958, y: 1.26, z: 0.10440838}
+  m_Size: {x: 0.49902493, y: 0.025153637, z: 0.62522244}
+  m_Center: {x: 0.07121155, y: 1.26, z: 0.10440838}
 --- !u!114 &219397641317110995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,8 +283,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2875629, y: 0.025153637, z: 0.6274475}
-  m_Center: {x: -0.31279007, y: 1.2599958, z: 0.10528797}
+  m_Size: {x: 0.2699632, y: 0.025153637, z: 0.6274475}
+  m_Center: {x: -0.32158992, y: 1.2599958, z: 0.10528797}
 --- !u!114 &348183291673767460
 MonoBehaviour:
   m_ObjectHideFlags: 0

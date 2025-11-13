@@ -29,7 +29,7 @@ public class UIPlayerController : MonoBehaviour
 
         m_InputController.OnPlaceBuilding_Tap += m_SplinePlacer.PlaceBuildingClick;
         m_InputController.OnSwitchTypeStart_Tap += m_SplinePlacer.SwitchTypeStartClick;
-        m_InputController.OnSwitchTypeStart_Tap += m_SplinePlacer.SwitchTypeEndClick;
+        m_InputController.OnSwitchTypeEnd_Tap += m_SplinePlacer.SwitchTypeEndClick;
     }
     private void OnDisable()
     {
@@ -45,7 +45,7 @@ public class UIPlayerController : MonoBehaviour
 
         m_InputController.OnPlaceBuilding_Tap -= m_SplinePlacer.PlaceBuildingClick;
         m_InputController.OnSwitchTypeStart_Tap -= m_SplinePlacer.SwitchTypeStartClick;
-        m_InputController.OnSwitchTypeStart_Tap -= m_SplinePlacer.SwitchTypeEndClick;
+        m_InputController.OnSwitchTypeEnd_Tap -= m_SplinePlacer.SwitchTypeEndClick;
     }
 
 

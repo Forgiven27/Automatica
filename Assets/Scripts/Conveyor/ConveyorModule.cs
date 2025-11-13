@@ -12,7 +12,10 @@ public class ConveyorModule : MonoBehaviour
     Transform _startPoint;
     Transform _endPoint;
 
-    public List<ConveyorDescription> conveyorsDesc;
+    public List<ConveyorDescription> conveyorsStartDesc;
+    public List<ConveyorDescription> conveyorsEndDesc;
+    public ConveyorDescription baseStraightConveyor;
+
     public Transform startPoint{ get { return _startPoint; } private set {
         _startPoint = value;
         } }
@@ -32,14 +35,14 @@ public class ConveyorModule : MonoBehaviour
     public void NextStartConveyorDesc()
     {
         currentStartDesc++;
-        if (currentStartDesc >= poolGO.Count) currentStartDesc = 0;
+        if (currentStartDesc >= conveyorsStartDesc.Count) currentStartDesc = 0;
         Spline_changed();
-        print("Произошла смена стартового конвейера");
+        
     }
     public void NextEndConveyorDesc()
     {
         currentEndDesc++;
-        if (currentEndDesc >= poolGO.Count) currentEndDesc = 0;
+        if (currentEndDesc >= conveyorsEndDesc.Count) currentEndDesc = 0;
         Spline_changed();
     }
 
@@ -54,7 +57,7 @@ public class ConveyorModule : MonoBehaviour
 
     private void Spline_changed()
     {
-        if (conveyorsDesc[0] == null) return;
+        if (baseStraightConveyor == null || conveyorsEndDesc == null || conveyorsStartDesc == null) return;
         if (poolGO != null) { foreach (var go in poolGO) Destroy(go);
             poolGO.Clear();
         }
@@ -65,7 +68,7 @@ public class ConveyorModule : MonoBehaviour
         {
             var posFloat3_0 = knots.ElementAt<BezierKnot>(0).Position;
             var posLocal0 = new Vector3(posFloat3_0.x, posFloat3_0.y, posFloat3_0.z);
-            var go = conveyorsDesc[currentStartDesc].prefab;
+            var go = conveyorsStartDesc[currentStartDesc].prefab;
             
             var newConv = Transform.Instantiate(go, posLocal0 + transform.position, Quaternion.identity, transform);
             newConv.transform.localPosition = Vector3.zero;
@@ -85,7 +88,7 @@ public class ConveyorModule : MonoBehaviour
             var posFloat3_1 = knots.ElementAt<BezierKnot>(1).Position;
             var posLocal0 = new Vector3(posFloat3_0.x, posFloat3_0.y, posFloat3_0.z);
             var posLocal1 = new Vector3(posFloat3_1.x, posFloat3_1.y, posFloat3_1.z);
-            var go = conveyorsDesc[0].prefab;
+            var go = baseStraightConveyor.prefab;
             float size = 1;
             float distance = Vector3.Distance(posLocal0, posLocal1);
             float countGO = distance / size;
@@ -101,8 +104,8 @@ public class ConveyorModule : MonoBehaviour
             {
                 //var newConv = Transform.Instantiate(go, posLocal0 + transform.position - new Vector3(-step / 2 * cos + step * i * cos, 0, step / 2 * sin + step * i * sin), rotation, transform);
                 var newConv = new GameObject();
-                if (i == 0) newConv = Transform.Instantiate(conveyorsDesc[currentStartDesc].prefab, posLocal0 + transform.position, rotation, transform);
-                else if(i == countGO - 2) newConv = Transform.Instantiate(conveyorsDesc[currentEndDesc].prefab, posLocal0 + transform.position, rotation, transform);
+                if (i == 0) newConv = Transform.Instantiate(conveyorsStartDesc[currentStartDesc].prefab, posLocal0 + transform.position, rotation, transform);
+                else if (i == countGO - 2) { newConv = Transform.Instantiate(conveyorsEndDesc[currentEndDesc].prefab, posLocal0 + transform.position, rotation, transform); print(currentEndDesc); }
                 else newConv = Transform.Instantiate(go, posLocal0 + transform.position, rotation, transform);
                 newConv.transform.localPosition = Vector3.zero;
                 newConv.transform.localPosition -= new Vector3(step * i * cos, 0, step * i * sin);

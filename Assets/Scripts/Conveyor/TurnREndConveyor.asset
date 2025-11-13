@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b6e0ae5a763cf444186aba33749b7a11, type: 3}
-  m_Name: TurnRConveyor
-  m_EditorClassIdentifier: Assembly-CSharp::ConveyorElement
-  Type: 1
-  prefab: {fileID: 4481007742362673884, guid: c5df27e31f86a2241a49dfac4b99c69b, type: 3}
+  m_Name: TurnREndConveyor
+  m_EditorClassIdentifier: Assembly-CSharp::ConveyorDescription
+  Type: 2
+  prefab: {fileID: 4481007742362673884, guid: 554c8f518cf9427409208ba4159c8511, type: 3}

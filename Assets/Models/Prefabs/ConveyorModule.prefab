@@ -126,10 +126,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdf288392417b3048baf367e516c9493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConveyorModule
-  conveyorsDesc:
+  conveyorsStartDesc:
+  - {fileID: 11400000, guid: c6fb5f19d6996244791b9941071bce02, type: 2}
+  - {fileID: 11400000, guid: 67d895cb2a474da44bf70a8e12fed140, type: 2}
+  - {fileID: 11400000, guid: 7e5896e01efdef742bdd88ea76ab8bb4, type: 2}
+  conveyorsEndDesc:
   - {fileID: 11400000, guid: c6fb5f19d6996244791b9941071bce02, type: 2}
   - {fileID: 11400000, guid: 643284863363a7a44a3784956095b7e8, type: 2}
-  - {fileID: 11400000, guid: 67d895cb2a474da44bf70a8e12fed140, type: 2}
+  - {fileID: 11400000, guid: a8b3b49977308ff4a9f8e774bef504f8, type: 2}
+  baseStraightConveyor: {fileID: 11400000, guid: c6fb5f19d6996244791b9941071bce02, type: 2}
 --- !u!114 &4041281270786938769
 MonoBehaviour:
   m_ObjectHideFlags: 0
