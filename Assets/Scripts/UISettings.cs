@@ -9,7 +9,7 @@ public class UISettings : ScriptableObject
 {
     public InputActionAsset inputActionsAsset;
     [SerializeField, DontCreateProperty] string myString;
-    [SerializeField, CreateProperty]
+    [ CreateProperty]
     public string ButtonS1
     {
         get

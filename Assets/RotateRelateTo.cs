@@ -5,70 +5,46 @@ using UnityEngine;
 
 public class RotateRelateTo : MonoBehaviour
 {
-    [SerializeField]public List<RelatedObject> relativeTransforms = new List<RelatedObject>();
-    [SerializeField] private Vector3 angleForCheck;
-    [SerializeField] private Vector3 axisForCheck;
-    Action OnTransformChanged;
-    private Vector3 posOld;
-    private Quaternion rotOld;
-    private float deltaAngle;
+    [Serializable]
+    public class RelatedObject
+    {
+        public Transform obj;
+        public Vector3 initialLocalPos;
+        public Quaternion initialLocalRot;
+    }
+
+    public List<RelatedObject> related = new();
+
+    private Quaternion oldRot;
+    private Vector3 oldPos;
 
     void Start()
     {
-        posOld = transform.position;
-        rotOld = transform.localRotation;
-        OnTransformChanged += UpdateTransforms;
-    }
+        oldRot = transform.rotation;
+        oldPos = transform.position;
 
-    
-    void Update()
-    {
-        StateCheck();
-    }
-
-    void StateCheck()
-    {
-        if (relativeTransforms.Count == 0) return;
-        
-        if (posOld != transform.position || Quaternion.Angle(rotOld, transform.localRotation) > 0.001f)
+        foreach (var r in related)
         {
-            posOld = transform.position;
-            deltaAngle = Vector3.SignedAngle(rotOld * angleForCheck,
-                    transform.localRotation * angleForCheck,
-                    axisForCheck);
-            rotOld = transform.localRotation;
-            
-            OnTransformChanged?.Invoke();
+            // Запоминаем положение и угол относительно текущего transform
+            r.initialLocalPos = Quaternion.Inverse(transform.rotation) * (r.obj.position - transform.position);
+            r.initialLocalRot = Quaternion.Inverse(transform.rotation) * r.obj.rotation;
         }
     }
 
-    void UpdateTransforms()
+    void LateUpdate()
     {
-        foreach (var relatedObject in relativeTransforms)
+        Quaternion deltaRot = transform.rotation * Quaternion.Inverse(oldRot);
+        Vector3 deltaPos = transform.position - oldPos;
+
+        foreach (var r in related)
         {
-            //t.position += posOld;
-            //t.localRotation = rotOld;
-            Transform t = relatedObject.transform;
-            Vector3 v = relatedObject.vector;
-            t.RotateAround(transform.position, v, deltaAngle);
-            print(deltaAngle);
+            // применяем вращение вокруг pivot
+            r.obj.position = transform.position + deltaRot * r.initialLocalPos;
+            r.obj.rotation = deltaRot * r.initialLocalRot;
         }
-    }
 
-    private void OnDestroy()
-    {
-        OnTransformChanged -= UpdateTransforms;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.darkRed;
-        Gizmos.DrawCube(transform.position, transform.localScale);
+        oldRot = transform.rotation;
+        oldPos = transform.position;
     }
 }
-[Serializable]
-public class RelatedObject
-{
-    public Transform transform;
-    public Vector3 vector;
-}
+
