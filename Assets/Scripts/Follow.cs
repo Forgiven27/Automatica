@@ -12,7 +12,10 @@ public class Follow : MonoBehaviour
     
     void Update()
     {
-        Vector3 dir = followObject.transform.position - transform.position;
+        Vector3 dir = followObject.transform.position
+            - transform.position;
+
+
 
         Quaternion target = Quaternion.LookRotation(dir, Vector3.up);
 
@@ -20,9 +23,8 @@ public class Follow : MonoBehaviour
 
         Vector3 e = target.eulerAngles;
 
-        e.y = 0; 
+        //e.y = 0;
 
-
-        transform.localRotation = Quaternion.Euler(e);
+        transform.rotation = Quaternion.Euler(e);
     }
 }
