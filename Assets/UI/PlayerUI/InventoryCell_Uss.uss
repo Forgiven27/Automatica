@@ -18,8 +18,8 @@
 }
 
 .inventory-cell__pressed {
-    width: 65;
-    height: 65;
+    width: 65px;
+    height: 65px;
     transition-property: width,height;
     transition-duration: 0.25s, 0.25s;
     transition-timing-function: ease-out, ease-out;

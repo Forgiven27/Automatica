@@ -25,14 +25,16 @@ public class Hand : MonoBehaviour
             Vector3 vectorN = vector.normalized;
             resultPos = vectorN * (Vector3.Distance(target.position, transform.position) >=maxDist? maxDist 
                 : Vector3.Distance(new Vector3(target.position.x, target.position.y, transform.position.z), new Vector3(shoulderBone.position.x, shoulderBone.position.y, transform.position.z)));
-            
         }
-        
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(resultPos + new Vector3(shoulderBone.position.x, shoulderBone.position.y, transform.position.z), 0.2f);
+        Gizmos.DrawSphere(resultPos
+                        + new Vector3(shoulderBone.position.x
+                                        , shoulderBone.position.y
+                                        , transform.position.z)
+                        , 0.2f);
     }
 }
