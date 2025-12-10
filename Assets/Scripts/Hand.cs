@@ -5,6 +5,7 @@ public class Hand : MonoBehaviour
     [SerializeField] Transform forearmBone;
     [SerializeField] Transform shoulderBone;
     [SerializeField] Transform target;
+    [SerializeField] Transform baseOfObject;
     Vector3 resultPos = Vector3.zero;
     float maxDist;
     void Start()
@@ -31,10 +32,20 @@ public class Hand : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(resultPos
-                        + new Vector3(shoulderBone.position.x
-                                        , shoulderBone.position.y
-                                        , transform.position.z)
+        float cos = Mathf.Cos(baseOfObject.rotation.y);
+        float sin = Mathf.Sin(baseOfObject.rotation.y);
+
+        var vector = baseOfObject.position - shoulderBone.position;
+        float dist = vector.magnitude;
+        Vector3 vectorN = vector.normalized;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(shoulderBone.position, baseOfObject.position);
+
+        var rootPos = transform.root.position;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(shoulderBone.position + resultPos
+                        + vectorN * (dist * 0.5f)
                         , 0.2f);
     }
 }
