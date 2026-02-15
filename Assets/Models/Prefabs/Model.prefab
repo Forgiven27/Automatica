@@ -851,6 +851,7 @@ MonoBehaviour:
   forearmBone: {fileID: 5302717104136003927}
   shoulderBone: {fileID: 5243777469584406652}
   target: {fileID: 0}
+  baseOfObject: {fileID: 3967996794497815214}
 --- !u!1 &4916009998659554366
 GameObject:
   m_ObjectHideFlags: 0

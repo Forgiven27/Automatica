@@ -9,16 +9,7 @@ using System;
 public class InputController : MonoBehaviour
 {
     
-    private Vector2 m_Movement;
-    private bool m_IsJump;
-    private bool m_IsFirstSClick;
-    private bool m_IsSecondSClick;
-    private bool m_IsThirdSClick;
-    private bool m_IsForthSClick;
-    private bool m_IsFifthSClick;
-    private bool m_IsRotateLeftClick;
-    private bool m_IsRotateRightClick;
-    private bool m_IsPlaceBuilding;
+
     
     public delegate void MoveDelegate(Vector2 position);
     public delegate void TapDelegate();
@@ -36,7 +27,7 @@ public class InputController : MonoBehaviour
     public event TapDelegate OnPlaceBuilding_Tap;
     public event TapDelegate OnSwitchTypeStart_Tap;
     public event TapDelegate OnSwitchTypeEnd_Tap;
-
+    public event TapDelegate OnCancel_Tap;
 
 
 
@@ -90,5 +81,10 @@ public class InputController : MonoBehaviour
     public void SwitchTypeEndConveyor(InputAction.CallbackContext callbackContext)
     {
         if (callbackContext.interaction is TapInteraction) OnSwitchTypeEnd_Tap?.Invoke();
+    }
+
+    public void Cancel(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.interaction is TapInteraction) OnCancel_Tap?.Invoke();
     }
 }

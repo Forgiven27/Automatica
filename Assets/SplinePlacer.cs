@@ -16,12 +16,12 @@ public class SplinePlacer : MonoBehaviour
 
     public WorldGrid worldGrid;
     public Camera cameraGrid;
-    public Building conveyor;
+    public BuildingInfo conveyor;
     public float height;
     
 
     float step;
-    private Building currentBuilding;
+    private BuildingInfo currentBuilding;
     private float m_buttonCooldown = 0.3f;
     Camera cam;
     bool isVisibleGrid = false;
@@ -52,7 +52,7 @@ public class SplinePlacer : MonoBehaviour
         if (currentBuilding != null && isNew) { 
             Destroy(currentBuilding.gameObject);
         }
-        currentBuilding = Instantiate(conveyor.gameObject).GetComponent<Building>();
+        currentBuilding = Instantiate(conveyor.gameObject).GetComponent<BuildingInfo>();
 
         if (isNew) 
         { 
@@ -114,7 +114,7 @@ public class SplinePlacer : MonoBehaviour
                             print("OOOh NO, there's a building!");
                         }
                     }
-                    if (collider.CompareTag("Belt") && currentBuilding.gameObject != collider.GetComponentInParent<Building>().gameObject)
+                    if (collider.CompareTag("Belt") && currentBuilding.gameObject != collider.GetComponentInParent<BuildingInfo>().gameObject)
                     {
                         belt = collider;
                         Debug.LogWarning("Найден Belt");
@@ -151,7 +151,7 @@ public class SplinePlacer : MonoBehaviour
                             else
                             {
                                 Debug.LogWarning("Transform End and Start is null");
-                                anotherConveyour.UpdateTransform();
+                                //anotherConveyour.UpdateTransform();
                             }
                         }
                         else
@@ -230,7 +230,7 @@ public class SplinePlacer : MonoBehaviour
         Button currentButton = Button.SwitchTypeStart;
         if (buttonsActiveState[currentButton])
         {
-            currentBuilding.GetComponent<ConveyorModule>().NextStartConveyorDesc();
+            //currentBuilding.GetComponent<ConveyorModule>().NextStartConveyorDesc();
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }
@@ -242,7 +242,7 @@ public class SplinePlacer : MonoBehaviour
         Button currentButton = Button.SwitchTypeEnd;
         if (buttonsActiveState[currentButton])
         {
-            currentBuilding.GetComponent<ConveyorModule>().NextEndConveyorDesc();
+            //currentBuilding.GetComponent<ConveyorModule>().NextEndConveyorDesc();
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }

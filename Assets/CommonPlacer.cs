@@ -20,7 +20,7 @@ public class CommonPlacer : MonoBehaviour
     
     
     float step;
-    private Building currentBuilding;
+    private BuildingInfo currentBuilding;
     private float m_buttonCooldown = 0.1f;
     Camera cam;
     bool isVisibleGrid = false;
@@ -65,7 +65,7 @@ public class CommonPlacer : MonoBehaviour
         }
     }
     
-    public void CreateBuilding(Building building)
+    public void CreateBuilding(BuildingInfo building)
     {
         if (currentBuilding != null) Destroy(currentBuilding.gameObject);
 

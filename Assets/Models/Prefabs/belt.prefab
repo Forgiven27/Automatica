@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7949185119851412259}
   - component: {fileID: 8880383045014822957}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: connectionForward
   m_TagString: BeltForward
   m_Icon: {fileID: 0}
@@ -63,7 +63,7 @@ GameObject:
   m_Component:
   - component: {fileID: 162054615566989803}
   - component: {fileID: 5084870169987357916}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: collider
   m_TagString: Belt
   m_Icon: {fileID: 0}
@@ -115,7 +115,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8630788289817789419}
-  m_Layer: 7
+  - component: {fileID: 4903047609689536286}
+  m_Layer: 9
   m_Name: belt
   m_TagString: Belt
   m_Icon: {fileID: 0}
@@ -141,6 +142,18 @@ Transform:
   - {fileID: 162054615566989803}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4903047609689536286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535232462519463063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36237c6b643d06a49812666177a1abb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ConveyorElement
 --- !u!1 &5481564179491669663
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +165,7 @@ GameObject:
   - component: {fileID: 4112286374149930299}
   - component: {fileID: 4486432257624671415}
   - component: {fileID: 8611223954679289406}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,19 +270,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8236076569268209247, guid: 1c85bcb68ae69be4896e3ae7e787811d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -5770634479784780433, guid: 1c85bcb68ae69be4896e3ae7e787811d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -257705307841463444, guid: 1c85bcb68ae69be4896e3ae7e787811d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 495362372164732792, guid: 1c85bcb68ae69be4896e3ae7e787811d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1c85bcb68ae69be4896e3ae7e787811d, type: 3}
       propertyPath: m_Name
@@ -277,7 +290,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1c85bcb68ae69be4896e3ae7e787811d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1c85bcb68ae69be4896e3ae7e787811d, type: 3}
       propertyPath: m_TagString
@@ -285,7 +298,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4383353755243004527, guid: 1c85bcb68ae69be4896e3ae7e787811d, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

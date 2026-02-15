@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Item", menuName = "ScriptableObject")]
@@ -8,10 +9,12 @@ public class Item : ScriptableObject
     public string descriptionItem;
     public ItemType itemType;
 }
+[Serializable]
 public enum ItemType
 {
     None,
-    BaseMaterial,
-    Detail,
+    Copper,
+    Iron,
+    Cabel,
     ResultItem
 }

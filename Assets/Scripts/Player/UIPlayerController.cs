@@ -1,56 +1,43 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class UIPlayerController : MonoBehaviour
 {
-    InputController m_InputController;
-    UIInventoryController m_InventoryController;
-    CommonPlacer m_CommonPlacer;
-    SplinePlacer m_SplinePlacer;
+
+    [SerializeField] private UISelectBuildPanel _panelSelectBuild;
+    [SerializeField] private UIBuildBoard _buildBoard;
+
+    public UISelectBuildPanel GetSelectBuildPanel => _panelSelectBuild;
+    public UIBuildBoard GetBuildBoard => _buildBoard;
 
 
-    void Awake()
+    public void InitUI(BuildBoard buildBoard, InputSystem_Actions inputActions)
     {
-        m_InputController = GetComponent<InputController>();
-        m_InventoryController = GetComponent<UIInventoryController>();
-        m_CommonPlacer = GetComponent<CommonPlacer>();
-        m_SplinePlacer = GetComponent<SplinePlacer>();
+        string bindingFirstS = inputActions.Player.FirstSlot.bindings[0].effectivePath;
+        string bindingSecondS = inputActions.Player.SecondSlot.bindings[0].effectivePath;
+        string bindingThirdS = inputActions.Player.ThirdSlot.bindings[0].effectivePath;
+        string bindingForthS = inputActions.Player.ForthSlot.bindings[0].effectivePath;
+        string bindingFifthS = inputActions.Player.FifthSlot.bindings[0].effectivePath;
+
+        string hintFirstButton = InputControlPath.ToHumanReadableString(bindingFirstS, InputControlPath.HumanReadableStringOptions.OmitDevice);
+        string hintSecondButton = InputControlPath.ToHumanReadableString(bindingSecondS, InputControlPath.HumanReadableStringOptions.OmitDevice);
+        string hintThirdButton = InputControlPath.ToHumanReadableString(bindingThirdS, InputControlPath.HumanReadableStringOptions.OmitDevice);
+        string hintForthButton = InputControlPath.ToHumanReadableString(bindingForthS, InputControlPath.HumanReadableStringOptions.OmitDevice);
+        string hintFifthButton = InputControlPath.ToHumanReadableString(bindingFifthS, InputControlPath.HumanReadableStringOptions.OmitDevice);
+
+        buildBoard.firstCell.currentBuilding = buildBoard.firstCell.currentBuilding.buildingObject == null ? buildBoard.firstCell.buildings[0] :
+            buildBoard.firstCell.currentBuilding;
+        buildBoard.secondCell.currentBuilding = buildBoard.secondCell.currentBuilding.buildingObject == null ? buildBoard.secondCell.buildings[0] :
+            buildBoard.secondCell.currentBuilding;
+
+
+        _buildBoard.InitButton(buildBoard.firstCell.currentBuilding, hintFirstButton);
+        _buildBoard.InitButton(buildBoard.secondCell.currentBuilding, hintSecondButton);
+        _buildBoard.InitButton(buildBoard.thirdCell.currentBuilding, hintThirdButton);
+        _buildBoard.InitButton(buildBoard.forthCell.currentBuilding, hintForthButton);
+        _buildBoard.InitButton(buildBoard.fifthCell.currentBuilding, hintFifthButton);
+
+
+        _buildBoard.gameObject.SetActive(true);
     }
-    private void OnEnable()
-    {
-        m_InputController.OnFirstS_Tap += m_InventoryController.FirstSClick;
-        m_InputController.OnSecondS_Tap += m_InventoryController.SecondSClick;
-        m_InputController.OnThirdS_Tap += m_InventoryController.ThirdSClick;
-        m_InputController.OnForthS_Tap += m_InventoryController.ForthSClick;
-        m_InputController.OnFifthS_Tap += m_InventoryController.FifthSClick;
-
-        m_InputController.OnRotateR_Tap += m_CommonPlacer.RotateRightClick;
-        m_InputController.OnRotateL_Tap += m_CommonPlacer.RotateLeftClick;
-        m_InputController.OnPlaceBuilding_Tap += m_CommonPlacer.PlaceBuildingClick;
-
-        m_InputController.OnPlaceBuilding_Tap += m_SplinePlacer.PlaceBuildingClick;
-        m_InputController.OnSwitchTypeStart_Tap += m_SplinePlacer.SwitchTypeStartClick;
-        m_InputController.OnSwitchTypeEnd_Tap += m_SplinePlacer.SwitchTypeEndClick;
-    }
-    private void OnDisable()
-    {
-        m_InputController.OnFirstS_Tap -= m_InventoryController.FirstSClick;
-        m_InputController.OnSecondS_Tap -= m_InventoryController.SecondSClick;
-        m_InputController.OnThirdS_Tap -= m_InventoryController.ThirdSClick;
-        m_InputController.OnForthS_Tap -= m_InventoryController.ForthSClick;
-        m_InputController.OnFifthS_Tap -= m_InventoryController.FifthSClick;
-
-        m_InputController.OnRotateR_Tap -= m_CommonPlacer.RotateRightClick;
-        m_InputController.OnRotateL_Tap -= m_CommonPlacer.RotateLeftClick;
-        m_InputController.OnPlaceBuilding_Tap -= m_CommonPlacer.PlaceBuildingClick;
-
-        m_InputController.OnPlaceBuilding_Tap -= m_SplinePlacer.PlaceBuildingClick;
-        m_InputController.OnSwitchTypeStart_Tap -= m_SplinePlacer.SwitchTypeStartClick;
-        m_InputController.OnSwitchTypeEnd_Tap -= m_SplinePlacer.SwitchTypeEndClick;
-    }
-
-
-
-
-
-
 }

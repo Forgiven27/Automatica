@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d668e370ded86b40b3319f17b610f3a, type: 3}
+  m_Name: Factory11
+  m_EditorClassIdentifier: Assembly-CSharp::FactoryDescription
+  generator:
+    timeCooldown: 3
+    ingridients:
+    - key: 1
+      value: 2
+    - key: 3
+      value: 1
+    resultItems:
+    - key: 4
+      value: 1
+  ports:
+  - id: 
+    ioType: 0
+    acceptableItemTypes: 0100000003000000
+  - id: 
+    ioType: 1
+    acceptableItemTypes: 04000000
+  slots:
+  - ioType: 0
+    maxCapacity: 100
+    currentCount: 10
+    acceptableItemTypes: 01000000
+    currentSlotType: 1
+  - ioType: 0
+    maxCapacity: 50
+    currentCount: 5
+    acceptableItemTypes: 03000000
+    currentSlotType: 3
+  - ioType: 1
+    maxCapacity: 10
+    currentCount: 0
+    acceptableItemTypes: 04000000
+    currentSlotType: 4

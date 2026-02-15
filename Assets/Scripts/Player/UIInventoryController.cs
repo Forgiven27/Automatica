@@ -1,7 +1,7 @@
-using UnityEngine;
 using Cysharp.Threading.Tasks;
-using System.Threading.Tasks;
+using Simulator;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class UIInventoryController : MonoBehaviour
 {
@@ -19,9 +19,9 @@ public class UIInventoryController : MonoBehaviour
 
     CommonPlacer m_CommonPlacer;
     SplinePlacer m_SplinePlacer;
-    public Building manipulator;
+    public BuildingInfo manipulator;
 
-
+    public FactoryDescription factoryDescription; //DELETE
 
     private void Start()
     {
@@ -63,7 +63,28 @@ public class UIInventoryController : MonoBehaviour
         Button currentButton = Button.ThirdS;
         if (buttonsActiveState[currentButton])
         {
-            
+
+            Ray rayMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(rayMouse, out RaycastHit hitInfo, 100, 1 << LayerMask.NameToLayer("BuildingSurface")))
+            {
+                /*
+                Vector3 newPosition = new Vector3(hitInfo.point.x + (hitInfo.point.x % step < step / 2 ? -hitInfo.point.x % step : step - hitInfo.point.x % step),
+                    hitInfo.point.y,
+                    hitInfo.point.z + (hitInfo.point.z % step < step / 2 ? -hitInfo.point.z % step : step - hitInfo.point.z % step))
+                    + worldGrid.null_position;
+                */
+
+                Debug.Log("Отправлен запрос");
+                FactoryCreateCommand c = new FactoryCreateCommand()
+                {
+                    factoryType = FactoryType.ExportImport10,
+                    factoryDescription = factoryDescription,
+                    position = hitInfo.point,
+                    rotation = Quaternion.identity
+                };
+                SimulationAPI.Request<FactoryCreateCommand>(c);
+            }
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }
@@ -73,7 +94,26 @@ public class UIInventoryController : MonoBehaviour
         Button currentButton = Button.ForthS;
         if (buttonsActiveState[currentButton])
         {
-            
+            Ray rayMouse = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(rayMouse, out RaycastHit hitInfo, 100, 1 << LayerMask.NameToLayer("BuildingSurface")))
+            {
+                /*
+                Vector3 newPosition = new Vector3(hitInfo.point.x + (hitInfo.point.x % step < step / 2 ? -hitInfo.point.x % step : step - hitInfo.point.x % step),
+                    hitInfo.point.y,
+                    hitInfo.point.z + (hitInfo.point.z % step < step / 2 ? -hitInfo.point.z % step : step - hitInfo.point.z % step))
+                    + worldGrid.null_position;
+                */
+
+                Debug.Log("Отправлен запрос");
+                var c = new ConveyorCreateCommand()
+                {
+                    startPosition = hitInfo.point,
+                    endPosition = hitInfo.point + new Vector3(0,0,10),
+                    stepsOfContainer = 10,
+                };
+                SimulationAPI.Request<ConveyorCreateCommand>(c);
+            }
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);
         }
