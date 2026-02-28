@@ -17,13 +17,18 @@ namespace Simulator {
 
         public ConveyorLine Create(ConveyorCreateCommand cmd, Simulation sim)
         {
-            string genID = System.Guid.NewGuid().ToString();
-            var conveyor = new ConveyorLine(genID, cmd.stepsOfContainer);
+            uint generatedID = IDHandler.GetID();
+            uint[] segmentsID = new uint[cmd.segmentsTransform.Length];
+            for (int i = 0; i < segmentsID.Length; i++)
+            {
+                segmentsID[i] = IDHandler.GetID();
+            }
+            var conveyor = new ConveyorLine(generatedID, segmentsID);
             lines.Add(conveyor);
 
             sim.Events.Raise(new ConveyorCreatedEvent()
             {
-                conveyorID = genID,
+                conveyorID = generatedID,
                 startPosition = cmd.startPosition,
                 endPosition = cmd.endPosition,
             });
@@ -31,7 +36,7 @@ namespace Simulator {
         }
 
 
-        public ConveyorSnapshot GetSnapshotById(string id)
+        public ConveyorSnapshot GetSnapshotById(uint id)
         {
             ConveyorLine line = lines.Find(line => line.ID == id);
             var items = line.GetItems();

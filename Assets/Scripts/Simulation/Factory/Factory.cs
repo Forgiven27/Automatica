@@ -8,7 +8,7 @@ namespace Simulator
 {
     public class Factory : IEntity, IItemSource, IItemSink, IConnectable
     {
-        public string ID { get; set; }
+        public uint ID { get; set; }
 
 
         public FactoryGenerator generator;
@@ -18,7 +18,7 @@ namespace Simulator
         public bool isWorking;
         public bool isDidAction = false;
 
-        public Factory(string id, FactoryGenerator generator, List<FactorySlot> slots, List<FactoryPort> ports)
+        public Factory(uint id, FactoryGenerator generator, List<FactorySlot> slots, List<FactoryPort> ports)
         {
             this.ID = id;
             this.generator = generator;
@@ -28,9 +28,9 @@ namespace Simulator
             {
                 slots[i].ID = i.ToString();
             }
-            for (int i = 0; i < ports.Count; i++)
+            for (uint i = 0; i < ports.Count; i++)
             {
-                ports[i].ID = i.ToString();
+                ports[(int)i].ID = i;
             }
         }
 

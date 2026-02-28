@@ -6,12 +6,13 @@ namespace Simulator
         public FactoryType factoryType;
         public Vector3 position;
         public Quaternion rotation;
+        public Vector3 scale;
         public FactoryDescription factoryDescription;
 
         public void Execute(CommandContext context)
         {
             IEntity entity = context.factorySim.Create(this, context.simulation);
-            context.entities.Add(entity);
+            context.entities.Add(entity, new TransformSim(position, rotation, scale));
         }
 
     }

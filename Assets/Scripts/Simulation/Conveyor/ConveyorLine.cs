@@ -1,72 +1,62 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Tools;
-using UnityEngine.Audio;
 
 
 namespace Simulator
 {
     public class ConveyorLine : IEntity, IItemSource, IItemSink, IConnectable
     {
-        public string ID { get; set; }
+        public uint ID { get; set; }
+        bool _isNextFree;
+        ProductionTimer _timer = new();
+        int _cooldown = 100;
+        List<ConveyorSegment> _segments = new(); // направление движения от нулевого
 
-        List<ConveyorItem> listItems = new();
-        public List<ConveyorItem> GetItems () => listItems.ToList();
-        byte[] line;
-        int steps;
-        bool isNextFree;
-        ConveyorPort inputPort = new();
-        ConveyorPort outputPort = new ();
-        public ProductionTimer timer = new();
-        public ConveyorLine(string id, int steps)
+        public ConveyorLine(uint id, uint[] segmentsID)
         {
-            this.ID = id;
-            this.steps = steps;
-            this.line = new byte[steps];
-            InitPorts();
-        }
-        public ConveyorLine(string id, int steps, byte[] line, List<ConveyorItem> items)
-        {
-            this.ID = id;
-            this.steps = steps;
-            this.line = line;
-            listItems = items;
-            InitPorts();
-        }
+            ID = id;
 
-        void InitPorts()
-        {
-            inputPort.ID = "0";
-            outputPort.ID = "1";
+            for (int i = 0; i < segmentsID.Length; i++)
+            {
+                var segment = new ConveyorSegment(segmentsID[i]);    
+                if (i > 0)
+                {
+                    segment.ConnectInputPort(new PortRef(1, _segments[i-1].ID));
+                    _segments[i-1].ConnectOutputPort(new PortRef(0,segment.ID));
+                }
+                _segments.Add(segment);
+            }
         }
 
 
         public void Work()
         {
-            if (timer.IsReady())
+            if (_timer.IsReady())
             {
-                isNextFree = false;
-                for (int i = line.Length - 1; i >= 0; i--)
+                _isNextFree = false;
+
+                for (int i = _segments.Count - 1; i >= 0; i--)
                 {
-                    if (line[i] == (byte)0)
+                    if (i == _segments.Count - 1)
                     {
-                        isNextFree = true;
+                        _isNextFree = !_segments[i].IsFull; 
                         continue;
                     }
-                    if (isNextFree && line[i] == (byte)1)
+
+                    if (_segments[i].IsFull && _isNextFree)
                     {
-                        line[i] = (byte)0;
-                        line[i + 1] = (byte)1;
-                        listItems.Find(x => x.linePlaceID == i).linePlaceID++;
-                        isNextFree = false;
-                    }
+                        _segments[i].Export(_segments[i].currentType);
+                        _segments[i+1].Import(_segments[i].currentType);
+                    } else 
+                    {
+                        _isNextFree = !_segments[i].IsFull;
+                    }   
                 }
-                timer.Start(100);
+                _timer.Start(_cooldown);
             }
             else
             {
-                timer.TryTick();
+                _timer.TryTick();
             }
             
         }
@@ -74,183 +64,106 @@ namespace Simulator
 
         public bool TryImport(ItemType itemType)
         {
-            return !TryPeekFirst(out ItemType itemT);
+            return _segments[_segments.Count - 1].TryImport(itemType);
         }
         public void Import(ItemType itemType)
         {
-            CreateFirst(itemType);
+            _segments[0].Import(itemType);
         }
 
         public bool TryExport(List<ItemType> itemRequiredTypes, out List<ItemType> itemExistTypes)
         {
-            itemExistTypes = new List<ItemType>();
-            if (TryPeekLast(out ItemType itemT))
-            {
-                if (itemRequiredTypes.Contains(itemT))
-                {
-                    itemExistTypes.Add(itemT);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return _segments[_segments.Count - 1].TryExport(itemRequiredTypes, out itemExistTypes);
         }
         public void Export(ItemType itemType)
         {
-            ConsumeLast();
+            _segments[_segments.Count - 1].Export(itemType);
         }
 
-
-        public bool TryPeekLast(out ItemType itemType)
+        void RemoveItemAtSegment(uint ID)
         {
-            if (!outputPort.isConnected)
-            {
-                itemType = ItemType.None;
-                return false;
-            }
-
-            if (line[line.Length - 1] == 0)
-            {
-                itemType = ItemType.None;
-                return false;
-            }
-            foreach (var itemCon in listItems)
-            {
-                if (itemCon.linePlaceID == line.Length - 1)
-                {
-                    itemType = itemCon.itemType;
-                    return true;
-                }
-            }
-            itemType = ItemType.None;
-            return false;
+            _segments.Find(i => i.ID == ID)?.RemoveItem();
         }
 
-        public bool TryPeekFirst(out ItemType itemType)
+        void CreateItemAtSegment(uint ID, ItemType itemType)
         {
-            if (line[0] == (byte)0)
-            {
-                itemType = ItemType.None;
-                return false;
-            }
-            foreach (var itemCon in listItems)
-            {
-                if (itemCon.linePlaceID == 0)
-                {
-                    itemType = itemCon.itemType;
-                    return true;
-                }
-            }
-            itemType = ItemType.None;
-            return false;
+            _segments.Find(i => i.ID == ID)?.SetItem(itemType);
         }
 
-        public bool TryPeekAtLineIndex(out ItemType itemType, int index)
-        {
-            if (line[index] == 0)
-            {
-                itemType = ItemType.None;
-                return false;
-            }
-            foreach (var itemCon in listItems)
-            {
-                if (itemCon.linePlaceID == index)
-                {
-                    itemType = itemCon.itemType;
-                    return true;
-                }
-            }
-            itemType =  ItemType.None;
-            return false;
-        }
-
-        private void ConsumeLast()
-        {
-            foreach (var itemCon in listItems)
-            {
-                if (itemCon.linePlaceID == line.Length - 1)
-                {
-                    RemoveItem(itemCon);
-                }
-            }
-        }
-
-        private void CreateFirst(ItemType itemType)
-        {
-            listItems.Add(new ConveyorItem() 
-            { 
-                itemType = itemType,
-                linePlaceID = 0, 
-                countItems = 1,
-                isMove = true
-            });
-            line[0] = 1;
-        }
-
-
-        void RemoveItem(ConveyorItem item)
-        {
-            listItems.Remove(item);
-            line[item.linePlaceID] = 0;
-        } 
 
         public void Connect(PortRef thisPort, PortRef externalPort)
         {
-            if (thisPort.portId == inputPort.ID)
+            if (thisPort.entityId == _segments[0].ID && thisPort.portId == 0)
             {
-                inputPort.isConnected = true;
-                inputPort.connectedObject = externalPort;
-            }
-            else if(thisPort.entityId == outputPort.ID) 
+                _segments[0].ConnectInputPort(externalPort);
+            }else if (thisPort.entityId == _segments[_segments.Count - 1].ID && thisPort.portId == 1)
             {
-                outputPort.isConnected = true;
-                outputPort.connectedObject = externalPort;
+                _segments[_segments.Count - 1].ConnectOutputPort(externalPort);
             }
         }
 
         public void Disconnect(PortRef thisPort, PortRef externalPort)
         {
-            if (thisPort.portId == inputPort.ID && inputPort.connectedObject.Equals(externalPort))
-            {
-                inputPort.isConnected = false;
-                inputPort.connectedObject = default;
-            }
-            else if (thisPort.entityId == outputPort.ID && outputPort.connectedObject.Equals(externalPort))
-            {
-                outputPort.isConnected = false;
-                outputPort.connectedObject = default;
-            }
+            Disconnect(thisPort);
         }
         public void Disconnect(PortRef thisPort)
         {
-            if (thisPort.portId == inputPort.ID)
+            if (thisPort.entityId == _segments[0].ID && thisPort.portId == 0)
             {
-                inputPort.isConnected = false;
-                inputPort.connectedObject = default;
+                _segments[0].DisconnectInputPort();
             }
-            else if (thisPort.entityId == outputPort.ID)
+            else if (thisPort.entityId == _segments[_segments.Count - 1].ID && thisPort.portId == 1)
             {
-                outputPort.isConnected = false;
-                outputPort.connectedObject = default;
+                _segments[_segments.Count - 1].DisconnectOutputPort();
             }
+        }
+
+        public ConveyorItem[] GetItems() 
+        { 
+            var items = new ConveyorItem[_segments.Count];
+            for (int i = 0;i < _segments.Count; i++)
+            {
+                if (_segments[i].IsFull)
+                {
+                    var item = new ItemStack(_segments[i].currentType, 1);
+                    var conveyorItem = new ConveyorItem(i, item);
+                    items[i] = conveyorItem;
+                }
+                else
+                {
+                    items[i] = null;
+                }
+            }
+
+            return items;
         }
 
     }
 
 
     [Serializable]
-    public class ConveyorItem
+    public class ItemStack
     {
         [NonSerialized] public int countItems;
         public ItemType itemType;
-        [NonSerialized] public bool isMove;
-        [NonSerialized] public int linePlaceID = 0;
+
+        public ItemStack(ItemType itemType, int count)
+        {
+            this.itemType = itemType;
+            countItems = count;
+        }
+    }
+
+    public class ConveyorItem
+    {
+        public ItemStack itemStack;
+        public int orderID;
+
+        public ConveyorItem(int orderID, ItemStack itemStack)
+        {
+            this.orderID = orderID;
+            this.itemStack = itemStack;
+        }
     }
 
     public class ConveyorPort : Port

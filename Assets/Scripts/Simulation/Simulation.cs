@@ -5,30 +5,36 @@ namespace Simulator {
     {
         public readonly EventBus Events = new();
 
-        Queue<ISimulatorCommand> commands = new();
+        Queue<ISimulatorCommand> _commands = new();
 
-        FactorySimulation factorySim = new();
-        ConveyorSimulation conveyorSim = new();
-        EntityRegistry entities = new();
-        ConnectionSystem connections = new();
-        List<SimOperation> operations = new();
+        FactorySimulation _factorySim = new();
+        ConveyorSimulation _conveyorSim = new();
+        EntityRegistry _entities = new();
+        ConnectionSystem _connections = new();
+        List<SimOperation> _operations = new();
+        WorldQuerySimulation _worldQuery;
+        CollisionSimulation _collisionSystem;
+        public Simulation()
+        {
+            _collisionSystem = new CollisionSimulation(new CollisionConfig()
+            {
+                CellSize = 1,
+            }, _entities);
+            _worldQuery = new WorldQuerySimulation(_collisionSystem.StaticGrid, _collisionSystem.DynamicGrid);
+        }
 
         public void EnqueueCommand(ISimulatorCommand command)
         {
-            commands.Enqueue(command);
+            _commands.Enqueue(command);
         }
 
         public void ProcessCommands()
         {
-            var commandContext = new CommandContext()
-            {
-                simulation = this,
-                connections = connections,
-                conveyorSim = conveyorSim,
-                factorySim = factorySim,
-                entities = entities,
-            };
-            while (commands.TryDequeue(out var cmd))
+            var commandContext = new CommandContext(this, _factorySim,
+                _conveyorSim, _collisionSystem, _entities, _connections,
+                _worldQuery);
+            
+            while (_commands.TryDequeue(out var cmd))
             {
                 cmd.Execute(commandContext);
             }
@@ -38,22 +44,25 @@ namespace Simulator {
         {
             ProcessCommands();
 
-            operations.Clear();
+            _operations.Clear();
 
-            factorySim.Tick(this);
+            _factorySim.Tick(this);
             ApplyInputOperations();
             ApplyOutputOperations();
-            conveyorSim.Tick();
+            _conveyorSim.Tick();
         }
 
         private void ApplyInputOperations()
         {
-            foreach(var operation in operations)
+            foreach(var operation in _operations)
             {
                 if (operation.type == SimOpType.TakeFromConnection)
                 {
-                    var recieverRequest = entities.Get<IEntity>(operation.entityOpAnother.entityId);
-                    var senderRequest = entities.Get<IEntity>(operation.entityOpAuthor.entityId);
+                    IEntity recieverRequest;
+                    IEntity senderRequest;
+
+                    if (!_entities.TryGetEntity<IEntity>(operation.entityOpAnother.entityId, out recieverRequest)) continue;
+                    if (!_entities.TryGetEntity<IEntity>(operation.entityOpAuthor.entityId, out senderRequest)) continue;
 
                     if (recieverRequest is IItemSource src && senderRequest is IItemSink sink)
                     {
@@ -75,12 +84,17 @@ namespace Simulator {
 
         private void ApplyOutputOperations()
         {
-            foreach (var operation in operations)
+            foreach (var operation in _operations)
             {
                 if (operation.type == SimOpType.PutToConnection)
                 {
-                    var recieverRequest = entities.Get<IEntity>(operation.entityOpAnother.entityId);
-                    var senderRequest = entities.Get<IEntity>(operation.entityOpAuthor.entityId);
+                    IEntity recieverRequest;
+                    IEntity senderRequest;
+
+                    if (!_entities.TryGetEntity<IEntity>(operation.entityOpAnother.entityId, out recieverRequest)) continue;
+                    if (!_entities.TryGetEntity<IEntity>(operation.entityOpAuthor.entityId, out senderRequest)) continue;
+
+
 
                     if (senderRequest is IItemSource src && recieverRequest is IItemSink sink)
                     {
@@ -99,23 +113,36 @@ namespace Simulator {
                 }
             }
         }
-        public FactoryContext CreateFactoryContext(string factoryId)
+
+        public void MoveEntity(uint id, TransformSim newTransform)
         {
-            return new FactoryContext(factoryId, operations);
+            if (!_entities.TryGetTransform(id, out var oldTransform))
+                return;
+
+            _entities.SetTransform(id, newTransform);
+
+            _collisionSystem.UpdateTransform(id, newTransform);
+        }
+        public FactoryContext CreateFactoryContext(uint factoryId)
+        {
+            return new FactoryContext(factoryId, _operations);
+        }
+
+        public ManipulatorContext CreateManipulatorContext()
+        {
+            return new ManipulatorContext() { operations = _operations};
         }
 
 
 
-
-
-        public FactorySnapshot GetFactorySnapshot(string id)
+        public FactorySnapshot GetFactorySnapshot(uint id)
         {
-            return factorySim.GetSnapshotById(id);
+            return _factorySim.GetSnapshotById(id);
         }
 
-        public ConveyorSnapshot GetConveyorSnapshot(string id)
+        public ConveyorSnapshot GetConveyorSnapshot(uint id)
         {
-            return conveyorSim.GetSnapshotById(id);
+            return _conveyorSim.GetSnapshotById(id);
         }
 
         

@@ -9,13 +9,13 @@ public class FactoryView : MonoBehaviour, IEntity
 {
     [SerializeField]private InfoUI infoUI;
 
-    public string ID { get; set; }
+    public uint ID { get; set; }
 
     public GameObject factoryMesh;
     public Texture2D icon;
     StringBuilder stringBuilder = new();
 
-    public void Bind(string id)
+    public void Bind(uint id)
     {
         ID = id;
     }

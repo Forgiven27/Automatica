@@ -110,7 +110,7 @@ public class UIInventoryController : MonoBehaviour
                 {
                     startPosition = hitInfo.point,
                     endPosition = hitInfo.point + new Vector3(0,0,10),
-                    stepsOfContainer = 10,
+                    countOfSegments = 10,
                 };
                 SimulationAPI.Request<ConveyorCreateCommand>(c);
             }

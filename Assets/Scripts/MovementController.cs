@@ -17,7 +17,7 @@ public class MovementController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float movementSpeed;
     [SerializeField] private float jumpForce;
-    [SerializeField] private float cooldownJump = 5;
+    
 
 
     enum Button

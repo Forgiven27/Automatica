@@ -4,7 +4,6 @@ using UnityEngine.InputSystem.Interactions;
 
 public class StandartMoveControl : MonoBehaviour
 {
-    float speed_x = 5;
 
     float x_input;
     float y_input;

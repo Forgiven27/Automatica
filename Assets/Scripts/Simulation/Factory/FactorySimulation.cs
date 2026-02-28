@@ -1,4 +1,3 @@
-using Mono.Cecil.Cil;
 using System.Collections.Generic;
 using System.Linq;
 using Tools;
@@ -11,7 +10,7 @@ namespace Simulator {
 
         public Factory Create(FactoryCreateCommand cmd, Simulation sim)
         {
-            string genID = System.Guid.NewGuid().ToString();
+            uint genID = IDHandler.GetID();
             var factory = new Factory(
                 genID,
                 new FactoryGenerator(cmd.factoryDescription.generator),
@@ -34,7 +33,7 @@ namespace Simulator {
     
 
 
-        public void Delete(string id)
+        public void Delete(uint id)
         {
             foreach (Factory factory in factories)
             {
@@ -63,7 +62,7 @@ namespace Simulator {
             }
         }
 
-        public FactorySnapshot GetSnapshotById(string id)
+        public FactorySnapshot GetSnapshotById(uint id)
         {
             Factory factory = factories.Find(factory => factory.ID == id);
             var ports = factory.ports.ToList();
@@ -75,12 +74,7 @@ namespace Simulator {
             };
             return snapshot;
         }
-
-        public void Connect(PortRef factory, PortRef anotherPort)
-        {
-            var factoryFound = factories.Find(x => x.ID == factory.entityId);
-            
-        }
+        
 
     }
 

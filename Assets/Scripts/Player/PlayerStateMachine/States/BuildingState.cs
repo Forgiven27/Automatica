@@ -339,7 +339,7 @@ namespace StateMachine
                     {
                         startPosition = startPosition + _ghostBuilding.transform.position,
                         endPosition = endPosition,
-                        stepsOfContainer = Mathf.RoundToInt((startPosition - endPosition).magnitude),
+                        countOfSegments = Mathf.RoundToInt((startPosition - endPosition).magnitude),
                     };
 
                     if (_firstPortElement == null && _secondPortElement == null)
@@ -349,8 +349,8 @@ namespace StateMachine
                     }
                     else if (_firstPortElement != null && _secondPortElement == null)
                     {
-                        var cpStart = new ConnectPortsCommand("0",
-                            new PortRef(_firstPortElement.ID.ToString(),
+                        var cpStart = new ConnectPortsCommand(0,
+                            new PortRef(_firstPortElement.ID,
                             _firstPortElement.GetComponentInParent<IEntity>().ID)
                             );
 
@@ -364,8 +364,8 @@ namespace StateMachine
                     }
                     else if (_firstPortElement == null && _secondPortElement != null)
                     {
-                        var cpEnd = new ConnectPortsCommand("1",
-                            new PortRef(_firstPortElement.ID.ToString(),
+                        var cpEnd = new ConnectPortsCommand(1,
+                            new PortRef(_firstPortElement.ID,
                             _firstPortElement.GetComponentInParent<IEntity>().ID)
                             );
 
@@ -379,12 +379,12 @@ namespace StateMachine
                     }
                     else
                     {
-                        var cpStart = new ConnectPortsCommand("0",
-                            new PortRef(_firstPortElement.ID.ToString(),
+                        var cpStart = new ConnectPortsCommand(0,
+                            new PortRef(_firstPortElement.ID,
                             _firstPortElement.GetComponentInParent<IEntity>().ID)
                             );
-                        var cpEnd = new ConnectPortsCommand("1",
-                            new PortRef(_secondPortElement.ID.ToString(),
+                        var cpEnd = new ConnectPortsCommand(1,
+                            new PortRef(_secondPortElement.ID,
                             _secondPortElement.GetComponentInParent<IEntity>().ID)
                             );
 

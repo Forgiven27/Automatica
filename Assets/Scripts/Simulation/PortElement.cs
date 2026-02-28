@@ -3,6 +3,6 @@ using UnityEngine;
 
 public class PortElement : MonoBehaviour
 {
-    public int ID;
+    public uint ID;
     public IOType IOType;
 }

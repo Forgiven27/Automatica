@@ -10,14 +10,15 @@ public class ConveyorView : MonoBehaviour, IEntity
     [SerializeField] private InfoUI infoUI;
     [SerializeField] private ConveyorModule _conveyorModule;
     [SerializeField] private ItemsInfo _itemsInfo;
-    private List<ConveyorItem> _conveyorItems;
-    public string ID { get; set; }
+    private ConveyorItem[] _conveyorItems;
+
+    public uint ID { get; set; }
     public GameObject factoryMesh;
     public Texture2D icon;
     StringBuilder stringBuilder = new();
 
     private List<Vector3> _controlConveyorDots = new();
-    public void Bind(string id)
+    public void Bind(uint id)
     {
         ID = id;
     }
@@ -41,7 +42,7 @@ public class ConveyorView : MonoBehaviour, IEntity
             stringBuilder.Clear();
             foreach (var item in snapshot.items)
             {
-                stringBuilder.AppendLine($"Count {item.itemType} = {item.countItems} \nlinePlaceID = {item.linePlaceID}");
+                stringBuilder.AppendLine($"Count {item.itemStack.itemType} = {item.itemStack.countItems} \nlinePlaceID = {item.orderID}");
             }
             //infoUI.UpdateTextUI(stringBuilder.ToString());
             UpdateAllPositions();
@@ -74,8 +75,7 @@ public class ConveyorView : MonoBehaviour, IEntity
 
 
     
-    [SerializeField] private float conveyorLength = 50f;
-    [SerializeField] private float baseSpeed = 1f;
+    //[SerializeField] private float baseSpeed = 1f;
     [SerializeField] private bool useMaterialPropertyBlock = true;
 
     // Храним данные отдельно по типам
@@ -98,7 +98,7 @@ public class ConveyorView : MonoBehaviour, IEntity
     void InitializeAllTypes()
     {
         if (_conveyorItems == null) return;
-        if (_controlConveyorDots.Count < _conveyorItems.Count) 
+        if (_controlConveyorDots.Count < _conveyorItems.Length) 
         {
             UpdateDots(); 
             return; 
@@ -108,7 +108,7 @@ public class ConveyorView : MonoBehaviour, IEntity
         
         foreach (var conveyorItem in _conveyorItems)
         {
-            var itemData = _itemsInfo.itemsData.Find(x => x.type == conveyorItem.itemType);
+            var itemData = _itemsInfo.itemsData.Find(x => x.type == conveyorItem.itemStack.itemType);
             if (!list.Contains(itemData))
             {
                 list.Add(itemData);
@@ -129,13 +129,16 @@ public class ConveyorView : MonoBehaviour, IEntity
             var positions = new List<Vector3>();
 
             // Создаем начальные позиции (можно рандомно распределить)
-            List<ConveyorItem> typedConveyorItemList = _conveyorItems.Where(x => x.itemType == itemData.type).ToList();
+
+            List<ConveyorItem> typedConveyorItemList = _conveyorItems.Where(x => x.itemStack.itemType == itemData.type).ToList();
+            
+            
             for (int i = 0; i < typedConveyorItemList.Count(); i++)
             {
                 // Распределяем равномерно по длине конвейера
                 //float t = Random.Range(0f, 1f);
                 
-                Vector3 pos = _controlConveyorDots[typedConveyorItemList[i].linePlaceID] + Vector3.up / 2;
+                Vector3 pos = _controlConveyorDots[typedConveyorItemList[i].orderID] + Vector3.up / 2;
 
                 positions.Add(pos);
                 matrices.Add(CreateMatrix(pos, Vector3.one));
@@ -208,12 +211,12 @@ public class ConveyorView : MonoBehaviour, IEntity
             positions.Clear();
             matrices.Clear();
             List<ConveyorItem> typedConveyorItemList = _conveyorItems.
-                Where(x => x.itemType == itemData.type).ToList();
+                Where(x => x.itemStack.itemType == itemData.type).ToList();
 
             // Обновляем каждую позицию
             for (int i = 0; i < typedConveyorItemList.Count; i++)
             {
-                Vector3 pos = _controlConveyorDots[typedConveyorItemList[i].linePlaceID] + Vector3.up / 2;
+                Vector3 pos = _controlConveyorDots[typedConveyorItemList[i].orderID] + Vector3.up / 2;
                 positions.Add(pos);
 
                 // Обновляем матрицу

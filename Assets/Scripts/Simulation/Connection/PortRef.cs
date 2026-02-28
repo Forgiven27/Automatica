@@ -4,10 +4,10 @@ namespace Simulator
 { 
     public struct PortRef
     {
-        public string entityId;
-        public string portId;
+        public uint entityId;
+        public uint portId;
 
-        public PortRef (string portId, string entityId)
+        public PortRef (uint portId, uint entityId)
         {
             this.portId = portId;
             this.entityId = entityId;

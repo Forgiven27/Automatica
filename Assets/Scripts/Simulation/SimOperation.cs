@@ -16,6 +16,8 @@ namespace Simulator
     {
         TakeFromConnection,
         PutToConnection,
-        ProduceItem
+        ProduceItem,
+        GrabItem,
+        ReleaseItem
     }
 }

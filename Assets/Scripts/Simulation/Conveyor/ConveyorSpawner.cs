@@ -2,11 +2,14 @@ using Simulator;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Splines;
+using static UnityEngine.Rendering.HableCurve;
 
 public class ConveyorSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject conveyorPrefab;
+    [SerializeField] private GameObject segmentPrefab;
 
     void OnEnable()
     {
@@ -24,10 +27,27 @@ public class ConveyorSpawner : MonoBehaviour
         // TODO: Создание линии конвейеров
 
 
-        var conveyor = Instantiate(conveyorPrefab, evt.startPosition, Quaternion.identity);
+        var conveyorParent = Instantiate(conveyorPrefab, evt.segmentsTransform[0].position, Quaternion.identity);
+        SegmentView segmentView;
+        for (int i = 0; i < evt.segmentsTransform.Length; i++)
+        {
+            TransformSim transformSim = evt.segmentsTransform[i];
+            
+            GameObject segment = Instantiate(segmentPrefab, transformSim.position, transformSim.rotation, conveyorParent.transform);
+            segment.transform.localScale = transformSim.scale;
+            
+            if (segment.TryGetComponent<SegmentView>(out segmentView))
+            {
+                segmentView.Bind(evt.segmentsID[i]);
+            }
+        }
 
-        var splineContainer = conveyor.GetComponent<SplineContainer>();
-        splineContainer.Spline.AddRange(new float3[] { float3.zero, new float3(evt.endPosition.x, evt.endPosition.y, evt.endPosition.z) });
-        conveyor.GetComponent<ConveyorView>().Bind(evt.conveyorID);
+        if (conveyorParent.TryGetComponent<ConveyorView>(out ConveyorView conveyorView))
+        {
+            conveyorView.Bind(evt.conveyorID);
+        }
+
+        
+
     }
 }

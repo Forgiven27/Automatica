@@ -3,7 +3,7 @@ namespace Simulator
 {
     public abstract class Port
     {
-        public string ID;
+        public uint ID;
         public IOType ioType;
     }
 }

@@ -11,11 +11,11 @@ namespace Simulator
             this.connection = connection;
         }
 
-        public ConnectPortsCommand(string notCreatedPortID, PortRef existingEntityPortRef)
+        public ConnectPortsCommand(uint notCreatedPortID, PortRef existingEntityPortRef)
         {
             this.connection = new Connection()
             {
-                first = new PortRef() { entityId = "", portId = notCreatedPortID },
+                first = new PortRef() { entityId = 0, portId = notCreatedPortID },
                 second = existingEntityPortRef
             };
         }
@@ -25,9 +25,11 @@ namespace Simulator
             PortRef firstRef = connection.first;
             PortRef secondRef = connection.second;
 
-            var firstEntity = context.entities.Get<IEntity>(firstRef.entityId);
-            var secondEntity = context.entities.Get<IEntity>(secondRef.entityId);
-
+            IEntity firstEntity;
+            IEntity secondEntity;
+            if (!context.entities.TryGetEntity<IEntity>(firstRef.entityId, out firstEntity)) return;
+            if (!context.entities.TryGetEntity<IEntity>(secondRef.entityId, out secondEntity)) return;
+            
             if (firstEntity is IConnectable firstEndPoint && secondEntity is IConnectable secondEndPoint)
             {
                 firstEndPoint.Connect(firstRef, secondRef);

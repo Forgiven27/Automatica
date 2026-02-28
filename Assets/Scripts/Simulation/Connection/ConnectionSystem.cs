@@ -12,10 +12,10 @@ namespace Simulator
             return referencePairs.TryGetValue(first, out second);
         }
 
-        public List<Connection> GetAllConnections(string entityID, List<string> portsID)
+        public List<Connection> GetAllConnections(uint entityID, List<uint> portsID)
         {
             List<Connection> connections = new List<Connection>();
-            foreach (string portID in portsID)
+            foreach (uint portID in portsID)
             {
                 PortRef port = new PortRef() { entityId = entityID, portId = portID };
                 if (TryGetRef(port, out PortRef anotherPort))

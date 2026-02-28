@@ -17,12 +17,12 @@ namespace Simulator
         public static EventBus Events => simulation.Events;
 
 
-        public static FactorySnapshot GetFactory(string id)
+        public static FactorySnapshot GetFactory(uint id)
         {
             return simulation.GetFactorySnapshot(id);
         }
 
-        public static ConveyorSnapshot GetConveyor(string id)
+        public static ConveyorSnapshot GetConveyor(uint id)
         {
             return simulation.GetConveyorSnapshot(id);
         }

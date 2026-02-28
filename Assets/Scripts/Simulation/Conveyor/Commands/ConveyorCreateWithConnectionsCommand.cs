@@ -9,10 +9,10 @@ namespace Simulator
         {
             IEntity entity = context.conveyorSim.Create(ConveyorCreateCommand, context.simulation);
             context.entities.Add(entity);
-            string createdID = entity.ID;
+            uint createdID = entity.ID;
             foreach (var cp in ConnectPortsCommand)
             {
-                if (cp.connection.first.entityId == "")
+                if (cp.connection.first.entityId == 0)
                 {
                     ConnectPortsCommand fullConnectCommand = new ConnectPortsCommand(new Connection()
                     {
