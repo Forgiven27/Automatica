@@ -7,30 +7,34 @@ using System.Linq;
 
 public class ConveyorView : MonoBehaviour, IEntity
 {
-    [SerializeField] private InfoUI infoUI;
-    [SerializeField] private ConveyorModule _conveyorModule;
+    
+    
     [SerializeField] private ItemsInfo _itemsInfo;
+    public TransformSim[] _segmentsTransfomSim;
+
     private ConveyorItem[] _conveyorItems;
 
     public uint ID { get; set; }
-    public GameObject factoryMesh;
+
     public Texture2D icon;
     StringBuilder stringBuilder = new();
-
-    private List<Vector3> _controlConveyorDots = new();
+    Vector3 objectOffset = Vector3.up * 1.5f;
+    
     public void Bind(uint id)
     {
         ID = id;
     }
 
-    private void OnEnable()
+    public void SetSegments(TransformSim[] transforms)
     {
-        _conveyorModule.OnConveyorChanged += UpdateDots;
+        _segmentsTransfomSim = transforms;
+        UpdateDots();
     }
 
-    private void OnDisable ()
+    void Start()
     {
-        _conveyorModule.OnConveyorChanged -= UpdateDots;
+        InitializeAllTypes();
+        UpdateAllPositions();
     }
 
     void LateUpdate()
@@ -42,6 +46,7 @@ public class ConveyorView : MonoBehaviour, IEntity
             stringBuilder.Clear();
             foreach (var item in snapshot.items)
             {
+                if (item != null)
                 stringBuilder.AppendLine($"Count {item.itemStack.itemType} = {item.itemStack.countItems} \nlinePlaceID = {item.orderID}");
             }
             //infoUI.UpdateTextUI(stringBuilder.ToString());
@@ -52,6 +57,7 @@ public class ConveyorView : MonoBehaviour, IEntity
 
     void UpdateDots()
     {
+        /*
         var conveyors = _conveyorModule.GetPoolConveyor();
         if (conveyors != null)
         {
@@ -68,7 +74,8 @@ public class ConveyorView : MonoBehaviour, IEntity
                 }
             }
 
-        }
+        }*/
+
         UpdateAllPositions();
     }
 
@@ -89,16 +96,13 @@ public class ConveyorView : MonoBehaviour, IEntity
     private Dictionary<ItemData, MaterialPropertyBlock> propertyBlocks =
         new Dictionary<ItemData, MaterialPropertyBlock>();
 
-    void Start()
-    {
-        InitializeAllTypes();
-        UpdateAllPositions();
-    }
+    
 
     void InitializeAllTypes()
     {
         if (_conveyorItems == null) return;
-        if (_controlConveyorDots.Count < _conveyorItems.Length) 
+        if (!_conveyorItems.Any(x => x != null)) return;
+        if (_segmentsTransfomSim.Length < _conveyorItems.Length) 
         {
             UpdateDots(); 
             return; 
@@ -108,6 +112,7 @@ public class ConveyorView : MonoBehaviour, IEntity
         
         foreach (var conveyorItem in _conveyorItems)
         {
+            if (conveyorItem == null) continue;
             var itemData = _itemsInfo.itemsData.Find(x => x.type == conveyorItem.itemStack.itemType);
             if (!list.Contains(itemData))
             {
@@ -117,20 +122,24 @@ public class ConveyorView : MonoBehaviour, IEntity
 
         foreach (var itemData in list)
         {
-            // Пропускаем если нет меша или материала
             if (itemData.mesh == null || itemData.material == null)
             {
                 Debug.LogWarning($"Item type {itemData.name} missing mesh or material");
                 continue;
             }
 
-            // Инициализируем списки
             var matrices = new List<Matrix4x4>();
             var positions = new List<Vector3>();
 
-            // Создаем начальные позиции (можно рандомно распределить)
-
-            List<ConveyorItem> typedConveyorItemList = _conveyorItems.Where(x => x.itemStack.itemType == itemData.type).ToList();
+            List<ConveyorItem> typedConveyorItemList = new();
+            foreach (var conveyorItem in _conveyorItems)
+            {
+                if (conveyorItem == null) continue;
+                if (conveyorItem.itemStack.itemType == itemData.type)
+                {
+                    typedConveyorItemList.Add(conveyorItem);
+                }
+            }
             
             
             for (int i = 0; i < typedConveyorItemList.Count(); i++)
@@ -138,7 +147,7 @@ public class ConveyorView : MonoBehaviour, IEntity
                 // Распределяем равномерно по длине конвейера
                 //float t = Random.Range(0f, 1f);
                 
-                Vector3 pos = _controlConveyorDots[typedConveyorItemList[i].orderID] + Vector3.up / 2;
+                Vector3 pos = _segmentsTransfomSim[typedConveyorItemList[i].orderID].position + objectOffset;
 
                 positions.Add(pos);
                 matrices.Add(CreateMatrix(pos, Vector3.one));
@@ -210,13 +219,20 @@ public class ConveyorView : MonoBehaviour, IEntity
             var positions = positionsByType[itemData];
             positions.Clear();
             matrices.Clear();
-            List<ConveyorItem> typedConveyorItemList = _conveyorItems.
-                Where(x => x.itemStack.itemType == itemData.type).ToList();
-
+            List<ConveyorItem> typedConveyorItemList = new List<ConveyorItem>();
+            foreach (var conveyorItem in _conveyorItems)
+            {
+                if (conveyorItem == null) continue;
+                if (conveyorItem.itemStack.itemType == itemData.type)
+                {
+                    typedConveyorItemList.Add(conveyorItem);
+                }
+            }
+            
             // Обновляем каждую позицию
             for (int i = 0; i < typedConveyorItemList.Count; i++)
             {
-                Vector3 pos = _controlConveyorDots[typedConveyorItemList[i].orderID] + Vector3.up / 2;
+                Vector3 pos = _segmentsTransfomSim[typedConveyorItemList[i].orderID].position + objectOffset;
                 positions.Add(pos);
 
                 // Обновляем матрицу

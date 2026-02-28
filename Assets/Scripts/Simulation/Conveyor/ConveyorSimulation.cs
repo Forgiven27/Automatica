@@ -29,8 +29,8 @@ namespace Simulator {
             sim.Events.Raise(new ConveyorCreatedEvent()
             {
                 conveyorID = generatedID,
-                startPosition = cmd.startPosition,
-                endPosition = cmd.endPosition,
+                segmentsID = segmentsID,
+                segmentsTransform = cmd.segmentsTransform,
             });
             return conveyor;
         }

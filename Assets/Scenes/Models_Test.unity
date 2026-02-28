@@ -13900,7 +13900,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c57184836e4bea47bc139e89ddfcb26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConveyorSpawner
-  conveyorPrefab: {fileID: 5122255851150550051, guid: d0e603c6d7599004ebeeab57064a8781, type: 3}
+  conveyorPrefab: {fileID: 7413982250819990399, guid: 7cedbf2f12bd1714e8b431f0db8f0e88, type: 3}
+  segmentPrefab: {fileID: 536160209743554467, guid: 061e9f0816bdc7a4e8afb7b8b15ad152, type: 3}
 --- !u!114 &1438512185
 MonoBehaviour:
   m_ObjectHideFlags: 0

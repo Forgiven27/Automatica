@@ -45,8 +45,9 @@ namespace Simulator
 
                     if (_segments[i].IsFull && _isNextFree)
                     {
-                        _segments[i].Export(_segments[i].currentType);
-                        _segments[i+1].Import(_segments[i].currentType);
+                        ItemType itemType = _segments[i].currentType;
+                        _segments[i].Export(itemType);
+                        _segments[i+1].Import(itemType);
                     } else 
                     {
                         _isNextFree = !_segments[i].IsFull;
@@ -64,7 +65,7 @@ namespace Simulator
 
         public bool TryImport(ItemType itemType)
         {
-            return _segments[_segments.Count - 1].TryImport(itemType);
+            return _segments[0].TryImport(itemType);
         }
         public void Import(ItemType itemType)
         {

@@ -171,7 +171,8 @@ namespace StateMachine
                 _ghostBuilding = _context.GhostSpawner.InstantiateGhost(_buildBoard.firstCell.currentBuilding.buildingObject);
             }
 
-            if (InputTool.TryGetSurfacePoint(out Vector3 point))
+            //if (InputTool.TryGetSurfacePoint(out Vector3 point))
+            if (InputTool.TryGetSurfaceGridPoint(out Vector3 point, 1))
             {
                 /*
                 Vector3 newPosition = new Vector3(hitInfo.point.x + (hitInfo.point.x % step < step / 2 ? -hitInfo.point.x % step : step - hitInfo.point.x % step),
@@ -265,7 +266,7 @@ namespace StateMachine
 
             if (numKnot == 0)
             {
-                if (InputTool.TryGetPoint("Building", out RaycastHit hitInfo))
+                if (InputTool.TryGetRaycastHit("Building", out RaycastHit hitInfo))
                 {
                     if (hitInfo.collider != null && hitInfo.collider.TryGetComponent(out PortElement portElement) && portElement.IOType == IOType.Output)
                     {
@@ -290,7 +291,7 @@ namespace StateMachine
             }
             else if (numKnot == 1)
             {
-                if (InputTool.TryGetPoint("Building", out RaycastHit hitInfo))
+                if (InputTool.TryGetRaycastHit("Building", out RaycastHit hitInfo))
                 {
                     if (hitInfo.collider != null && hitInfo.collider.TryGetComponent(out PortElement portElement) &&
                         portElement != _firstPortElement && portElement.IOType == IOType.Input)
@@ -334,17 +335,14 @@ namespace StateMachine
                     if (startPosition == endPosition) 
                         return;
 
-
+                    var segmentsTransformSim = _ghostBuilding.GetComponent<ConveyorModule>().GetSegmentsTransform();
                     var c = new ConveyorCreateCommand()
                     {
-                        startPosition = startPosition + _ghostBuilding.transform.position,
-                        endPosition = endPosition,
-                        countOfSegments = Mathf.RoundToInt((startPosition - endPosition).magnitude),
+                        segmentsTransform = segmentsTransformSim,
                     };
 
                     if (_firstPortElement == null && _secondPortElement == null)
                     {
-
                         SimulationAPI.Request<ConveyorCreateCommand>(c);
                     }
                     else if (_firstPortElement != null && _secondPortElement == null)

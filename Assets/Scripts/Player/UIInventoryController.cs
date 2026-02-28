@@ -104,7 +104,7 @@ public class UIInventoryController : MonoBehaviour
                     hitInfo.point.z + (hitInfo.point.z % step < step / 2 ? -hitInfo.point.z % step : step - hitInfo.point.z % step))
                     + worldGrid.null_position;
                 */
-
+                /*
                 Debug.Log("Отправлен запрос");
                 var c = new ConveyorCreateCommand()
                 {
@@ -112,7 +112,7 @@ public class UIInventoryController : MonoBehaviour
                     endPosition = hitInfo.point + new Vector3(0,0,10),
                     countOfSegments = 10,
                 };
-                SimulationAPI.Request<ConveyorCreateCommand>(c);
+                SimulationAPI.Request<ConveyorCreateCommand>(c);*/
             }
             buttonsActiveState[currentButton] = false;
             await TimerStandard(currentButton);

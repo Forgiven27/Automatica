@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using System.Text;
+using UnityEngine;
 namespace Simulator { 
     public class Simulation
     {
@@ -95,13 +97,13 @@ namespace Simulator {
                     if (!_entities.TryGetEntity<IEntity>(operation.entityOpAuthor.entityId, out senderRequest)) continue;
 
 
-
                     if (senderRequest is IItemSource src && recieverRequest is IItemSink sink)
                     {
                         if (src.TryExport(operation.items, out List<ItemType> itemCanExport))
                         {
                             foreach (var itemType in itemCanExport)
                             {
+                                
                                 if (sink.TryImport(itemType))
                                 {
                                     src.Export(itemType);

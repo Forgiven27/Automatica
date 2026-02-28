@@ -45,6 +45,7 @@ public class ConveyorSpawner : MonoBehaviour
         if (conveyorParent.TryGetComponent<ConveyorView>(out ConveyorView conveyorView))
         {
             conveyorView.Bind(evt.conveyorID);
+            conveyorView.SetSegments(evt.segmentsTransform);
         }
 
         

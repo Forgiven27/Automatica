@@ -92,8 +92,8 @@ namespace Simulator
 
         public bool TryImport(ItemType itemType)
         {
-            if (!IsFull) return false;
-            if (itemType != currentType) return false;
+            if (IsFull) return false;
+            //if (itemType != currentType) return false;
             return true;
         }
         public void Import(ItemType itemType)

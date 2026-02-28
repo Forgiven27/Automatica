@@ -1,3 +1,4 @@
+using Simulator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,20 @@ public class ConveyorModule : MonoBehaviour
     }
 
     public List<ConveyorElement> GetPoolConveyor() => _poolConveyorElements;
+    
+    public TransformSim[] GetSegmentsTransform()
+    {
+        TransformSim[] transforms = new TransformSim[_poolConveyorElements.Count];
+
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            transforms[i] = new TransformSim(_poolConveyorElements[i].transform.position,
+                _poolConveyorElements[i].transform.rotation,
+                _poolConveyorElements[i].transform.localScale);
+        }
+
+        return transforms;
+    }
 
     private void Spline_changed()
     {
