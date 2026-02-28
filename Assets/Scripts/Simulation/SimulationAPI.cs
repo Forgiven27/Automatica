@@ -26,5 +26,11 @@ namespace Simulator
         {
             return simulation.GetConveyorSnapshot(id);
         }
+
+        public static ManipulatorSnapshot GetManipulator(uint id)
+        {
+            return simulation.GetManipulator(id);
+        }
+
     }
 }

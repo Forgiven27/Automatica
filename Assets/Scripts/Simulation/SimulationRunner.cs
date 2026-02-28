@@ -3,13 +3,13 @@ using Simulator;
 
 public class SimulationRunner : MonoBehaviour
 {
-    public float tickDuration = 1f;
+    [SerializeField] private SimulationConfiguration config;
     float timer = 0;
     Simulation sim;
 
     private void Awake()
     {
-        sim = new Simulation();
+        sim = new Simulation(config);
         SimulationAPI.Bind(sim);
     }
 
@@ -18,6 +18,7 @@ public class SimulationRunner : MonoBehaviour
     {
         if (timer > 0) { timer -= Time.deltaTime; return; }
         sim.Tick();
+        timer = config.tickDuration;
     }
 
 

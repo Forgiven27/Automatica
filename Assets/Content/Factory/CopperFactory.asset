@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CopperFactory
   m_EditorClassIdentifier: Assembly-CSharp::FactoryDescription
   generator:
-    timeCooldown: 50
+    timeCooldown: 20
     ingridients: []
     resultItems:
     - key: 1

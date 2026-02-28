@@ -9,8 +9,8 @@ namespace Simulator
         public uint ID { get; set; }
         bool _isNextFree;
         ProductionTimer _timer = new();
-        int _cooldown = 100;
-        List<ConveyorSegment> _segments = new(); // направление движения от нулевого
+        int _cooldown = 10;
+        public List<ConveyorSegment> segments = new(); // направление движения от нулевого
 
         public ConveyorLine(uint id, uint[] segmentsID)
         {
@@ -21,10 +21,10 @@ namespace Simulator
                 var segment = new ConveyorSegment(segmentsID[i]);    
                 if (i > 0)
                 {
-                    segment.ConnectInputPort(new PortRef(1, _segments[i-1].ID));
-                    _segments[i-1].ConnectOutputPort(new PortRef(0,segment.ID));
+                    segment.ConnectInputPort(new PortRef(1, segments[i-1].ID));
+                    segments[i-1].ConnectOutputPort(new PortRef(0,segment.ID));
                 }
-                _segments.Add(segment);
+                segments.Add(segment);
             }
         }
 
@@ -35,22 +35,22 @@ namespace Simulator
             {
                 _isNextFree = false;
 
-                for (int i = _segments.Count - 1; i >= 0; i--)
+                for (int i = segments.Count - 1; i >= 0; i--)
                 {
-                    if (i == _segments.Count - 1)
+                    if (i == segments.Count - 1)
                     {
-                        _isNextFree = !_segments[i].IsFull; 
+                        _isNextFree = !segments[i].IsFull; 
                         continue;
                     }
 
-                    if (_segments[i].IsFull && _isNextFree)
+                    if (segments[i].IsFull && _isNextFree)
                     {
-                        ItemType itemType = _segments[i].currentType;
-                        _segments[i].Export(itemType);
-                        _segments[i+1].Import(itemType);
+                        ItemType itemType = segments[i].currentType;
+                        segments[i].Export(itemType);
+                        segments[i+1].Import(itemType);
                     } else 
                     {
-                        _isNextFree = !_segments[i].IsFull;
+                        _isNextFree = !segments[i].IsFull;
                     }   
                 }
                 _timer.Start(_cooldown);
@@ -65,41 +65,41 @@ namespace Simulator
 
         public bool TryImport(ItemType itemType)
         {
-            return _segments[0].TryImport(itemType);
+            return segments[0].TryImport(itemType);
         }
         public void Import(ItemType itemType)
         {
-            _segments[0].Import(itemType);
+            segments[0].Import(itemType);
         }
 
         public bool TryExport(List<ItemType> itemRequiredTypes, out List<ItemType> itemExistTypes)
         {
-            return _segments[_segments.Count - 1].TryExport(itemRequiredTypes, out itemExistTypes);
+            return segments[segments.Count - 1].TryExport(itemRequiredTypes, out itemExistTypes);
         }
         public void Export(ItemType itemType)
         {
-            _segments[_segments.Count - 1].Export(itemType);
+            segments[segments.Count - 1].Export(itemType);
         }
 
         void RemoveItemAtSegment(uint ID)
         {
-            _segments.Find(i => i.ID == ID)?.RemoveItem();
+            segments.Find(i => i.ID == ID)?.RemoveItem();
         }
 
         void CreateItemAtSegment(uint ID, ItemType itemType)
         {
-            _segments.Find(i => i.ID == ID)?.SetItem(itemType);
+            segments.Find(i => i.ID == ID)?.SetItem(itemType);
         }
 
 
         public void Connect(PortRef thisPort, PortRef externalPort)
         {
-            if (thisPort.entityId == _segments[0].ID && thisPort.portId == 0)
+            if (thisPort.entityId == segments[0].ID && thisPort.portId == 0)
             {
-                _segments[0].ConnectInputPort(externalPort);
-            }else if (thisPort.entityId == _segments[_segments.Count - 1].ID && thisPort.portId == 1)
+                segments[0].ConnectInputPort(externalPort);
+            }else if (thisPort.entityId == segments[segments.Count - 1].ID && thisPort.portId == 1)
             {
-                _segments[_segments.Count - 1].ConnectOutputPort(externalPort);
+                segments[segments.Count - 1].ConnectOutputPort(externalPort);
             }
         }
 
@@ -109,24 +109,24 @@ namespace Simulator
         }
         public void Disconnect(PortRef thisPort)
         {
-            if (thisPort.entityId == _segments[0].ID && thisPort.portId == 0)
+            if (thisPort.entityId == segments[0].ID && thisPort.portId == 0)
             {
-                _segments[0].DisconnectInputPort();
+                segments[0].DisconnectInputPort();
             }
-            else if (thisPort.entityId == _segments[_segments.Count - 1].ID && thisPort.portId == 1)
+            else if (thisPort.entityId == segments[segments.Count - 1].ID && thisPort.portId == 1)
             {
-                _segments[_segments.Count - 1].DisconnectOutputPort();
+                segments[segments.Count - 1].DisconnectOutputPort();
             }
         }
 
         public ConveyorItem[] GetItems() 
         { 
-            var items = new ConveyorItem[_segments.Count];
-            for (int i = 0;i < _segments.Count; i++)
+            var items = new ConveyorItem[segments.Count];
+            for (int i = 0;i < segments.Count; i++)
             {
-                if (_segments[i].IsFull)
+                if (segments[i].IsFull)
                 {
-                    var item = new ItemStack(_segments[i].currentType, 1);
+                    var item = new ItemStack(segments[i].currentType, 1);
                     var conveyorItem = new ConveyorItem(i, item);
                     items[i] = conveyorItem;
                 }

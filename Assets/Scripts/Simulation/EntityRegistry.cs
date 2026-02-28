@@ -16,11 +16,6 @@ namespace Simulator
             _transforms[entity.ID] = transform;
         }
 
-        public void Add(IEntity entity)
-        {
-            _entities[entity.ID] = entity;
-        }
-
         public bool TryGetEntity<T>(uint id, out T entity) where T : class, IEntity
         {
             if (_entities.TryGetValue(id, out var e) && e is T typed)

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
+using TMPro;
 
-using System.Text;
-using UnityEngine;
 namespace Simulator { 
     public class Simulation
     {
@@ -11,16 +10,17 @@ namespace Simulator {
 
         FactorySimulation _factorySim = new();
         ConveyorSimulation _conveyorSim = new();
+        ManipulatorSimulation _manipulatorSim = new();
         EntityRegistry _entities = new();
         ConnectionSystem _connections = new();
         List<SimOperation> _operations = new();
         WorldQuerySimulation _worldQuery;
         CollisionSimulation _collisionSystem;
-        public Simulation()
+        public Simulation(SimulationConfiguration config)
         {
             _collisionSystem = new CollisionSimulation(new CollisionConfig()
             {
-                CellSize = 1,
+                CellSize = config.cellSize,
             }, _entities);
             _worldQuery = new WorldQuerySimulation(_collisionSystem.StaticGrid, _collisionSystem.DynamicGrid);
         }
@@ -33,8 +33,8 @@ namespace Simulator {
         public void ProcessCommands()
         {
             var commandContext = new CommandContext(this, _factorySim,
-                _conveyorSim, _collisionSystem, _entities, _connections,
-                _worldQuery);
+                _conveyorSim, _manipulatorSim, _collisionSystem,
+                _entities, _connections, _worldQuery);
             
             while (_commands.TryDequeue(out var cmd))
             {
@@ -52,6 +52,7 @@ namespace Simulator {
             ApplyInputOperations();
             ApplyOutputOperations();
             _conveyorSim.Tick();
+            _manipulatorSim.Tick(this);
         }
 
         private void ApplyInputOperations()
@@ -147,6 +148,11 @@ namespace Simulator {
             return _conveyorSim.GetSnapshotById(id);
         }
 
-        
+        public ManipulatorSnapshot GetManipulator(uint id)
+        {
+            return _manipulatorSim.GetSnapshotById(id);
+        }
+
+
     }
 }

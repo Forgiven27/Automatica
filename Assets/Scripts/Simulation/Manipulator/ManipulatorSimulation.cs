@@ -9,19 +9,28 @@ namespace Simulator
 
         public Manipulator Create(ManipulatorCreateCommand cmd, Simulation sim)
         {
-            string genID = System.Guid.NewGuid().ToString();
-            var manipulator = new Manipulator();
+            
+            var manipulator = new Manipulator(cmd.baseYaw, cmd.bones);
             manipulators.Add(manipulator);
 
-            sim.Events.Raise(new FactoryCreatedEvent()
+            sim.Events.Raise(new ManipulatorCreatedEvent()
             {
-
+                bones = cmd.bones,
+                transform = cmd.transform,
             });
 
             return manipulator;
         }
 
 
+        public void Tick(Simulation simulation)
+        {
+            foreach (Manipulator manipulator in manipulators)
+            {
+                ManipulatorContext context = simulation.CreateManipulatorContext();
+                manipulator.Work(context);
+            }
+        }
 
         public void Delete(uint id)
         {
@@ -43,14 +52,7 @@ namespace Simulator
                 }
             }
         }
-        public void Tick(Simulation simulation)
-        {
-            foreach (Manipulator manipulator in manipulators)
-            {
-                ManipulatorContext context = simulation.CreateManipulatorContext();
-                manipulator.Work(context);
-            }
-        }
+        
 
         public ManipulatorSnapshot GetSnapshotById(uint id)
         {
@@ -58,6 +60,8 @@ namespace Simulator
             
             var snapshot = new ManipulatorSnapshot()
             {
+                baseYaw = manipulator.BaseYaw,
+                bones = manipulator.GetBonesSnapshot(),
             };
             return snapshot;
         }

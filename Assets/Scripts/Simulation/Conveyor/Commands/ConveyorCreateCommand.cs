@@ -1,17 +1,19 @@
-using UnityEngine;
+
 namespace Simulator
 {
     public struct ConveyorCreateCommand : ISimulatorCommand
     {
         public TransformSim[] segmentsTransform;
-        /*
-        public Vector3 startPosition;
-        public Vector3 endPosition;
-        */
+        public CollisionObject[] segmentsCollsion; // TODO
+        public TransformSim lineTranform;
         public void Execute(CommandContext context)
         {
-            IEntity entity = context.conveyorSim.Create(this, context.simulation);
-            context.entities.Add(entity);
+            ConveyorLine line = context.conveyorSim.Create(this, context.simulation);
+            context.entities.Add(line, lineTranform);
+            foreach (var segment in line.segments)
+            {    
+                context.entities.Add(segment, lineTranform);   
+            }
         }
     }
 }

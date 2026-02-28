@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.Mathematics.Geometry;
+using System;
 
 namespace Simulator
 {
@@ -8,7 +9,16 @@ namespace Simulator
     {
         public uint ID { get; set; }
 
-        private List<Bone> bones = new List<Bone>();
+        private Bone[] _bones;
+        public Dictionary<uint, float> GetBonesSnapshot()
+        {
+            Dictionary<uint, float> boneSnapshot = new Dictionary<uint, float>();
+            foreach (Bone bone in _bones)
+            {
+                boneSnapshot.Add(bone.ID, bone.joint.CurrentAngle);
+            }
+            return boneSnapshot;
+        }
 
         private ProductionTimer timer;
 
@@ -43,16 +53,26 @@ namespace Simulator
 
         // Состояние
         public ManipulatorState State;
-
+        private Queue<ManipulatorCommandBuffer> _commandQueue;
         // Очередь действий из скрипта
-        public ManipulatorCommandBuffer CommandBuffer;
+        private ManipulatorCommandBuffer CommandBuffer;
+
         private ManipulatorContext context;
-        public Manipulator()
+        public Manipulator(float baseYaw, Bone[] bones)
         {
             timer = new ProductionTimer();
-
+            _commandQueue = new Queue<ManipulatorCommandBuffer>();
+            _bones = bones;
+            BaseYaw = baseYaw;
         }
 
+        public void SetCommands(Queue<ManipulatorCommandBuffer> commandQueue)
+        {
+            for (int i = 0; i < commandQueue.Count; i++)
+            {
+                _commandQueue.Enqueue(commandQueue.Dequeue());
+            }
+        }
 
         public void Work(ManipulatorContext context)
         {
@@ -60,6 +80,15 @@ namespace Simulator
             {
                 timer.Start(10);
                 this.context = context;
+                if (_commandQueue.Count > 0)
+                {
+                    State = ManipulatorState.ExecutingScript;
+                }
+                else
+                {
+                    State = ManipulatorState.Idle;
+                }
+
                 DoScript();
             }
             else
@@ -74,24 +103,39 @@ namespace Simulator
             {
                 case ManipulatorState.Idle:
                     break;
+
                 case ManipulatorState.ExecutingScript:
-                    ExecuteScript(); 
+                    if (CommandBuffer == null)
+                    {
+                        if (_commandQueue.TryDequeue(out CommandBuffer)) 
+                            ExecuteCommand();
+                    }
                     break;
+
                 case ManipulatorState.Collision:
                     break;
+
                 case ManipulatorState.JointLimitReached:
                     break;
+
                 case ManipulatorState.NoItemToGrab:
                     break;
+
                 case ManipulatorState.TargetUnreachable:
                     break;
             }
         }
 
-        void ExecuteScript()
+        void ExecuteCommand()
         {
             //ExecuteOperation();
-            if (CommandBuffer.TargetBaseYaw != null && BaseYaw != CommandBuffer.TargetBaseYaw)
+            if (CommandBuffer == null) return;
+
+            if (CommandBuffer.sleep > 0)
+            {
+                CommandBuffer.sleep -= 1;
+            }
+            else if (CommandBuffer.TargetBaseYaw != null && BaseYaw != CommandBuffer.TargetBaseYaw)
             {
                 float angleStep = 10;
                 BaseYaw = Mathf.MoveTowards(BaseYaw, CommandBuffer.TargetBaseYaw ?? BaseYaw, angleStep);
@@ -101,20 +145,24 @@ namespace Simulator
                 List<int> keysToRemove = new List<int>();
                 foreach (var kvp in CommandBuffer.TargetJointAngles)
                 {
-                    Bone bone = bones.Find(x => x.ID == kvp.Key);
-                    if (bone != null)
+                    Bone targetBone;// = null;
+                    foreach (var bone in _bones)
                     {
-                        float newAngle = Mathf.MoveTowards(bone.joint.CurrentAngle, kvp.Value, bone.joint.MaxSpeedPerTick);
-                        bone.joint.CurrentAngle = Mathf.Clamp(newAngle, bone.joint.MinAngle, bone.joint.MaxAngle);
-                        if (bone.joint.CurrentAngle == kvp.Value)
-                            keysToRemove.Add(kvp.Key);
+                        if (bone.ID == kvp.Key)
+                        {
+                            targetBone = bone;
+                            float newAngle = Mathf.MoveTowards(targetBone.joint.CurrentAngle, kvp.Value, targetBone.joint.MaxSpeedPerTick);
+                            targetBone.joint.CurrentAngle = Mathf.Clamp(newAngle, targetBone.joint.MinAngle, targetBone.joint.MaxAngle);
+                            if (targetBone.joint.CurrentAngle == kvp.Value)
+                                keysToRemove.Add(kvp.Key);
+                            break;
+                        }
                     }
                 }
                 foreach (var key in keysToRemove)
                 {
                     CommandBuffer.TargetJointAngles.Remove(key);
                 }
-
             }
             else if (CommandBuffer.RequestGrab)
             {
@@ -132,6 +180,14 @@ namespace Simulator
                     type = SimOpType.ReleaseItem,
                 });
             }
+            if (CommandBuffer.RequestGrab == false &&
+                CommandBuffer.RequestRelease == false &&
+                CommandBuffer.TargetBaseYaw == BaseYaw &&
+                CommandBuffer.TargetJointAngles.Count == 0 &&
+                CommandBuffer.sleep == 0)
+            {
+                CommandBuffer = null;
+            }
 
         }
 
@@ -148,7 +204,7 @@ namespace Simulator
 
 
     }
-
+    [Serializable]
     public struct JointState
     {
         public float CurrentAngle;
@@ -156,16 +212,16 @@ namespace Simulator
         public float MaxAngle;
         public float MaxSpeedPerTick;
     }
-
+    [Serializable]
     public struct SegmentDefinition
     {
         public float Length;
         public float Radius; // для простых collision checks
     }
-
-    public class Bone
+    [Serializable]
+    public struct Bone
     {
-        public int ID;
+        public uint ID;
         public SegmentDefinition segment;
         public JointState joint; //считается ближайшим к основанию
     }
@@ -177,5 +233,7 @@ namespace Simulator
 
         public bool RequestGrab;
         public bool RequestRelease;
+
+        public int sleep;
     }
 }

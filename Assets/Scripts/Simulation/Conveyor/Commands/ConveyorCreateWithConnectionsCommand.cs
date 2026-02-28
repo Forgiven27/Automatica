@@ -8,7 +8,7 @@ namespace Simulator
         public void Execute(CommandContext context)
         {
             IEntity entity = context.conveyorSim.Create(ConveyorCreateCommand, context.simulation);
-            context.entities.Add(entity);
+            context.entities.Add(entity, ConveyorCreateCommand.lineTranform);
             uint createdID = entity.ID;
             foreach (var cp in ConnectPortsCommand)
             {

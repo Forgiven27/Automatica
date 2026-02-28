@@ -1,8 +1,9 @@
 using UnityEngine;
 namespace Simulator
 {
-    public class ManipulatorCreatedEvent : ISimulationEvent
+    public struct ManipulatorCreatedEvent : ISimulationEvent
     {
-
+        public TransformSim transform;
+        public Bone[] bones;
     }
 }
