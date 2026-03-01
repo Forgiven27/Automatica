@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class ManipulatorView : MonoBehaviour, IEntity
 {
@@ -15,6 +16,7 @@ public class ManipulatorView : MonoBehaviour, IEntity
     {
         UpdateManipulator(baseYaw, bones);
     }
+
 
     private void LateUpdate()
     {
@@ -32,7 +34,9 @@ public class ManipulatorView : MonoBehaviour, IEntity
                 Vector3 eulerAngle = new Vector3(angleX,
                     bones[i].boneRef.transform.eulerAngles.y,
                     bones[i].boneRef.transform.eulerAngles.z);
-                bones[i].boneRef.transform.eulerAngles = eulerAngle;
+
+                //bones[i].boneRef.transform.eulerAngles = eulerAngle;
+                bones[i].boneRef.transform.localEulerAngles = eulerAngle;
             }
         }
     }

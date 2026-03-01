@@ -32,5 +32,16 @@ namespace Simulator
             return simulation.GetManipulator(id);
         }
 
+        public static string GetScriptText(uint id)
+        {
+            return simulation.GetScriptText(id);
+        }
+
+
+        public static uint[] GetAllManipulator()
+        {
+            return simulation.GetAllManipulator();
+        }
+
     }
 }

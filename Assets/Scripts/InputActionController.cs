@@ -24,6 +24,7 @@ public class InputActionController
             { inputActions.Player.LeftRotate, new bool2(false, true)},
             { inputActions.Player.RightRotate, new bool2(false, true)},
             { inputActions.Player.Cancel, new bool2(false, true)},
+            { inputActions.Player.ControlPanel, new bool2(false, true)},
         };
 
         _actionsVector = new Dictionary<InputAction, Vector2>()

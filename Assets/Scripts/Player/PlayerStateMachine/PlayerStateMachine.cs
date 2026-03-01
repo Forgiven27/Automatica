@@ -10,7 +10,8 @@ namespace StateMachine
         {
             Standard,
             Building,
-            SelectBuilding
+            SelectBuilding,
+            ControlPanel
         }
 
         private StateContext _context;
@@ -51,8 +52,12 @@ namespace StateMachine
             _context.inputController.OnFifthS_Tap += (
                 () => actionController.TrySetActionReady(_context.InputSystem.Player.FifthSlot));
 
+            _context.inputController.OnControlPanel_Tap += (
+                () => actionController.TrySetActionReady(_context.InputSystem.Player.ControlPanel));
 
-            _context.inputController.OnCancel_Tap += (() => actionController.TrySetActionReady(_context.InputSystem.Player.Cancel));
+
+            _context.inputController.OnCancel_Tap += (
+                () => actionController.TrySetActionReady(_context.InputSystem.Player.Cancel));
 
 
 
@@ -60,7 +65,8 @@ namespace StateMachine
             {
                 { States.Standard, new StandardState() },
                 { States.Building, new BuildingState() },
-                { States.SelectBuilding, new SelectBuildingState() }
+                { States.SelectBuilding, new SelectBuildingState() },
+                { States.ControlPanel, new ControlPanelState() },
             };
             _currentState = states[States.Standard];
 

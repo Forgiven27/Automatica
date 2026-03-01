@@ -14,29 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildBoard
   firstCell:
     currentBuilding:
-      buildingObject: {fileID: 5035442550162173728, guid: 50992362f6a305245b56c9189f162c0b, type: 3}
-      sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-      buildingType: 2
-      fullDescription: {fileID: 11400000, guid: 77e8d4d2c1ffad14d806f4b1cea0fce5, type: 2}
-      header: "\u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438"
-      textDescription: " \u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438
-        \u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438
-        \u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438"
+      buildingObject: {fileID: 90540712035210419, guid: 959192a156597fe489d19b63856828a8, type: 3}
+      sprite: {fileID: -336368419, guid: 0508261a5885db84997d95c9a8dcc367, type: 3}
+      buildingType: 4
+      fullDescription: {fileID: 11400000, guid: 1e4d8d00030171f4d98e59432dc5061e, type: 2}
+      header: "\u041C\u0430\u043D\u0438\u043F\u0443\u043B\u044F\u0442\u043E\u0440"
+      textDescription: "\u041C\u0435\u0445\u0430\u043D\u0438\u0447\u0435\u0441\u043A\u0430\u044F
+        \u0440\u0443\u043A\u0430 \u041C\u0430\u043D\u0438\u043F\u0443\u043B\u044F\u0442\u043E\u0440"
     buildings:
+    - buildingObject: {fileID: 90540712035210419, guid: 959192a156597fe489d19b63856828a8, type: 3}
+      sprite: {fileID: -336368419, guid: 0508261a5885db84997d95c9a8dcc367, type: 3}
+      buildingType: 4
+      fullDescription: {fileID: 11400000, guid: 1e4d8d00030171f4d98e59432dc5061e, type: 2}
+      header: "\u041C\u0430\u043D\u0438\u043F\u0443\u043B\u044F\u0442\u043E\u0440"
+      textDescription: "\u041C\u0435\u0445\u0430\u043D\u0438\u0447\u0435\u0441\u043A\u0430\u044F
+        \u0440\u0443\u043A\u0430 \u041C\u0430\u043D\u0438\u043F\u0443\u043B\u044F\u0442\u043E\u0440"
     - buildingObject: {fileID: 5035442550162173728, guid: 50992362f6a305245b56c9189f162c0b, type: 3}
-      sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+      sprite: {fileID: 158296531, guid: 18331b3c61130d94ea4d413b1182775c, type: 3}
       buildingType: 2
       fullDescription: {fileID: 11400000, guid: 77e8d4d2c1ffad14d806f4b1cea0fce5, type: 2}
       header: "\u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438"
-      textDescription: " \u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438
-        \u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438
-        \u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438"
-    - buildingObject: {fileID: 5035442550162173728, guid: 50992362f6a305245b56c9189f162c0b, type: 3}
-      sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-      buildingType: 2
-      fullDescription: {fileID: 11400000, guid: 77e8d4d2c1ffad14d806f4b1cea0fce5, type: 2}
-      header: "\u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438
-        1"
       textDescription: " \u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438
         \u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438
         \u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043C\u0435\u0434\u0438"

@@ -6,9 +6,12 @@ public class UIPlayerController : MonoBehaviour
 
     [SerializeField] private UISelectBuildPanel _panelSelectBuild;
     [SerializeField] private UIBuildBoard _buildBoard;
+    [SerializeField] private RectTransform _controlMonitor;
 
     public UISelectBuildPanel GetSelectBuildPanel => _panelSelectBuild;
     public UIBuildBoard GetBuildBoard => _buildBoard;
+
+    public RectTransform GetControlMonitor => _controlMonitor;
 
 
     public void InitUI(BuildBoard buildBoard, InputSystem_Actions inputActions)

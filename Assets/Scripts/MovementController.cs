@@ -46,7 +46,7 @@ public class MovementController : MonoBehaviour
 
         m_Rigidbody = GetComponent<Rigidbody>();
         transform.rotation = Quaternion.Euler(0, 0, 0);
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
 
         Vector3 angles = transform.localEulerAngles;
@@ -57,17 +57,17 @@ public class MovementController : MonoBehaviour
 
     void Update()
     {
-        MouseTrackingProcess();
+        //MouseTrackingProcess();
 
         Movement();
 
     }
 
 
-    void MouseTrackingProcess()
+    public void MouseTrackingProcess(Vector2 deltaMouseVector)
     {
 
-        Vector2 deltaMouseVector = Mouse.current.delta.ReadValue();
+        //Vector2 deltaMouseVector = Mouse.current.delta.ReadValue();
 
         // вычисляем новые углы вручную
         xRot -= deltaMouseVector.y * rotateCoeff.x;

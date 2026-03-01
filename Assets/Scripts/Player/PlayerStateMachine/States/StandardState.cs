@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XInput;
 namespace StateMachine
 {
@@ -14,7 +15,7 @@ namespace StateMachine
             _actionController = playerStateMachine.actionController;
             _context = context;
             _inputPlayerActions = context.InputSystem.Player;
-
+            Cursor.lockState = CursorLockMode.Locked;
             context.groundChecker.OnGround += context.movementController.Grounded;
             
         }
@@ -22,6 +23,7 @@ namespace StateMachine
         public void Update()
         {
             _context.movementController.Move(_actionController.GetVector(_inputPlayerActions.Move));
+            _context.movementController.MouseTrackingProcess(Mouse.current.delta.ReadValue());
             if (_actionController.IsActionReady(_inputPlayerActions.Jump))
             {
                 _context.movementController.Jump();
@@ -33,7 +35,10 @@ namespace StateMachine
                 _actionController.IsActionReadyWoutNotify(_inputPlayerActions.FifthSlot))
             {
                 _playerStateMachine.SwitchState(PlayerStateMachine.States.Building);
-                Exit();
+            }
+            if (_actionController.IsActionReady(_inputPlayerActions.ControlPanel))
+            {
+                _playerStateMachine.SwitchState(PlayerStateMachine.States.ControlPanel);
             }
         }
 

@@ -36,7 +36,10 @@ public class SelectBuildingState : IPlayerState
         _buildBoard = context.buildBoard;
         _buildPanel = _context.uIPlayerController.GetSelectBuildPanel;
         _isShowSelectPanel = false;
-        
+
+        Cursor.lockState = CursorLockMode.Locked;
+
+
         if (_playerStateMachine.actionBuffer == _inputPlayerActions.FirstSlot)
         {
             _stateBuffer = NumberKey.First;

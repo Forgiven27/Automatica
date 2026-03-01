@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using UnityEngine;
 namespace Simulator
@@ -11,12 +12,17 @@ namespace Simulator
         {
             
             var manipulator = new Manipulator(cmd.baseYaw, cmd.bones);
+            manipulator.ID = IDHandler.GetID();
             manipulators.Add(manipulator);
+
+
 
             sim.Events.Raise(new ManipulatorCreatedEvent()
             {
-                bones = cmd.bones,
+                bones = manipulator.GetBonesSnapshot(),
                 transform = cmd.transform,
+                baseYaw = cmd.baseYaw,
+                ID = manipulator.ID,
             });
 
             return manipulator;
@@ -30,6 +36,15 @@ namespace Simulator
                 ManipulatorContext context = simulation.CreateManipulatorContext();
                 manipulator.Work(context);
             }
+        }
+
+
+        public void SetScript(uint id, Queue<ManipulatorCommandBuffer> scriptConverted, string scriptText)
+        {
+            Manipulator manipulator = manipulators.Find(manip => manip.ID == id);
+            if (manipulator == null) Debug.LogError($"Манипулятор с ID = {id} не был найден");
+            manipulator.ScriptText = scriptText;
+            manipulator.SetCommands(scriptConverted);
         }
 
         public void Delete(uint id)
@@ -64,6 +79,25 @@ namespace Simulator
                 bones = manipulator.GetBonesSnapshot(),
             };
             return snapshot;
+        }
+
+        public uint[] GetAllID()
+        {
+            uint[] ids = new uint[manipulators.Count];
+            
+            for(int i = 0; i < ids.Length; i++)
+            {
+                ids[i] = manipulators[i].ID;
+            }
+
+            return ids;
+        }
+
+        public string GetScriptTextByID(uint id)
+        {
+            Manipulator manipulator = manipulators.Find(manip => manip.ID == id);
+
+            return manipulator.ScriptText;
         }
     }
 }

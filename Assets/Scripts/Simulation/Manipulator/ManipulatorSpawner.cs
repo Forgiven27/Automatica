@@ -1,16 +1,29 @@
+using Simulator;
 using UnityEngine;
 
 public class ManipulatorSpawner : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private GameObject manipulator;
+
+    void OnEnable()
     {
-        
+        SimulationAPI.Events.Subscribe<ManipulatorCreatedEvent>(OnFactoryCreated);
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDisable()
     {
+        SimulationAPI.Events.Unsubscribe<ManipulatorCreatedEvent>(OnFactoryCreated);
+    }
+
+    void OnFactoryCreated(ManipulatorCreatedEvent evt)
+    {
+        
+        var go = Instantiate(manipulator, evt.transform.position, evt.transform.rotation);
+        go.transform.localScale = evt.transform.scale;
+        var manipulatorView = go.GetComponent<ManipulatorView>();
+
+        manipulatorView.ID = evt.ID;
+        manipulatorView.Init(evt.baseYaw, evt.bones);
         
     }
 }

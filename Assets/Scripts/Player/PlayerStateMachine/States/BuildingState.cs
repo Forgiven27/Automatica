@@ -57,10 +57,13 @@ namespace StateMachine
             _stateBuffer = BuildState.None;
             _context.buildCamera.gameObject.SetActive(false);
             _buildBoard = context.buildBoard;
+            Cursor.lockState = CursorLockMode.Locked;
+
         }
 
         public void Update()
         {
+            _context.movementController.MouseTrackingProcess(Mouse.current.delta.ReadValue());
             if (_stateBuffer == BuildState.None && _isActiveCamera)
             {
                 _context.buildCamera.gameObject.SetActive(false);
@@ -209,6 +212,18 @@ namespace StateMachine
                                 factoryType = FactoryType.ExportImport10
                             };
                             SimulationAPI.Request<FactoryCreateCommand>(c);
+                            break;
+                        case BuildingType.Manipulator:
+
+                            var cm = new ManipulatorCreateCommand()
+                            {
+                                baseYaw = 0,
+                                bones = (Bone[])((ManipulatorDescription)building.fullDescription).bones.Clone(),
+                                transform = new TransformSim(_ghostBuilding.transform.position,
+                                _ghostBuilding.transform.rotation, _ghostBuilding.transform.localScale),
+                                collisionObject = _ghostBuilding.GetComponent<CollisionInfo>().GetCollisionObject()
+                            };
+                            SimulationAPI.Request<ManipulatorCreateCommand>(cm);
                             break;
                         default:
 

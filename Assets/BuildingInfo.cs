@@ -36,5 +36,6 @@ public enum BuildingType
     Spline,
     Factory,
     Conveyor,
+    Manipulator
 }
 

@@ -152,7 +152,15 @@ namespace Simulator {
         {
             return _manipulatorSim.GetSnapshotById(id);
         }
+        public uint[] GetAllManipulator()
+        {
+            return _manipulatorSim.GetAllID();
+        }
 
+        public string GetScriptText(uint id)
+        {
+            return _manipulatorSim.GetScriptTextByID(id);
+        }
 
     }
 }

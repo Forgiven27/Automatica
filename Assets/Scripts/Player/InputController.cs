@@ -28,6 +28,7 @@ public class InputController : MonoBehaviour
     public event TapDelegate OnSwitchTypeStart_Tap;
     public event TapDelegate OnSwitchTypeEnd_Tap;
     public event TapDelegate OnCancel_Tap;
+    public event TapDelegate OnControlPanel_Tap;
 
 
 
@@ -86,5 +87,10 @@ public class InputController : MonoBehaviour
     public void Cancel(InputAction.CallbackContext callbackContext)
     {
         if (callbackContext.interaction is TapInteraction) OnCancel_Tap?.Invoke();
+    }
+
+    public void ControlPanel(InputAction.CallbackContext callbackContext)
+    {
+        if (callbackContext.interaction is TapInteraction) OnControlPanel_Tap?.Invoke();
     }
 }
