@@ -1,9 +1,8 @@
 using Simulator;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
+
 
 public class ManipulatorView : MonoBehaviour, IEntity
 {
@@ -11,7 +10,8 @@ public class ManipulatorView : MonoBehaviour, IEntity
 
     public BoneReference[] bones;
     public Transform basement;
-
+    public Transform hand;
+    [SerializeField] private ItemsInfo _itemsInfo;
     public void Init(float baseYaw, Dictionary<uint, float> bones)
     {
         UpdateManipulator(baseYaw, bones);
@@ -22,24 +22,34 @@ public class ManipulatorView : MonoBehaviour, IEntity
     {
         ManipulatorSnapshot snapshot = SimulationAPI.GetManipulator(ID);
         UpdateManipulator(snapshot.baseYaw, snapshot.bones);
+        if (snapshot.heldItem != null)
+        {
+            UpdateItem(snapshot.heldItem ?? ItemType.None);
+        }
     }
+
+
 
     void UpdateManipulator(float baseYaw, Dictionary<uint, float> bonesAngles)
     {
-        basement.eulerAngles = new Vector3(basement.eulerAngles.x, baseYaw, basement.eulerAngles.z);
+        basement.localRotation = Quaternion.AngleAxis(baseYaw, Vector3.up);
         for (int i = 0; i < bones.Length; i++)
         {
             if (bonesAngles.TryGetValue(bones[i].ID, out float angleX))
             {
-                Vector3 eulerAngle = new Vector3(angleX,
-                    bones[i].boneRef.transform.eulerAngles.y,
-                    bones[i].boneRef.transform.eulerAngles.z);
-
-                //bones[i].boneRef.transform.eulerAngles = eulerAngle;
-                bones[i].boneRef.transform.localEulerAngles = eulerAngle;
+                bones[i].boneRef.transform.localRotation = Quaternion.AngleAxis(angleX, Vector3.right);
             }
         }
     }
+
+    void UpdateItem(ItemType type)
+    {
+
+        ItemData item = _itemsInfo.itemsData.Find(x =>  x.type == type);
+        Graphics.DrawMesh(item.mesh, hand.localToWorldMatrix, item.material, LayerMask.NameToLayer("Defualt"));
+    }
+
+    
 }
 [Serializable]
 public class BoneReference

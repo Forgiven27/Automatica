@@ -52,6 +52,7 @@ public class UIBuildingCard : MonoBehaviour
         if (currentBuilding != null)
         {
             OnClick.Invoke(currentBuilding);
+            Debug.Log("CLick!");
         }
     }
     private void OnDisable()

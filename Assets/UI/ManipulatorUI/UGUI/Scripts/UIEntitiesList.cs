@@ -9,6 +9,7 @@ public class UIEntitiesList : MonoBehaviour
     [SerializeField] private ScrollRect _scroll;
     [SerializeField] private GameObject _scrollElement;
     [SerializeField] private Button _buttonUpdate;
+    [SerializeField] private Button _buttonUploadScript;
     [SerializeField] private TMP_InputField _scriptInputField;
     [SerializeField] private TextMeshProUGUI _currentIdTextField;
 
@@ -17,9 +18,10 @@ public class UIEntitiesList : MonoBehaviour
     private void OnEnable()
     {
         UpdateEntitiesList();
-    
-        _buttonUpdate.onClick.AddListener(UpdateEntitiesList);
-        _scriptInputField.onSubmit.AddListener(LoadScript);
+        if(currentID == 0)
+        {
+            _scriptInputField.readOnly = true;
+        }
     }
 
 
@@ -50,10 +52,12 @@ public class UIEntitiesList : MonoBehaviour
         currentID = manipulatorID;
         _currentIdTextField.text = currentID.ToString();
         _scriptInputField.text = SimulationAPI.GetScriptText(manipulatorID);
+        _scriptInputField.readOnly = false;
     }
 
-    void LoadScript(string text)
+    public void LoadScript()
     {
+        string text = _scriptInputField.text;
         Debug.Log("Загрузка скрипта");
         var c = new ManipulatorSetScriptCommand()
         {

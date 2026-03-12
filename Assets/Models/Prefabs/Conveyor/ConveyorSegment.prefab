@@ -56,11 +56,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 536160209743554467}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f044bc09e89de74cb4e7cf32b918401, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SegmentView
+  _zoneInfo: {fileID: 11400000, guid: 711ad2c31781b834e9129cb47f1d8123, type: 2}
 --- !u!1 &4980406331594558923
 GameObject:
   m_ObjectHideFlags: 0

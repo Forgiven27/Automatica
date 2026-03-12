@@ -44,6 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f68fd22d86ceff41b1a7cf782da187c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConveyorView
+  _layer:
+    serializedVersion: 2
+    m_Bits: 1024
   _itemsInfo: {fileID: 11400000, guid: 74ecaa6a9d6fc5649b6f45508bc657e4, type: 2}
   icon: {fileID: 0}
   useMaterialPropertyBlock: 1

@@ -14,6 +14,7 @@ namespace Simulator {
         EntityRegistry _entities = new();
         ConnectionSystem _connections = new();
         List<SimOperation> _operations = new();
+        List<SimOperation> _moveOperations = new();
         WorldQuerySimulation _worldQuery;
         CollisionSimulation _collisionSystem;
         public Simulation(SimulationConfiguration config)
@@ -51,6 +52,7 @@ namespace Simulator {
             _factorySim.Tick(this);
             ApplyInputOperations();
             ApplyOutputOperations();
+            ApplyGrabOperations();
             _conveyorSim.Tick();
             _manipulatorSim.Tick(this);
         }
@@ -116,6 +118,64 @@ namespace Simulator {
                 }
             }
         }
+        private void ApplyGrabOperations()
+        {
+            foreach (var operation in _operations)
+            {
+                if (operation.type != SimOpType.GrabItem)
+                    continue;
+
+                uint manipulatorId = operation.entityOpAuthor.entityId;
+                uint itemOwnerId = operation.entityOpAnother.entityId;
+
+                if (!_entities.TryGetEntity<ManipulatorRuntime>(manipulatorId, out var manip))
+                    continue;
+
+                if (!_entities.TryGetEntity<IEntity>(itemOwnerId, out var itemOwnerEntity))
+                    continue;
+
+                if (!(itemOwnerEntity is IItemSource source))
+                    continue;
+
+                if (!source.TryExport())
+                    continue;
+
+                if (manip.Logic.HeldItem != null)
+                    continue;
+                
+                manip.Logic.HeldItem = source.Export();
+            }
+
+            foreach (var operation in _operations)
+            {
+                if (operation.type != SimOpType.ReleaseItem)
+                    continue;
+
+                uint manipulatorId = operation.entityOpAuthor.entityId;
+                uint itemSinkId = operation.entityOpAnother.entityId;
+
+                if (!_entities.TryGetEntity<ManipulatorRuntime>(manipulatorId, out var manip))
+                    continue;
+
+                if (!_entities.TryGetEntity<IEntity>(itemSinkId, out var itemSinkEntity))
+                    continue;
+
+                if (!(itemSinkEntity is IItemSink sink))
+                    continue;
+
+                if (manip.Logic.HeldItem == null)
+                    continue;
+
+                ItemType item = manip.Logic.HeldItem ?? ItemType.None;
+                if (!sink.TryImport(manip.Logic.HeldItem ?? ItemType.None))
+                    continue;
+
+                manip.Logic.HeldItem = null;
+                sink.Import(item);
+            }
+        }
+
+
 
         public void MoveEntity(uint id, TransformSim newTransform)
         {
@@ -133,7 +193,7 @@ namespace Simulator {
 
         public ManipulatorContext CreateManipulatorContext()
         {
-            return new ManipulatorContext() { operations = _operations};
+            return new ManipulatorContext(_operations, _collisionSystem, _worldQuery);
         }
 
 
@@ -160,6 +220,11 @@ namespace Simulator {
         public string GetScriptText(uint id)
         {
             return _manipulatorSim.GetScriptTextByID(id);
+        }
+
+        public Dictionary<uint, CollisionObject> GetCollisionSnapshot()
+        {
+            return _collisionSystem.GetObjects();
         }
 
     }

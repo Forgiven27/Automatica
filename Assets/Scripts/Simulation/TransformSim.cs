@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 namespace Simulator
 {
     public struct TransformSim
@@ -12,6 +13,14 @@ namespace Simulator
             this.position = position;
             this.rotation = rotation;
             this.scale = scale;
+        }
+
+        public static TransformSim Combine(TransformSim parent, TransformSim local) 
+        {
+            Vector3 newPosition = parent.position + parent.rotation * local.position;
+            Quaternion newRotation = parent.rotation * local.rotation;
+
+            return new TransformSim(newPosition, newRotation, Vector3.one);
         }
     }
 }

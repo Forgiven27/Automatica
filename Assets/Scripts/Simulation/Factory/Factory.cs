@@ -91,6 +91,7 @@ namespace Simulator
             return TryImportOneItem(itemType);
         }
 
+
         public void Import(ItemType itemType)
         {
             foreach (var slot in slots)
@@ -118,6 +119,22 @@ namespace Simulator
             if (itemExistTypes.Count > 0) return true;
             return false;
         }
+
+        public bool TryExport()
+        {
+            
+            foreach (var slot in slots)
+            {
+                if (slot.ioType != IOType.Output) continue;
+                if (slot.TryGetAbundanceOfItems())
+                {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
         public void Export(ItemType itemType)
         {
             foreach (var slot in slots)
@@ -129,6 +146,19 @@ namespace Simulator
                     return;
                 }
             }
+        }
+
+        public ItemType Export()
+        {
+            foreach (var slot in slots)
+            {
+                if (slot.ioType != IOType.Output) continue;
+                if (slot.CanExportOneItem())
+                {
+                    return slot.ExportOneItem();
+                }
+            }
+            return ItemType.None;
         }
 
 

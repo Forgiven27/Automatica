@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 namespace Simulator
 {
@@ -41,6 +42,11 @@ namespace Simulator
         public static uint[] GetAllManipulator()
         {
             return simulation.GetAllManipulator();
+        }
+
+        public static Dictionary<uint, CollisionObject> GetCollisionSnapshot()
+        {
+            return simulation.GetCollisionSnapshot();
         }
 
     }

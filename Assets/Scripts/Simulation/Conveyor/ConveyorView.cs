@@ -7,8 +7,8 @@ using System.Linq;
 
 public class ConveyorView : MonoBehaviour, IEntity
 {
-    
-    
+
+    [SerializeField] private LayerMask _layer;
     [SerializeField] private ItemsInfo _itemsInfo;
     public TransformSim[] _segmentsTransfomSim;
 
@@ -49,32 +49,13 @@ public class ConveyorView : MonoBehaviour, IEntity
                 if (item != null)
                 stringBuilder.AppendLine($"Count {item.itemStack.itemType} = {item.itemStack.countItems} \nlinePlaceID = {item.orderID}");
             }
-            //infoUI.UpdateTextUI(stringBuilder.ToString());
             UpdateAllPositions();
         }
-        //TODO Имитация белтов только коллизия, остальное генерация
     }
 
     void UpdateDots()
     {
-        /*
-        var conveyors = _conveyorModule.GetPoolConveyor();
-        if (conveyors != null)
-        {
-            _controlConveyorDots.Clear();
-            var next = conveyors.Find(x => x.IsFirstElement);
-            if (next == null) return;
-            _controlConveyorDots.Add(next.transform.position + Vector3.up);
-            for (int i = 0; i < conveyors.Count - 1; i++)
-            {
-                if(next.NextConveyor != null)
-                {
-                    _controlConveyorDots.Add(next.NextConveyor.transform.position + Vector3.up); 
-                    next = next.NextConveyor;
-                }
-            }
-
-        }*/
+       
 
         UpdateAllPositions();
     }
@@ -183,11 +164,13 @@ public class ConveyorView : MonoBehaviour, IEntity
     Matrix4x4 CreateMatrix(Vector3 position, Vector3 scale)
     {
         // Можно добавить небольшую рандомизацию вращения
-        Quaternion rotation = Quaternion.Euler(
+        /*Quaternion rotation = Quaternion.Euler(
             0,
             Random.Range(0f, 360f),
             0
-        );
+        );*/
+        Quaternion rotation = Quaternion.identity;
+
 
         return Matrix4x4.TRS(position, rotation, scale);
     }
@@ -279,7 +262,10 @@ public class ConveyorView : MonoBehaviour, IEntity
                     count,
                     block,
                     UnityEngine.Rendering.ShadowCastingMode.On,
-                    true // receive shadows
+                    true,
+                    10,
+                    null,
+                    UnityEngine.Rendering.LightProbeUsage.BlendProbes
                 );
             }
         }
@@ -349,21 +335,4 @@ public class ConveyorView : MonoBehaviour, IEntity
         GUILayout.Label($"Without instancing: {totalObjects} draw calls");
         GUILayout.Label($"With instancing: {totalBatches} draw calls");
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -52,6 +52,8 @@ MonoBehaviour:
   - boneRef: {fileID: 2902386672098056313}
     ID: 1
   basement: {fileID: 4395551729580548456}
+  hand: {fileID: 5681069214217173926}
+  _itemsInfo: {fileID: 11400000, guid: 74ecaa6a9d6fc5649b6f45508bc657e4, type: 2}
 --- !u!114 &1445145923520418077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,6 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollisionInfo
   layer: 8
+  description: {fileID: 11400000, guid: 1e4d8d00030171f4d98e59432dc5061e, type: 2}
 --- !u!1 &1019780186796196517
 GameObject:
   m_ObjectHideFlags: 0
@@ -77,6 +80,7 @@ GameObject:
   - component: {fileID: 1537751918975968284}
   - component: {fileID: 1593584016671110197}
   - component: {fileID: 9050504450219822707}
+  - component: {fileID: 7774294208617754653}
   m_Layer: 0
   m_Name: Cylinder2
   m_TagString: Untagged
@@ -180,6 +184,21 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &7774294208617754653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019780186796196517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f606528e17c9d4b918ceef4e46c036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovablePart
+  JointID: 0
+  RelatedJointIndex: 1
+  type: 1
 --- !u!1 &2902386672098056313
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,6 +211,7 @@ GameObject:
   - component: {fileID: 7396192518934575381}
   - component: {fileID: 3322834008751203011}
   - component: {fileID: 4700320403777772067}
+  - component: {fileID: 768075600723089923}
   m_Layer: 0
   m_Name: Sphere2
   m_TagString: Untagged
@@ -293,6 +313,21 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &768075600723089923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2902386672098056313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f606528e17c9d4b918ceef4e46c036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovablePart
+  JointID: 1
+  RelatedJointIndex: 0
+  type: 0
 --- !u!1 &5973601447591030100
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,6 +340,7 @@ GameObject:
   - component: {fileID: 644342485206671572}
   - component: {fileID: 3227842780729243384}
   - component: {fileID: 4687382292325768361}
+  - component: {fileID: 912877303760668189}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -406,6 +442,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &912877303760668189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5973601447591030100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f606528e17c9d4b918ceef4e46c036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovablePart
+  JointID: 0
+  RelatedJointIndex: -1
+  type: 2
 --- !u!1 &6700305153133699672
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,6 +469,7 @@ GameObject:
   - component: {fileID: 857902853049127711}
   - component: {fileID: 3360705708312973621}
   - component: {fileID: 458393360788795626}
+  - component: {fileID: 2072009158180366322}
   m_Layer: 0
   m_Name: Cylinder1
   m_TagString: Untagged
@@ -521,6 +573,21 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &2072009158180366322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6700305153133699672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f606528e17c9d4b918ceef4e46c036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovablePart
+  JointID: 0
+  RelatedJointIndex: 0
+  type: 1
 --- !u!1 &8356410595082467134
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,6 +600,7 @@ GameObject:
   - component: {fileID: 400902911342429721}
   - component: {fileID: 1508355963356944305}
   - component: {fileID: 5329057635242726918}
+  - component: {fileID: 4677072240990206192}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -633,6 +701,21 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4677072240990206192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8356410595082467134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f606528e17c9d4b918ceef4e46c036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovablePart
+  JointID: 0
+  RelatedJointIndex: 1
+  type: 1
 --- !u!1 &8892717200467816982
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,6 +728,7 @@ GameObject:
   - component: {fileID: 4537404014589460066}
   - component: {fileID: 2070780528622174034}
   - component: {fileID: 2742863565141527407}
+  - component: {fileID: 4487860710213671644}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -746,3 +830,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4487860710213671644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8892717200467816982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f606528e17c9d4b918ceef4e46c036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovablePart
+  JointID: 0
+  RelatedJointIndex: -1
+  type: 0

@@ -76,9 +76,20 @@ namespace Simulator
         {
             return segments[segments.Count - 1].TryExport(itemRequiredTypes, out itemExistTypes);
         }
+
+        public bool TryExport()
+        {
+            return segments[segments.Count - 1].TryExport();
+        }
+
         public void Export(ItemType itemType)
         {
             segments[segments.Count - 1].Export(itemType);
+        }
+
+        public ItemType Export()
+        {
+             return segments[segments.Count - 1].Export();
         }
 
         void RemoveItemAtSegment(uint ID)

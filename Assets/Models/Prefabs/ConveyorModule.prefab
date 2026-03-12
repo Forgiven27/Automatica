@@ -106,13 +106,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f68fd22d86ceff41b1a7cf782da187c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConveyorView
-  infoUI: {fileID: 8636948647121379684}
-  _conveyorModule: {fileID: -6431773096329770344}
+  _layer:
+    serializedVersion: 2
+    m_Bits: 0
   _itemsInfo: {fileID: 11400000, guid: 74ecaa6a9d6fc5649b6f45508bc657e4, type: 2}
-  factoryMesh: {fileID: 0}
   icon: {fileID: 0}
-  conveyorLength: 50
-  baseSpeed: 1
   useMaterialPropertyBlock: 1
 --- !u!114 &8636948647121379684
 MonoBehaviour:
@@ -150,6 +148,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a8b3b49977308ff4a9f8e774bef504f8, type: 2}
   baseStraightConveyor: {fileID: 11400000, guid: c6fb5f19d6996244791b9941071bce02, type: 2}
   _straightConveyorPrefab: {fileID: 4903047609689536286, guid: 27509add2a4c6ec429413fb1ccb9d977, type: 3}
+  _segmentLogicZone: {fileID: 11400000, guid: 711ad2c31781b834e9129cb47f1d8123, type: 2}
 --- !u!1001 &4809563848458461755
 PrefabInstance:
   m_ObjectHideFlags: 0

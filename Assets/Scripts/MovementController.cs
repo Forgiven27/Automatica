@@ -17,8 +17,6 @@ public class MovementController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float movementSpeed;
     [SerializeField] private float jumpForce;
-    
-
 
     enum Button
     {
@@ -28,13 +26,9 @@ public class MovementController : MonoBehaviour
     private readonly float m_buttonJumpCooldown = 2f;
     private Dictionary<Button, bool> buttonsActiveState;
 
-
-    bool m_IsGrounded;
-    private bool m_IsJump;
-    private Vector2 m_MoveVector;
-
-    
-    private Rigidbody m_Rigidbody;
+    private bool m_IsGrounded;
+    private Vector2 m_MoveVector;    
+    private Rigidbody _rigidbody;
 
     private float xRot;
     private float yRot;
@@ -44,7 +38,7 @@ public class MovementController : MonoBehaviour
             {Button.Jump, true},
         };
 
-        m_Rigidbody = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
         transform.rotation = Quaternion.Euler(0, 0, 0);
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -57,34 +51,29 @@ public class MovementController : MonoBehaviour
 
     void Update()
     {
-        //MouseTrackingProcess();
-
         Movement();
-
     }
 
 
     public void MouseTrackingProcess(Vector2 deltaMouseVector)
     {
-
-        //Vector2 deltaMouseVector = Mouse.current.delta.ReadValue();
-
-        // вычисляем новые углы вручную
         xRot -= deltaMouseVector.y * rotateCoeff.x;
         yRot += deltaMouseVector.x * rotateCoeff.y;
 
-        // ограничиваем вертикальное вращение
         xRot = Mathf.Clamp(xRot, minVert, maxVert);
 
-        // применяем к трансформу
-        transform.rotation = Quaternion.Euler(xRot, yRot, 0f);
+        _rigidbody.rotation = Quaternion.Euler(xRot, yRot, 0f); ;
     }
     void Movement()
     {
         if (m_MoveVector == Vector2.zero) return;
+
+        Vector3 move = _rigidbody.rotation * new Vector3(m_MoveVector.x, 0, m_MoveVector.y);
+        move.y = 0;
         float x_move = m_MoveVector.x * movementSpeed * Time.deltaTime;
         float z_move = m_MoveVector.y * movementSpeed * Time.deltaTime;
-        transform.Translate(new Vector3(x_move, 0, z_move));
+        
+        _rigidbody.MovePosition(_rigidbody.position + move * movementSpeed * Time.fixedDeltaTime);
     }
 
 
@@ -99,7 +88,7 @@ public class MovementController : MonoBehaviour
         if (buttonsActiveState[Button.Jump] && m_IsGrounded)
         {
             Vector3 jumpVector = Vector3.up * jumpForce;
-            m_Rigidbody.AddForce(jumpVector, ForceMode.Impulse);
+            _rigidbody.AddForce(jumpVector, ForceMode.Impulse);
             buttonsActiveState[Button.Jump] = false;
             await TimerJump(Button.Jump);
         }

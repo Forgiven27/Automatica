@@ -174,15 +174,8 @@ namespace StateMachine
                 _ghostBuilding = _context.GhostSpawner.InstantiateGhost(_buildBoard.firstCell.currentBuilding.buildingObject);
             }
 
-            //if (InputTool.TryGetSurfacePoint(out Vector3 point))
             if (InputTool.TryGetSurfaceGridPoint(out Vector3 point, 1))
             {
-                /*
-                Vector3 newPosition = new Vector3(hitInfo.point.x + (hitInfo.point.x % step < step / 2 ? -hitInfo.point.x % step : step - hitInfo.point.x % step),
-                    hitInfo.point.y,
-                    hitInfo.point.z + (hitInfo.point.z % step < step / 2 ? -hitInfo.point.z % step : step - hitInfo.point.z % step))
-                    + worldGrid.null_position;
-                */
                 _ghostBuilding.transform.position = point;
 
                 if (_actionController.IsActionReady(_inputPlayerActions.LeftRotate)) 
@@ -215,14 +208,13 @@ namespace StateMachine
                             break;
                         case BuildingType.Manipulator:
 
-                            var cm = new ManipulatorCreateCommand()
-                            {
-                                baseYaw = 0,
-                                bones = (Bone[])((ManipulatorDescription)building.fullDescription).bones.Clone(),
-                                transform = new TransformSim(_ghostBuilding.transform.position,
+                            (var collisionObject, var kinematicBones, var logicBones, var shapeBindings) = _ghostBuilding.GetComponent<CollisionManipulatorInfo>().GetCreationInfo();
+
+
+                            var cm = new ManipulatorCreateCommand(0, new TransformSim(_ghostBuilding.transform.position,
                                 _ghostBuilding.transform.rotation, _ghostBuilding.transform.localScale),
-                                collisionObject = _ghostBuilding.GetComponent<CollisionInfo>().GetCollisionObject()
-                            };
+                                collisionObject, logicBones, kinematicBones, shapeBindings);
+                            
                             SimulationAPI.Request<ManipulatorCreateCommand>(cm);
                             break;
                         default:
@@ -350,11 +342,16 @@ namespace StateMachine
                     if (startPosition == endPosition) 
                         return;
 
-                    var segmentsTransformSim = _ghostBuilding.GetComponent<ConveyorModule>().GetSegmentsTransform();
-                    var c = new ConveyorCreateCommand()
-                    {
-                        segmentsTransform = segmentsTransformSim,
-                    };
+                    ConveyorModule conveyorModule = _ghostBuilding.GetComponent<ConveyorModule>();
+
+                    TransformSim[] segmentsTransformSim = conveyorModule.GetSegmentsTransform();
+                    CollisionObject[] collisions = conveyorModule.GetCollisionObjects();
+                    TransformSim lineTransform = new (_ghostBuilding.transform.position,
+                        _ghostBuilding.transform.rotation,
+                        _ghostBuilding.transform.localScale);
+
+                    var c = new ConveyorCreateCommand(segmentsTransformSim,collisions,lineTransform);
+                    
 
                     if (_firstPortElement == null && _secondPortElement == null)
                     {

@@ -64,6 +64,20 @@ namespace Simulator {
             }
         }
 
+        public bool TryGetAbundanceOfItems()
+        {
+            
+            if (currentCount <= 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+
 
         public bool CanImportOneItem(ItemType itemType)
         {
@@ -77,6 +91,11 @@ namespace Simulator {
         {
             if (currentCount == 0) return false;
             if (currentSlotType != itemType) return false;
+            return true;
+        }
+        public bool CanExportOneItem()
+        {
+            if (currentCount == 0) return false;
             return true;
         }
 
@@ -114,9 +133,10 @@ namespace Simulator {
             }
         }
 
-        public void ExportOneItem()
+        public ItemType ExportOneItem()
         {
             currentCount--;
+            return currentSlotType;
         }
         public void ExportItems(int count)
         {

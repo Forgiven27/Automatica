@@ -8,5 +8,5 @@ public class AABBShape : CollisionShape
         Layer = layer;
         LocalAABB = localAABB;
         WorldAABB = worldAABB;
-    }
+}
 }

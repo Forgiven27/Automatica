@@ -1,5 +1,6 @@
 using Simulator;
 using StateMachine;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
 
@@ -37,7 +38,7 @@ public class SelectBuildingState : IPlayerState
         _buildPanel = _context.uIPlayerController.GetSelectBuildPanel;
         _isShowSelectPanel = false;
 
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.None;
 
 
         if (_playerStateMachine.actionBuffer == _inputPlayerActions.FirstSlot)
@@ -46,8 +47,10 @@ public class SelectBuildingState : IPlayerState
             ShowChoosePanel();
         }else if (_playerStateMachine.actionBuffer == _inputPlayerActions.SecondSlot)
         {
-
-        }else if (_playerStateMachine.actionBuffer == _inputPlayerActions.ThirdSlot)
+            _stateBuffer = NumberKey.Second;
+            ShowChoosePanel();
+        }
+        else if (_playerStateMachine.actionBuffer == _inputPlayerActions.ThirdSlot)
         {
 
         }else if (_playerStateMachine.actionBuffer == _inputPlayerActions.ForthSlot)
@@ -67,6 +70,7 @@ public class SelectBuildingState : IPlayerState
     {
         if (_actionController.IsActionReady(_inputPlayerActions.Cancel) && _isShowSelectPanel)
         {
+            _context.uIPlayerController.UpdateBuildBoard(_buildBoard, _context.InputSystem);
             _buildPanel.Hide();
             _isShowSelectPanel = false;
             //_playerStateMachine.IsFirstS_Tap = false;

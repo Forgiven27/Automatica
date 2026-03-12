@@ -10,6 +10,7 @@ namespace Simulator
         public AABB WorldAABB { get; internal set; }
         public AABB LocalAABB { get; internal set; }
 
+
         internal List<GridCell> OccupiedCells = new();
         internal int LastQueryVersion;
 

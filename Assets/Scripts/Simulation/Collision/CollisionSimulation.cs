@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 namespace Simulator
 {
@@ -23,6 +22,8 @@ namespace Simulator
             _entityRegistry = entityRegistry;
             _entityRegistry.EntityRemoved += OnEntityRemoved;
         }
+
+        public Dictionary<uint, CollisionObject> GetObjects() { return _objects; }
 
         public void UpdateTransform(uint ownerId, TransformSim transform)
         {

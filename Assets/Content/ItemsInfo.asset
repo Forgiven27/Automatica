@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemsInfo
   itemsData:
   - type: 1
-    mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+    mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
     material: {fileID: 2100000, guid: 9243044d811f99945bf39dc27da2e040, type: 2}
     name: "\u041C\u0435\u0434\u043D\u0430\u044F \u043F\u043B\u0430\u0441\u0442\u0438\u043D\u0430"
   - type: 2

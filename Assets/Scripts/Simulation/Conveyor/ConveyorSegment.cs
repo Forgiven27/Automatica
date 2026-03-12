@@ -113,12 +113,25 @@ namespace Simulator
             itemExistTypes.Add(currentType);
             return true;
         }
+
+        public bool TryExport()
+        {
+            return IsFull;
+        }
+
         public void Export(ItemType itemType)
         {
             if (!IsFull) return;
             if (itemType != currentType) return;
             IsFull = false;
             currentType = default;
+        }
+        public ItemType Export()
+        {
+            ItemType itemToExport = currentType;
+            IsFull = false;
+            currentType = default;
+            return itemToExport;
         }
 
 

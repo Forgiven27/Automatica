@@ -5,6 +5,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Splines;
+using UnityEngine.UIElements;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 [RequireComponent(typeof(SplineContainer))]
 public class ConveyorModule : MonoBehaviour
@@ -19,7 +21,7 @@ public class ConveyorModule : MonoBehaviour
     public Action OnConveyorChanged;
     [Space]
     [SerializeField] private ConveyorElement _straightConveyorPrefab;
-
+    [SerializeField] private LogicZoneInfo _segmentLogicZone;
     public Transform startPoint{ get { return _startPoint; } private set {
         _startPoint = value;
         } }
@@ -59,6 +61,53 @@ public class ConveyorModule : MonoBehaviour
 
         return transforms;
     }
+    
+    public CollisionObject[] GetCollisionObjects()
+    {
+        CollisionObject[] collisions = new CollisionObject[_poolConveyorElements.Count];
+        for (int i = 0; i < collisions.Length; i++)
+        {
+            GameObject segment = _poolConveyorElements[i].gameObject;
+            var colliders = segment.GetComponentsInChildren<Collider>();
+
+            CollisionObject collisionObject = new CollisionObject(true);
+            Vector3 rootPosition = segment.transform.position;
+            TransformSim transformSim = new TransformSim(transform.position, transform.rotation, transform.localScale);
+
+            foreach (Collider collider in colliders)
+            {
+                if (collider.isTrigger) continue;
+
+                Bounds worldBounds = collider.bounds;
+                Bounds b = collider.bounds;
+
+                Vector3 localMin = b.min - rootPosition;
+                Vector3 localMax = b.max - rootPosition;
+
+                AABB localAABB = new AABB(localMin, localMax);
+
+                
+
+                AABB worldAABB = CollisionShape.CalculateWorldAABB(localAABB, transformSim);
+                
+                AABBShape aABBShape = new(0, CollisionLayer.Conveyor, localAABB, worldAABB);
+
+                collisionObject.Shapes.Add(aABBShape);
+                
+            }
+            Vector3 localLogicMin = _segmentLogicZone.min - rootPosition;
+            Vector3 localLogicMax = _segmentLogicZone.max - rootPosition;
+            AABB localLogicAABB = new AABB(localLogicMin, localLogicMax);
+
+            AABB worldLogicAABB = CollisionShape.CalculateWorldAABB(localLogicAABB, transformSim);
+            AABBShape aABBLogicShape = new(0, CollisionLayer.ItemInteractionZone, localLogicAABB, worldLogicAABB);
+            collisionObject.Shapes.Add(aABBLogicShape);
+
+            collisions[i] = collisionObject;
+        }
+        return collisions;
+    }
+
 
     private void Spline_changed()
     {

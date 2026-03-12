@@ -30,7 +30,7 @@ public class UISelectBuildPanel : UIPanel
         foreach (var card in cards)
         {
             card.GetComponent<UIBuildingCard>().OnClick -= SetCurrentBuilding;
-            Destroy(card);
+            Destroy(card.gameObject);
         }
         cards.Clear();
 

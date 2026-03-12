@@ -17,18 +17,18 @@ namespace Simulator {
 
         public ConveyorLine Create(ConveyorCreateCommand cmd, Simulation sim)
         {
-            uint generatedID = IDHandler.GetID();
+            uint lineID = IDHandler.GetID();
             uint[] segmentsID = new uint[cmd.segmentsTransform.Length];
             for (int i = 0; i < segmentsID.Length; i++)
             {
                 segmentsID[i] = IDHandler.GetID();
             }
-            var conveyor = new ConveyorLine(generatedID, segmentsID);
+            var conveyor = new ConveyorLine(lineID, segmentsID);
             lines.Add(conveyor);
 
             sim.Events.Raise(new ConveyorCreatedEvent()
             {
-                conveyorID = generatedID,
+                conveyorID = lineID,
                 segmentsID = segmentsID,
                 segmentsTransform = cmd.segmentsTransform,
             });
