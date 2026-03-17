@@ -3,10 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.Splines;
-using UnityEngine.UIElements;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 [RequireComponent(typeof(SplineContainer))]
 public class ConveyorModule : MonoBehaviour
@@ -61,6 +58,177 @@ public class ConveyorModule : MonoBehaviour
 
         return transforms;
     }
+
+    public CollisionObject[] GetCollisionObjects()
+    {
+        CollisionObject[] collisions = new CollisionObject[_poolConveyorElements.Count];
+
+        for (int i = 0; i < collisions.Length; i++)
+        {
+            GameObject segment = _poolConveyorElements[i].gameObject;
+            Transform segmentTransform = segment.transform;
+            Collider[] colliders = segment.GetComponentsInChildren<Collider>();
+
+            TransformSim segmentWorldTransform = new TransformSim(
+                segmentTransform.position,
+                segmentTransform.rotation,
+                segmentTransform.lossyScale);
+
+            CollisionObject collisionObject = new CollisionObject(true);
+
+            bool hasAnyCollider = false;
+            Vector3 combinedLocalMin = Vector3.positiveInfinity;
+            Vector3 combinedLocalMax = Vector3.negativeInfinity;
+
+            foreach (Collider collider in colliders)
+            {
+                if (collider.isTrigger) continue; 
+
+                Bounds worldBounds = collider.bounds;
+
+                Vector3[] worldCorners = new Vector3[]
+                {
+                worldBounds.min,
+                new Vector3(worldBounds.max.x, worldBounds.min.y, worldBounds.min.z),
+                new Vector3(worldBounds.min.x, worldBounds.max.y, worldBounds.min.z),
+                new Vector3(worldBounds.max.x, worldBounds.max.y, worldBounds.min.z),
+                new Vector3(worldBounds.min.x, worldBounds.min.y, worldBounds.max.z),
+                new Vector3(worldBounds.max.x, worldBounds.min.y, worldBounds.max.z),
+                new Vector3(worldBounds.min.x, worldBounds.max.y, worldBounds.max.z),
+                worldBounds.max
+                };
+
+                Vector3 localMin = Vector3.one * float.MaxValue;
+                Vector3 localMax = Vector3.one * float.MinValue;
+                foreach (Vector3 worldCorner in worldCorners)
+                {
+                    Vector3 localCorner = segmentTransform.InverseTransformPoint(worldCorner);
+                    localMin = Vector3.Min(localMin, localCorner);
+                    localMax = Vector3.Max(localMax, localCorner);
+                }
+
+                AABB localAABB = new AABB(localMin, localMax);
+
+                if (!hasAnyCollider)
+                {
+                    combinedLocalMin = localMin;
+                    combinedLocalMax = localMax;
+                    hasAnyCollider = true;
+                }
+                else
+                {
+                    combinedLocalMin = Vector3.Min(combinedLocalMin, localMin);
+                    combinedLocalMax = Vector3.Max(combinedLocalMax, localMax);
+                }
+
+                AABB worldAABB = CollisionShape.CalculateWorldAABB(localAABB, segmentWorldTransform);
+
+                AABBShape shape = new AABBShape(0, CollisionLayer.Conveyor, localAABB, worldAABB);
+                collisionObject.Shapes.Add(shape);
+            }
+
+            if (hasAnyCollider)
+            {
+                AABB combinedLocalAABB = new AABB(combinedLocalMin, combinedLocalMax);
+                AABB combinedWorldAABB = CollisionShape.CalculateWorldAABB(combinedLocalAABB, segmentWorldTransform);
+                AABBShape logicZoneShape = new AABBShape(0, CollisionLayer.ItemInteractionZone, combinedLocalAABB, combinedWorldAABB);
+                collisionObject.Shapes.Add(logicZoneShape);
+            }
+            else
+            {
+                Debug.LogWarning($"Сегмент {segment.name} не содержит коллайдеров, логическая зона не создана.");
+            }
+
+            collisions[i] = collisionObject;
+        }
+
+        return collisions;
+    }
+
+
+    /*
+    public CollisionObject[] GetCollisionObjects()
+    {
+        CollisionObject[] collisions = new CollisionObject[_poolConveyorElements.Count];
+
+        for (int i = 0; i < collisions.Length; i++)
+        {
+            GameObject segment = _poolConveyorElements[i].gameObject;
+            Transform root = segment.transform;
+
+            var colliders = segment.GetComponentsInChildren<Collider>()
+                .Where(c => !c.isTrigger)
+                .ToArray();
+
+            CollisionObject collisionObject = new CollisionObject(true);
+
+            TransformSim transformSim =
+                new TransformSim(root.position, root.rotation, root.localScale);
+
+            if (colliders.Length == 0)
+            {
+                collisions[i] = collisionObject;
+                continue;
+            }
+
+            // ===== 1. Суммарные bounds всех коллайдеров =====
+            Bounds totalBounds = colliders[0].bounds;
+
+            for (int c = 1; c < colliders.Length; c++)
+                totalBounds.Encapsulate(colliders[c].bounds);
+
+            // ===== 2. перевод bounds в local пространство сегмента =====
+            Vector3[] corners =
+            {
+            new Vector3(totalBounds.min.x, totalBounds.min.y, totalBounds.min.z),
+            new Vector3(totalBounds.max.x, totalBounds.min.y, totalBounds.min.z),
+            new Vector3(totalBounds.min.x, totalBounds.max.y, totalBounds.min.z),
+            new Vector3(totalBounds.max.x, totalBounds.max.y, totalBounds.min.z),
+            new Vector3(totalBounds.min.x, totalBounds.min.y, totalBounds.max.z),
+            new Vector3(totalBounds.max.x, totalBounds.min.y, totalBounds.max.z),
+            new Vector3(totalBounds.min.x, totalBounds.max.y, totalBounds.max.z),
+            new Vector3(totalBounds.max.x, totalBounds.max.y, totalBounds.max.z)
+        };
+
+            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+
+            foreach (var corner in corners)
+            {
+                Vector3 local = root.InverseTransformPoint(corner);
+                min = Vector3.Min(min, local);
+                max = Vector3.Max(max, local);
+            }
+
+            AABB localAABB = new AABB(min, max);
+            AABB worldAABB = new AABB(totalBounds.min, totalBounds.max);
+
+            AABBShape geometryShape =
+                new AABBShape(0, CollisionLayer.Conveyor, localAABB, worldAABB);
+
+            collisionObject.Shapes.Add(geometryShape);
+
+            // ===== 3. logic zone =====
+
+            Vector3 logicMin = root.InverseTransformPoint(_segmentLogicZone.min);
+            Vector3 logicMax = root.InverseTransformPoint(_segmentLogicZone.max);
+
+            AABB localLogicAABB = new AABB(logicMin, logicMax);
+
+            AABB worldLogicAABB =
+                CollisionShape.CalculateWorldAABB(localLogicAABB, transformSim);
+
+            AABBShape logicShape =
+                new AABBShape(0, CollisionLayer.ItemInteractionZone, localLogicAABB, worldLogicAABB);
+
+            collisionObject.Shapes.Add(logicShape);
+
+            collisions[i] = collisionObject;
+        }
+
+        return collisions;
+    }
+
     
     public CollisionObject[] GetCollisionObjects()
     {
@@ -86,9 +254,9 @@ public class ConveyorModule : MonoBehaviour
 
                 AABB localAABB = new AABB(localMin, localMax);
 
-                
 
-                AABB worldAABB = CollisionShape.CalculateWorldAABB(localAABB, transformSim);
+
+                AABB worldAABB = new AABB(b.min, b.max);// CollisionShape.CalculateWorldAABB(localAABB, transformSim);
                 
                 AABBShape aABBShape = new(0, CollisionLayer.Conveyor, localAABB, worldAABB);
 
@@ -107,7 +275,7 @@ public class ConveyorModule : MonoBehaviour
         }
         return collisions;
     }
-
+    */
 
     private void Spline_changed()
     {

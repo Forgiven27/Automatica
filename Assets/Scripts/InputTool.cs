@@ -1,6 +1,4 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 
 public static class InputTool

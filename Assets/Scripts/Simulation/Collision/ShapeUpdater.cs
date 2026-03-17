@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using UnityEngine;
+
 namespace Simulator
 {
     public static class ShapeUpdater
@@ -19,8 +19,8 @@ namespace Simulator
                 else
                     parent = boneWorldTransforms[binding.RelatedJointIndex];
 
-                TransformSim world =
-                    TransformSim.Combine(parent, binding.LocalTransform);
+                TransformSim world = parent;
+                    //TransformSim.Combine(parent, binding.LocalTransform);
 
                 var shape = binding.Shape;
 

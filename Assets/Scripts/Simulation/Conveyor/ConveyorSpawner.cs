@@ -1,10 +1,6 @@
 using Simulator;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Splines;
-using static UnityEngine.Rendering.HableCurve;
+
 
 public class ConveyorSpawner : MonoBehaviour
 {

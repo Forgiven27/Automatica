@@ -1,6 +1,4 @@
 using System;
-using TreeEditor;
-using Unity.VisualScripting;
 
 namespace Simulator
 {

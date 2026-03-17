@@ -1,4 +1,6 @@
 using Simulator;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -6,19 +8,17 @@ public class CollisionManipulatorInfo : MonoBehaviour
 {
     [SerializeField] private CollisionLayer layer;
     [SerializeField] private ManipulatorDescription description;
-    
+
     private CollisionObject collisionObject;
     private KinematicBone[] kinematicBones;
     private LogicBone[] logicBones;
     private ShapeBinding[] shapeBindings;
-    
-    
+
 
     private void Start()
     {
         logicBones = (LogicBone[])description.bones.Clone();
     }
-
 
     public (CollisionObject, KinematicBone[], LogicBone[], ShapeBinding[]) GetCreationInfo()
     {
@@ -26,81 +26,171 @@ public class CollisionManipulatorInfo : MonoBehaviour
                 .Where(c => !c.isTrigger)
                 .ToArray();
 
-
         CollisionObject collisionObject = new CollisionObject(true);
 
-        
+    
+        var jointParts = colliders
+            .Select(c => c.GetComponent<ObjectPart>())
+            .Where(op => op != null && op.GetObjectType() == ObjectType.Joint)
+            .OrderBy(op => (int)op.GetJointID())
+            .ToList();
 
-        Vector3 rootPosition = transform.position;
-        ObjectPart objectPart = null;
-        TransformSim transformSim = new TransformSim(transform.position, transform.rotation, transform.localScale);
-        kinematicBones = new KinematicBone[logicBones.Length];
+        kinematicBones = new KinematicBone[jointParts.Count];
         shapeBindings = new ShapeBinding[colliders.Length];
+
+        var jointIdToBoneIndex = new Dictionary<uint, int>();
+
+        var jointIdToTransform = new Dictionary<uint, Transform>();
+
         int jointIndex = 0;
         int shapeBindingIndex = 0;
+
         foreach (Collider collider in colliders)
         {
+            var objectPart = collider.GetComponent<ObjectPart>();
+            if (objectPart == null) continue;
 
-            objectPart = collider.GetComponent<ObjectPart>();
+            uint jointId = objectPart.GetJointID();      
+            int relatedJointIndex = objectPart.GetRelatedJointIndex();  
+            ObjectType type = objectPart.GetObjectType();
 
-            Bounds worldBounds = collider.bounds;
-            Bounds b = collider.bounds;
-            Vector3 center = collider.bounds.center;
-            Debug.Log($"Center {center}");
-            Vector3[] corners =
+            Transform parentTransform;
+
+            if (relatedJointIndex < 0)
             {
-                new Vector3(b.min.x, b.min.y, b.min.z),
-                new Vector3(b.max.x, b.min.y, b.min.z),
-                new Vector3(b.min.x, b.max.y, b.min.z),
-                new Vector3(b.max.x, b.max.y, b.min.z),
-                new Vector3(b.min.x, b.min.y, b.max.z),
-                new Vector3(b.max.x, b.min.y, b.max.z),
-                new Vector3(b.min.x, b.max.y, b.max.z),
-                new Vector3(b.max.x, b.max.y, b.max.z)
-            };
-
-            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-
-            foreach (var c in corners)
+                parentTransform = this.transform;
+            }
+            else
             {
-                Vector3 local = transform.InverseTransformPoint(c);
+                uint parentJointId = (uint)relatedJointIndex;
+                parentTransform = jointIdToTransform.GetValueOrDefault(parentJointId);
 
-                min = Vector3.Min(min, local);
-                max = Vector3.Max(max, local);
+                if (parentTransform == null)
+                {
+                    parentTransform = FindJointTransformById(parentJointId);
+                    jointIdToTransform[parentJointId] = parentTransform;
+                }
             }
 
-            AABB localAABB = new AABB(min, max);
-            AABB worldAABB = new AABB(b.min, b.max);
+            AABB localAABB = CalculateLocalAABB(collider, parentTransform);
 
-            Debug.Log(worldAABB.Max - worldAABB.Min);
-            
-            
-            if (objectPart.GetObjectType() == ObjectType.Joint)
+            Vector3 localPos = parentTransform.InverseTransformPoint(collider.transform.position);
+            Quaternion localRot = Quaternion.Inverse(parentTransform.rotation) * collider.transform.rotation;
+            TransformSim localTransform = new TransformSim(localPos, localRot, Vector3.one);
+
+            int thisBoneIndex = -1;  
+
+            if (type == ObjectType.Joint)
             {
-                kinematicBones[jointIndex] = new KinematicBone(logicBones[jointIndex].ID, 
-                    objectPart.GetJointIndex(), collider.transform.localPosition, Vector3.right);
+                int parentBoneIndex = -1;
+                if (relatedJointIndex >= 0)
+                {
+                    parentBoneIndex = jointIdToBoneIndex.GetValueOrDefault((uint)relatedJointIndex, -1);
+                }
+
+                Vector3 localOffset = parentTransform.InverseTransformPoint(collider.transform.position);
+
+                Vector3 axis = GetJointAxisFromDescription(jointId);
+
+                kinematicBones[jointIndex] = new KinematicBone(
+                    jointId,          
+                    parentBoneIndex,   
+                    localOffset,
+                    axis
+                );
+
+                jointIdToBoneIndex[jointId] = jointIndex;
+                jointIdToTransform[jointId] = collider.transform;
+                thisBoneIndex = jointIndex;
                 jointIndex++;
             }
-            int relatedJointIndex = objectPart.GetJointIndex();
-            AABBShape aABBShape = new(0, layer, localAABB, worldAABB);
+            int shapeRelatedBoneIndex;
 
-            Vector3 localPos = transform.InverseTransformPoint(collider.transform.position);
-            Quaternion localRot = Quaternion.Inverse(transform.rotation) * collider.transform.rotation;
+            if (relatedJointIndex < 0)
+            {
+                shapeRelatedBoneIndex = -1;
+            }
+            else
+            {
+                shapeRelatedBoneIndex = jointIdToBoneIndex.GetValueOrDefault((uint)relatedJointIndex, -1);
+            }
 
-            TransformSim localTransform = new TransformSim(
-                localPos,
-                localRot,
-                collider.transform.lossyScale
+            AABBShape aABBShape = new(0, layer, localAABB, new AABB());
+
+            shapeBindings[shapeBindingIndex] = new ShapeBinding(
+                aABBShape,
+                shapeRelatedBoneIndex, 
+                localTransform
             );
-
-
-            shapeBindings[shapeBindingIndex] = new ShapeBinding(aABBShape, relatedJointIndex,localTransform);
             shapeBindingIndex++;
 
             collisionObject.Shapes.Add(aABBShape);
         }
+
+        if (shapeBindingIndex < shapeBindings.Length)
+        {
+            Array.Resize(ref shapeBindings, shapeBindingIndex);
+        }
+
         return (collisionObject, kinematicBones, logicBones, shapeBindings);
+    }
+
+
+    private Transform FindJointTransformById(uint jointId)
+    {
+        var allParts = GetComponentsInChildren<ObjectPart>();
+
+        foreach (var part in allParts)
+        {
+            if (part.GetObjectType() == ObjectType.Joint && part.GetJointID() == jointId)
+                return part.transform;
+        }
+
+        Debug.LogError($"Joint с ID {jointId} не найден!");
+        return this.transform; // Fallback на root
+    }
+
+
+    private AABB CalculateLocalAABB(Collider collider, Transform relativeTo)
+    {
+        Bounds worldBounds = collider.bounds;
+
+        Vector3[] corners = new Vector3[8];
+        corners[0] = new Vector3(worldBounds.min.x, worldBounds.min.y, worldBounds.min.z);
+        corners[1] = new Vector3(worldBounds.max.x, worldBounds.min.y, worldBounds.min.z);
+        corners[2] = new Vector3(worldBounds.min.x, worldBounds.max.y, worldBounds.min.z);
+        corners[3] = new Vector3(worldBounds.max.x, worldBounds.max.y, worldBounds.min.z);
+        corners[4] = new Vector3(worldBounds.min.x, worldBounds.min.y, worldBounds.max.z);
+        corners[5] = new Vector3(worldBounds.max.x, worldBounds.min.y, worldBounds.max.z);
+        corners[6] = new Vector3(worldBounds.min.x, worldBounds.max.y, worldBounds.max.z);
+        corners[7] = new Vector3(worldBounds.max.x, worldBounds.max.y, worldBounds.max.z);
+
+        Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+
+        foreach (var c in corners)
+        {
+            Vector3 local = relativeTo.InverseTransformPoint(c);
+            min = Vector3.Min(min, local);
+            max = Vector3.Max(max, local);
+        }
+
+        return new AABB(min, max);
+    }
+
+    private Vector3 GetJointAxisFromDescription(uint jointId)
+    {
+
+        for (int i = 0; i < logicBones.Length; i++)
+        {
+            if (logicBones[i].ID == jointId)
+            {
+
+                // return logicBones[i].Axis;
+                return Vector3.right;
+            }
+        }
+        return Vector3.right;
     }
 }
 

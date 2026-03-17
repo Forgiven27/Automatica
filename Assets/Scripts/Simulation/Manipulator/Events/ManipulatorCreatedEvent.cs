@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using UnityEngine;
+
 namespace Simulator
 {
     public struct ManipulatorCreatedEvent : ISimulationEvent

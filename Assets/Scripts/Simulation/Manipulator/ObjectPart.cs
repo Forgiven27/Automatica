@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class ObjectPart : MonoBehaviour
@@ -8,8 +7,9 @@ public class ObjectPart : MonoBehaviour
     [Tooltip("ID принадежности суставу определенному суставу ()")]
     [SerializeField] private int RelatedJointIndex;
     [SerializeField] private ObjectType type;
-
-    public int GetJointIndex() => RelatedJointIndex;
+    [SerializeField] private string name; //TEMP
+    public int GetRelatedJointIndex() => RelatedJointIndex;
+    public uint GetJointID() => JointID;
     public ObjectType GetObjectType() => type;
 }
 

@@ -2,7 +2,6 @@ using System.Text;
 using UnityEngine;
 using Simulator;
 using System.Collections.Generic;
-using UnityEngine.Splines;
 using System.Linq;
 
 public class ConveyorView : MonoBehaviour, IEntity

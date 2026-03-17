@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XInput;
+using UnityEngine.SceneManagement;
+
 namespace StateMachine
 {
     public class StandardState : IPlayerState
@@ -17,7 +18,15 @@ namespace StateMachine
             _inputPlayerActions = context.InputSystem.Player;
             Cursor.lockState = CursorLockMode.Locked;
             context.groundChecker.OnGround += context.movementController.Grounded;
-            
+
+            Hint[] hints = new Hint[4]
+            {
+                new Hint("Используйте WASD для перемещения" ),
+                new Hint(_inputPlayerActions.Jump, "Нажмите, чтобы прыгать" ),
+                new Hint(_inputPlayerActions.ControlPanel, "Нажмите, чтобы панель управления манипуляторами" ),
+                new Hint(_inputPlayerActions.Cancel, "Нажмите, чтобы ВЫЙТИ в главное меню" ),
+            };
+            _context.uIPlayerController.GetHintController.SetHints(hints);
         }
 
         public void Update()
@@ -39,6 +48,12 @@ namespace StateMachine
             if (_actionController.IsActionReady(_inputPlayerActions.ControlPanel))
             {
                 _playerStateMachine.SwitchState(PlayerStateMachine.States.ControlPanel);
+            }
+            if (_actionController.IsActionReady(_inputPlayerActions.Cancel))
+            {
+                Exit();
+                Cursor.lockState = CursorLockMode.None;
+                SceneManager.LoadScene(0, LoadSceneMode.Single);
             }
         }
 

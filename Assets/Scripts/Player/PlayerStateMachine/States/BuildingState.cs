@@ -2,9 +2,6 @@ using Cysharp.Threading.Tasks;
 using Simulator;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Splines;
@@ -59,6 +56,16 @@ namespace StateMachine
             _buildBoard = context.buildBoard;
             Cursor.lockState = CursorLockMode.Locked;
 
+            Hint[] hints = new Hint[]
+            {
+                new Hint(_inputPlayerActions.PlaceBuilding, "Нажмите, чтобы установить постройку" ),
+                new Hint("Нажмите повторно клавишу соответствующего класса для открытия меню строительства"),
+                new Hint(_inputPlayerActions.Cancel, "Нажмите, чтобы выйти из режима строительства" ),
+                new Hint(_inputPlayerActions.LeftRotate, "Нажмите, чтобы повернуть одиночный объект налево" ),
+                new Hint(_inputPlayerActions.RightRotate, "Нажмите, чтобы повернуть одиночный объект направо" ),
+            };
+
+            _context.uIPlayerController.GetHintController.SetHints(hints);
         }
 
         public void Update()

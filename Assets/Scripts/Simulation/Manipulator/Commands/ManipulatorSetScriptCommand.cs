@@ -1,6 +1,5 @@
 using Simulator;
 using System.Collections.Generic;
-using UnityEngine;
 
 public struct ManipulatorSetScriptCommand : ISimulatorCommand
 {

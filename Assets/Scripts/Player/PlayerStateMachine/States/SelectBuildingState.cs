@@ -1,8 +1,6 @@
-using Simulator;
 using StateMachine;
-using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.ProBuilder.MeshOperations;
+
 
 public class SelectBuildingState : IPlayerState
 {
@@ -40,6 +38,14 @@ public class SelectBuildingState : IPlayerState
 
         Cursor.lockState = CursorLockMode.None;
 
+        
+        Hint[] hints = new Hint[2]
+            {
+                new Hint("Выберите необходимую вам постройку, а после выйдите" ),
+                new Hint(_inputPlayerActions.Cancel, "Нажмите, чтобы выйти" ),
+            };
+
+        _context.uIPlayerController.GetHintController.SetHints(hints);
 
         if (_playerStateMachine.actionBuffer == _inputPlayerActions.FirstSlot)
         {

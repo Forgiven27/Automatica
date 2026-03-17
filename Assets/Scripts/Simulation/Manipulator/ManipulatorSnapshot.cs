@@ -1,5 +1,3 @@
-using UnityEngine;
-using Simulator;
 using System.Collections.Generic;
 public class ManipulatorSnapshot
 {

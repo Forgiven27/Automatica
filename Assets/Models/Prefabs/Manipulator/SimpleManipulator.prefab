@@ -199,6 +199,7 @@ MonoBehaviour:
   JointID: 0
   RelatedJointIndex: 1
   type: 1
+  name: "\u041A\u043E\u0441\u0442\u044C \u0432\u0442\u043E\u0440\u0430\u044F 4"
 --- !u!1 &2902386672098056313
 GameObject:
   m_ObjectHideFlags: 0
@@ -328,6 +329,8 @@ MonoBehaviour:
   JointID: 1
   RelatedJointIndex: 0
   type: 0
+  name: "\u0421\u0443\u0441\u0442\u0430\u0432 \u0432\u0442\u043E\u0440\u043E\u0439
+    3"
 --- !u!1 &5973601447591030100
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,6 +460,7 @@ MonoBehaviour:
   JointID: 0
   RelatedJointIndex: -1
   type: 2
+  name: "\u0411\u0430\u0437\u0430 0.5"
 --- !u!1 &6700305153133699672
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,6 +592,7 @@ MonoBehaviour:
   JointID: 0
   RelatedJointIndex: 0
   type: 1
+  name: "\u041A\u043E\u0441\u0442\u044C \u043F\u0435\u0440\u0432\u0430\u044F 2"
 --- !u!1 &8356410595082467134
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,6 +721,7 @@ MonoBehaviour:
   JointID: 0
   RelatedJointIndex: 1
   type: 1
+  name: "\u0420\u0443\u043A\u0430 6"
 --- !u!1 &8892717200467816982
 GameObject:
   m_ObjectHideFlags: 0
@@ -845,3 +851,5 @@ MonoBehaviour:
   JointID: 0
   RelatedJointIndex: -1
   type: 0
+  name: "\u0421\u0443\u0441\u0442\u0430\u0432 \u043F\u0435\u0440\u0432\u044B\u0439
+    1"

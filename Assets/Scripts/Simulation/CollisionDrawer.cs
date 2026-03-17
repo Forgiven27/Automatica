@@ -1,11 +1,14 @@
 using Simulator;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class CollisionDrawer : MonoBehaviour
 {
 #if UNITY_EDITOR
     Dictionary<uint, CollisionObject> objects;
+    StringBuilder str = new();
+    string buffer = "";
     private void OnDrawGizmos()
     {
         try
@@ -24,6 +27,7 @@ public class CollisionDrawer : MonoBehaviour
             {
                 case CollisionLayer.Manipulator:
                     Gizmos.color = Color.black;
+                    
                     break;
                 case CollisionLayer.Conveyor:
                     Gizmos.color = Color.yellow;
@@ -41,7 +45,15 @@ public class CollisionDrawer : MonoBehaviour
                 
                 
                 DrawAABB(shape.WorldAABB);
+                
+                str.AppendLine($"WorldAABB Min {shape.WorldAABB.Min} Max Min{shape.WorldAABB.Max}");
             }
+            if (str.ToString() != buffer)
+            {
+                Debug.Log(str.ToString());
+                buffer = str.ToString();
+            }
+            str.Clear();
 
         }
     }
