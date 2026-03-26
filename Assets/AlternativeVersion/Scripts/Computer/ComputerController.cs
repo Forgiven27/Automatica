@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace DullVersion {
     public class ComputerController : MonoBehaviour
@@ -9,21 +11,9 @@ namespace DullVersion {
         [SerializeField] private TMP_InputField _inputField;
         [SerializeField] private ManipulatorController manipulatorController;
 
-        private void OnEnable()
+        public void SubmitedInputField()
         {
-            _inputField.onSubmit.AddListener(SubmitedInputField);
-        }
-        private void OnDisable()
-        {
-            _inputField.onSubmit.RemoveListener(SubmitedInputField);
-        }
-        void Start()
-        {
-            
-        }
-
-        void SubmitedInputField(string text)
-        {
+            string text = _inputField.text;
             string[] splited = text.Split();
             float arg = 0;
             int index = 0;
@@ -35,6 +25,20 @@ namespace DullVersion {
             {
                 index = int.Parse(splited[2]);
             }
+
+            string pattern = @"(\w+)\s*\(([^)]*)\)";
+            Regex regex = new Regex(pattern, RegexOptions.Multiline);
+            MatchCollection matches = regex.Matches(text);
+            StringBuilder sb = new StringBuilder();
+            foreach (Match match in matches)
+            {
+                foreach (string s in match.Groups)
+                {
+                    Debug.Log(s);
+                }
+                Debug.Log("____\n");
+            }
+            /*
             switch (splited[0].ToLowerInvariant())
             {
                 case "rotate":
@@ -58,7 +62,7 @@ namespace DullVersion {
                     manipulatorController.EnableScaner();
                     break;
 
-            }
+            }*/
         }
 
       
